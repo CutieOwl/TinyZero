@@ -90,6 +90,8 @@ if __name__ == '__main__':
     assert len(raw_dataset) > TRAIN_SIZE + TEST_SIZE
     train_dataset = raw_dataset.select(range(TRAIN_SIZE))
     test_dataset = raw_dataset.select(range(TRAIN_SIZE, TRAIN_SIZE + TEST_SIZE))
+    trte_dataset = train_dataset.select(range(len(test_dataset)))
+
 
     def make_map_fn(split):
         def process_fn(example, idx):
@@ -119,12 +121,14 @@ if __name__ == '__main__':
     
     train_dataset = train_dataset.map(function=make_map_fn('train'), with_indices=True)
     test_dataset = test_dataset.map(function=make_map_fn('test'), with_indices=True)
+    trte_dataset = trte_dataset.map(function=make_map_fn('trte'), with_indices=True)
 
     local_dir = args.local_dir
     hdfs_dir = args.hdfs_dir
 
     train_dataset.to_parquet(os.path.join(local_dir, 'train.parquet'))
     test_dataset.to_parquet(os.path.join(local_dir, 'test.parquet'))
+    trte_dataset.to_parquet(os.path.join(local_dir, 'trte.parquet'))
 
     if hdfs_dir is not None:
         makedirs(hdfs_dir)
