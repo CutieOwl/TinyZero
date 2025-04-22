@@ -76,7 +76,19 @@ class ChatChain:
         return iter(self.chain)
 
     def __str__(self) -> str:
-        return "\n".join(
-            f"\n----------Message from {msg.role}----------\n{msg.content}"
-            for msg in self.chain
-        )
+        ret_str = ""
+        for msg in self.chain:
+            if msg.role == "system":
+                ret_str += "<|im_start|>system\n"
+            elif msg.role == "assistant":
+                ret_str += "<|im_start|>user\n"
+            elif msg.role == "agent":
+                ret_str += "<|im_start|>assistant\n"
+            ret_str += f"{msg.content}<|im_end|>\n"
+        ret_str += "<|im_start|>assistant\n"
+        return ret_str
+
+        # return "\n".join(
+        #     f"\n----------Message from {msg.role}----------\n{msg.content}"
+        #     for msg in self.chain
+        # )

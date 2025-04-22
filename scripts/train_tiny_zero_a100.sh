@@ -1,10 +1,10 @@
 python3 -m verl.trainer.main_ppo \
 data.train_files=$DATA_DIR/train.parquet \
 data.val_files='["'${DATA_DIR}'/test.parquet","'${DATA_DIR}'/trte.parquet"]' \
-data.train_batch_size=256 \
-data.val_batch_size=1312 \
-data.max_prompt_length=768 \
-data.max_response_length=1024 \
+data.train_batch_size=32 \
+data.val_batch_size=32 \
+data.max_prompt_length=1024 \
+data.max_response_length=512 \
 actor_rollout_ref.model.path=$BASE_MODEL \
 actor_rollout_ref.actor.optim.lr=1e-6 \
 actor_rollout_ref.actor.ppo_mini_batch_size=32 \
@@ -18,7 +18,7 @@ critic.model.path=$BASE_MODEL \
 critic.model.enable_gradient_checkpointing=True \
 critic.ppo_micro_batch_size=4 \
 algorithm.kl_ctrl.kl_coef=0.001 \
-trainer.logger=['wandb'] \
+trainer.logger=['console'] \
 +trainer.val_before_train=False \
 trainer.default_hdfs_dir=null \
 trainer.n_gpus_per_node=$N_GPUS \

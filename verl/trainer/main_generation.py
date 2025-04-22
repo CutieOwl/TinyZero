@@ -84,9 +84,14 @@ def main(config):
                                                tokenize=True)
         input_ids = inputs['input_ids']
         attention_mask = inputs['attention_mask']
+        subtask_idx = inputs['subtask_idx'] if 'subtask_idx' in inputs else None
+        iteration = inputs['iteration'] if 'iteration' in inputs else None
+        rollout_id = inputs['rollout_id'] if 'rollout_id' in inputs else None
+
         position_ids = compute_position_id_with_mask(attention_mask)
 
-        batch_dict = {'input_ids': input_ids, 'attention_mask': attention_mask, 'position_ids': position_ids}
+        batch_dict = {'input_ids': input_ids, 'attention_mask': attention_mask, 'position_ids': position_ids, 'subtask_idx': subtask_idx,
+                      'iteration': iteration, 'rollout_id': rollout_id}
 
         data = DataProto.from_dict(batch_dict)
         real_batch_size = data.batch['input_ids'].shape[0]

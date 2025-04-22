@@ -129,7 +129,10 @@ class HFRollout(BaseRollout):
                 'responses': response,
                 'input_ids': seq,
                 'attention_mask': attention_mask,
-                'position_ids': position_ids
+                'position_ids': position_ids,
+                'subtask_idx': prompts.batch['subtask_idx'],
+                'iteration': prompts.batch['iteration'],
+                'rollout_id': prompts.batch['rollout_id'],
             },
             batch_size=batch_size)
 

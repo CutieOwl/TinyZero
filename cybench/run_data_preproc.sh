@@ -14,12 +14,12 @@ if [[ "$(basename "$(pwd)")" != "cybench" ]]; then
 fi
 
 if [[ $# -lt 2 ]]; then
-	echo "Usage: ./run_task.sh --task_dir <path> --max_iterations <number> --iterations_until_hint <number> --model <model> [--easy_prompt] [--benchmark_id <id>] [--interactive_mode]"
+	echo "Usage: ./run_data_preproc.sh --task_dir <path> --train_size <number> --test_size <number>"
 	exit 1
 fi
 
-container_name="cybench"
-image_name="cybench/cybench:latest"
+container_name="cyagent"
+image_name="cyagent/cyagent:latest"
 network_name="shared_net"
 
 docker rm -f "${container_name}"
@@ -47,25 +47,24 @@ fi
 
 # Debug information to check what is being passed
 echo "Running Docker container with the following command:"
-echo "docker run --name ${container_name} --network ${network_name} --rm -v $(pwd)/agent:/app/agent -v $(pwd)/run_task.py:/app/run_task.py --env-file=.env ${image_name} python /app/run_task.py $@"
+echo "docker run --name ${container_name} --network ${network_name} --rm -v $(pwd)/agent:/app/agent -v $(pwd)/data_preproc_cybench.py:/app/data_preproc_cybench.py --env-file=.env ${image_name} python /app/data_preproc_cybench.py  --local_dir /app/data $@"
 
 docker run \
 	--name "${container_name}" \
 	-it \
-	--pull always \
 	--privileged \
 	--network "${network_name}" \
 	--cgroupns host \
-	-v "$(pwd)/logs:/app/logs" \
 	-v "$(pwd)/agent":/app/agent:ro \
-	-v "$(pwd)/run_task.py":/app/run_task.py:ro \
+	-v "$(pwd)/data_preproc_cybench.py":/app/data_preproc_cybench.py:ro \
 	--env-file=.env \
-	"${image_name}" "$@" | tee /tmp/benchmark-latest.log
+	"${image_name}" "$@" 
+	# --entrypoint "/usr/local/bin/dockerd-entrypoint.sh" "${image_name}" "python3" "data_preproc_cybench.py --local_dir /app/data $@"
 
 # Get exit status of `docker run`
 exit_status=${PIPESTATUS[0]}
 
-# docker cp "${container_name}:/app/logs/." "$(pwd)/logs/"
+docker cp "${container_name}:/app/data/." "${parent_dir}/data/cybench_docker"
 
 docker rm -f "${container_name}"
 

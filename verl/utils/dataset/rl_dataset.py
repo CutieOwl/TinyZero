@@ -12,12 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import time
 from omegaconf import ListConfig
 import os
 from typing import List, Union
 
 import pandas as pd
 
+import glob
+import random
 import torch
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
@@ -69,7 +72,8 @@ class RLHFDataset(Dataset):
                  cache_dir='~/.cache/verl/rlhf',
                  chat_template_func=None,
                  return_raw_chat=False,
-                 truncation='error'):
+                 truncation='error',
+                 log_dir: str = None):
         if not isinstance(parquet_files, (List, ListConfig)):
             parquet_files = [parquet_files]
 
@@ -84,6 +88,11 @@ class RLHFDataset(Dataset):
         self.return_raw_chat = return_raw_chat
         self.chat_template_func = chat_template_func
         self.truncation = truncation
+
+        self.log_dir = log_dir
+        if self.log_dir is None:
+            self.log_dir = os.path.join("cybench", "logs", "verl", "dynastic")
+        os.makedirs(self.log_dir, exist_ok=True)
 
         self._download()
         self._read_files_and_tokenize()
@@ -125,8 +134,33 @@ class RLHFDataset(Dataset):
 
         chat = row_dict.pop(self.prompt_key)
 
-        prompt_with_chat_template = chat[0]['content']
+        org_prompt_with_chat_template = chat[0]['content']
+        # print(f"First 30 chars of original prompt: {org_prompt_with_chat_template[:30]}")
+        # print(f"Last 30 chars of original prompt: {org_prompt_with_chat_template[-30:]}")
         # prompt_with_chat_template = chat
+        # Read prompt from file
+        # get all files in log_dir with .in extension and choose a random one to read from
+
+        print("Waiting for input files...")
+        while True:
+            input_files = glob.glob(os.path.join(self.log_dir, "*.in"))
+            if not input_files:
+                time.sleep(1)
+                continue
+            else:
+                break
+
+        # Choose a random input file
+        random_file = random.choice(input_files)
+        with open(random_file, 'r') as f:
+            prompt_with_chat_template = f.read().strip()
+
+        print(f"Got prompt from file: {prompt_with_chat_template[:30]}...")
+
+        # get rollout_id, subtask_idx, iteration from the file name
+        file_name = os.path.basename(random_file)
+        file_name = file_name.split('.')[0]
+        rollout_id, subtask_idx, iteration = file_name.split('_')
 
         input_ids, attention_mask = verl_F.tokenize_and_postprocess_data(prompt=prompt_with_chat_template,
                                                                          tokenizer=self.tokenizer,
@@ -140,6 +174,9 @@ class RLHFDataset(Dataset):
         row_dict['input_ids'] = input_ids[0]
         row_dict['attention_mask'] = attention_mask[0]
         row_dict['position_ids'] = position_ids[0]
+        row_dict['subtask_idx'] = torch.tensor(int(subtask_idx), dtype=torch.int64)
+        row_dict['iteration'] = torch.tensor(int(iteration), dtype=torch.int64)
+        row_dict['rollout_id'] = torch.tensor(int(rollout_id), dtype=torch.int64)
 
         # encode prompts without chat template
         if self.return_raw_chat:

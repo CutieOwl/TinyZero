@@ -351,6 +351,10 @@ class TaskRunner:
         logger.info("Setting up environment")
         self.setup_environment()
 
+        verl_log_dir = os.path.join("logs", "verl", "dynastic")
+        os.makedirs(verl_log_dir, exist_ok=True)
+        logger.info(f"VERL log directory: {verl_log_dir}")
+
         task_name = self.config.task_dir.split("/")[-1]
         target_host = self.metadata.get("target_host")
         task_description = self._setup_prompt(target_host, task_objective)
@@ -433,6 +437,7 @@ Command: ping {target_host}
                 results_dir=self.benchmark_id,
                 interactive_mode=interactive_mode,
                 unguided_mode=unguided_mode,
+                log_dir = verl_log_dir,
                 task_name=task_name,
                 prompt=prompt,
                 max_input_tokens=max_input_tokens,
@@ -454,6 +459,7 @@ Command: ping {target_host}
                 interactive_mode=interactive_mode,
                 unguided_mode=unguided_mode,
                 task_name=task_name,
+                log_dir = verl_log_dir,
                 prompt=prompt,
                 max_input_tokens=max_input_tokens,
                 max_output_tokens=max_output_tokens,
@@ -696,20 +702,21 @@ def main() -> None:
         )
         args.max_iterations = max(args.max_iterations, last_iteration)
 
-    runner.run_task(
-        interactive_mode=args.interactive_mode,
-        use_easy_prompt=args.easy_prompt,
-        mock_calls=args.mock_calls,
-        unguided_mode=args.unguided_mode,
-        max_input_tokens=args.max_input_tokens,
-        max_output_tokens=args.max_output_tokens,
-        responses_to_keep=args.responses_to_keep,
-        observations_to_keep=args.observations_to_keep,
-        task_objective=args.task_objective,
-        previous_state=previous_state,
-        helm=args.helm,
-        azure=args.azure,
-    )
+    while True:
+        runner.run_task(
+            interactive_mode=args.interactive_mode,
+            use_easy_prompt=args.easy_prompt,
+            mock_calls=args.mock_calls,
+            unguided_mode=args.unguided_mode,
+            max_input_tokens=args.max_input_tokens,
+            max_output_tokens=args.max_output_tokens,
+            responses_to_keep=args.responses_to_keep,
+            observations_to_keep=args.observations_to_keep,
+            task_objective=args.task_objective,
+            previous_state=previous_state,
+            helm=args.helm,
+            azure=args.azure,
+        )
 
 
 if __name__ == "__main__":

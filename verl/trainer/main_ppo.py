@@ -16,8 +16,9 @@ Note that we don't combine the main with ray_trainer as ray_trainer is used by o
 """
 
 from verl import DataProto
+import os
 import torch
-from verl.utils.reward_score import gsm8k, math, multiply, countdown
+from verl.utils.reward_score import gsm8k, math, multiply, countdown, cybench
 from verl.trainer.ppo.ray_trainer import RayPPOTrainer
 
 
@@ -30,6 +31,8 @@ def _select_rm_score_fn(data_source):
         return multiply.compute_score
     elif "countdown" in data_source:
         return countdown.compute_score
+    elif "cybench" in data_source:
+        return cybench.compute_score
     else:
         raise NotImplementedError
 
@@ -38,9 +41,12 @@ class RewardManager():
     """The reward manager.
     """
 
-    def __init__(self, tokenizer, num_examine) -> None:
+    def __init__(self, tokenizer, num_examine, log_dir: str = None) -> None:
         self.tokenizer = tokenizer
         self.num_examine = num_examine  # the number of batches of decoded responses to print to the console
+        self.log_dir = log_dir
+        if self.log_dir == None:
+            self.log_dir = os.path.join("cybench", "logs", "verl", "dynastic")
 
     def __call__(self, data: DataProto):
         """We will expand this function gradually based on the available datasets"""
@@ -66,10 +72,18 @@ class RewardManager():
             response_ids = data_item.batch['responses']
             valid_response_length = data_item.batch['attention_mask'][prompt_length:].sum()
             valid_response_ids = response_ids[:valid_response_length]
+            subtask_idx = data_item.batch['subtask_idx']
+            iteration = data_item.batch['iteration']
+            rollout_id = data_item.batch['rollout_id']
 
             # decode
             sequences = torch.cat((valid_prompt_ids, valid_response_ids))
             sequences_str = self.tokenizer.decode(sequences)
+            print(f"Decoded sequences: {sequences_str[:30]}...")
+            print(f"Writing to file")
+            # Write sequences_str to file
+            with open(os.path.join(self.log_dir, f'{rollout_id}_{subtask_idx}_{iteration}.out'), 'w') as f:
+                f.write(sequences_str)
 
             ground_truth = data_item.non_tensor_batch['reward_model']['ground_truth']
 

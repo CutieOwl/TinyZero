@@ -2,9 +2,7 @@ import http.client
 import logging
 import os
 import pathlib
-import random
 import re
-import string
 import subprocess
 import time
 from dataclasses import dataclass, field
@@ -53,11 +51,11 @@ from benchmark.dataclasses.task_run_input import SubtaskConfig
 
 TIMEOUT_PER_COMMAND = 120
 HALLUCINATION_STRINGS = [
-    "<|im_start|>system",
-    "<|im_start|>user",
-    "<|im_start|>assistant",
-    # "----------</assistant",
-    # "----------Message from agent",
+    "----------Message from assistant----------",
+    "----------Message from system----------",
+    "----------Message from assistant",
+    "----------</assistant",
+    "----------Message from agent",
 ]
 MAX_HELM_RETRIES = 3
 RETRY_DELAY = 30
@@ -65,7 +63,7 @@ TEMPERATURE = 0.5
 
 
 @dataclass
-class SimpleAgent:
+class CyAgent:
     prompt: str
     work_dir: str
     results_dir: str
@@ -76,7 +74,6 @@ class SimpleAgent:
     max_output_tokens: int
     responses_to_keep: int
     observations_to_keep: int
-    log_dir: str = None
     mock_calls: bool = False
     interactive_mode: bool = False
     unguided_mode: bool = False
@@ -89,8 +86,7 @@ class SimpleAgent:
     subtask_completions: dict[str, SubtaskRun] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
-        if self.log_dir is None:
-            self.log_dir = self._create_log_directory()
+        self.log_dir = self._create_log_directory()
         self.logger = self._setup_logger()
         if self.helm:
             self.crfm_auth = Authentication(api_key=self._get_env_var("HELM_API_KEY"))
@@ -132,11 +128,11 @@ class SimpleAgent:
         return logger
 
     def remove_hallucinations(self, response: str):
+        response = response.replace("----------Message from agent----------", "")
         for hallucination in HALLUCINATION_STRINGS:
             hallucination_index = response.find(hallucination)
             if hallucination_index != -1:
                 response = response[:hallucination_index]
-        response = response.replace("<|im_end|>", "")
         return response.strip()
 
     @retry(
@@ -516,7 +512,7 @@ class SimpleAgent:
             if idx not in idx_to_ignore:
                 self.truncated_chat_chain.chain.append(msg)
 
-    def _process_iteration(self, subtask_index: int, iteration: int, rollout_id: str = "") -> Iteration:
+    def _process_iteration(self, subtask_index: int, iteration: int) -> Iteration:
         if self.interactive_mode:
             print(colored("The agent is processing your answer!", "yellow"))
 
@@ -530,41 +526,7 @@ class SimpleAgent:
             value=truncated_input,
             num_tokens=self._get_num_tokens(truncated_input),
         )
-        # Write model input to file
-        with open(
-            os.path.join(self.log_dir, f"{rollout_id}_{subtask_index}_{iteration}.in"),
-            "w",
-        ) as file:
-            file.write(model_input.value)
-        
-        # model_response = self._handle_request(model_input)
-        # Hang until we can read model response from file
-        start_time = datetime.now()
-        print("Waiting for model response...")
-        while True:
-            try:
-                with open(
-                    os.path.join(
-                        self.log_dir,
-                        f"{rollout_id}_{subtask_index}_{iteration}.out",
-                    ),
-                    "r",
-                ) as file:
-                    response = file.read().strip()
-                end_time = datetime.now()
-                request_duration = (end_time - start_time).total_seconds() * 1000
-                num_response_tokens = self._get_num_tokens(response)
-                cleaned_response = self.remove_hallucinations(response) + f"\n{STOP_TOKEN}"
-                model_response = ModelResponse(
-                    value=cleaned_response,
-                    full_response=response,
-                    time_taken_in_ms=request_duration,
-                    num_tokens=num_response_tokens,
-                )
-                break
-            except FileNotFoundError:
-                time.sleep(1)
-        
+        model_response = self._handle_request(model_input)
         self.logger.info(
             f"LLM response for subtask {subtask_index + 1}, iteration {iteration + 1}:\n{model_response.value}"
         )
@@ -628,10 +590,6 @@ class SimpleAgent:
     def _process_subtask(
         self, subtask: Subtask, subtask_index: int, iteration_index: int
     ) -> SubtaskRun:
-        # create a unique rollout id for this subtask using a random string
-        rollout_id =  ''.join(random.choices(string.digits, k=16))
-        print(f"Subtask rollout id {rollout_id}")
-
         prime_with_prompt = bool(subtask_index == 0)
         default_subtask_prompt = (
             self._get_subtask_input_text(subtask, subtask_index, prime_with_prompt)
@@ -672,7 +630,7 @@ class SimpleAgent:
                     self.logger.info(hints_prompt)
                     self.chat_chain.append({"role": "system", "content": hints_prompt})
 
-            iteration_result = self._process_iteration(subtask_index, iteration, rollout_id)
+            iteration_result = self._process_iteration(subtask_index, iteration)
             iterations.append(iteration_result)
             # if is_answer
             if (
@@ -680,6 +638,7 @@ class SimpleAgent:
                 and iteration_result.execution_output.command.command_type
                 == CommandType.answer
             ):
+                ## NOTE: Consider changing score based on answer format?
                 score = (
                     1
                     if iteration_result.execution_output.stdout == subtask.answer
@@ -687,15 +646,6 @@ class SimpleAgent:
                 )
                 subtask_end_time = datetime.now().timestamp() * 1000
                 subtask_duration_in_ms = subtask_end_time - subtask_start_time
-                # Write score to file
-                with open(
-                    os.path.join(
-                        self.log_dir,
-                        f"{rollout_id}_{subtask_index}_{iteration}_score.txt",
-                    ),
-                    "w",
-                ) as file:
-                    file.write(str(score))
 
                 return SubtaskRun(
                     iterations=iterations,
@@ -731,16 +681,6 @@ class SimpleAgent:
 
         subtask_end_time = datetime.now().timestamp() * 1000
         subtask_duration_in_ms = subtask_end_time - subtask_start_time
-        # Write score to file
-        with open(
-            os.path.join(
-                self.log_dir,
-                f"{rollout_id}_score_subtask_{subtask_index}_it_{iteration}.txt",
-            ),
-            "w",
-        ) as file:
-            file.write(str(0))
-
         return SubtaskRun(
             iterations=iterations,
             iteration_config=self.subtask_config.iteration_config,
@@ -772,6 +712,7 @@ class SimpleAgent:
 
     def run(self, override_index: int) -> Generator[SubtaskRun, None, None]:
         # if len(self.subtask_config.tasks) == 1:
+        # Run only 1 subtask (first subtask)
         self.logger.info(f"Starting subtask {1}")
         subtask_completion = self._process_subtask(
             subtask=self.subtask_config.tasks[0],
@@ -781,16 +722,5 @@ class SimpleAgent:
         self._dump_chat_chain()
 
         yield subtask_completion
-        # else:
-        #     for index, subtask in enumerate(self.subtask_config.tasks):
-        #         self.logger.info(f"Starting subtask {index + 1}")
 
-        #         subtask_completion = self._process_subtask(
-        #             subtask=subtask, subtask_index=index, iteration_index=override_index
-        #         )
-        #         self._dump_chat_chain()
-
-        #         yield subtask_completion
-
-        # self.logger.info("All subtasks completed")
-        self.logger.info("Completed subtask 1")
+        self.logger.info("First subtask completed")
