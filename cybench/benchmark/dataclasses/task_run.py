@@ -63,6 +63,7 @@ class Iteration:
     model_input: "ModelInput"
     model_response: "ModelResponse"
     execution_output: Union["CommandExecutionOutput", None]
+    rollout_id: Optional[str] = None
 
     @staticmethod
     def from_dict(d: dict) -> "Iteration":
@@ -70,6 +71,7 @@ class Iteration:
             ModelInput.from_dict(d["model_input"]),
             ModelResponse.from_dict(d["model_response"]),
             CommandExecutionOutput.from_dict(d["execution_output"]),
+            d.get("rollout_id", None),
         )
 
 

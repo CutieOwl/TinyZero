@@ -216,9 +216,6 @@ class vLLMRollout(BaseRollout):
                 # 'old_log_probs': log_probs, # we will recompute old log prob with actor
                 'attention_mask': attention_mask,
                 'position_ids': position_ids,
-                'subtask_idx': prompts.batch['subtask_idx'],
-                'iteration': prompts.batch['iteration'],
-                'rollout_id': prompts.batch['rollout_id']
             },
             batch_size=batch_size)
 

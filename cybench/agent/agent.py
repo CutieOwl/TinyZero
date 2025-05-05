@@ -1,3 +1,4 @@
+import glob
 import http.client
 import logging
 import os
@@ -9,7 +10,7 @@ import subprocess
 import time
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Generator, List, Optional
+from typing import Generator, List, Optional, Tuple
 
 from dotenv import load_dotenv
 from helm.common.authentication import Authentication
@@ -53,9 +54,10 @@ from benchmark.dataclasses.task_run_input import SubtaskConfig
 
 TIMEOUT_PER_COMMAND = 120
 HALLUCINATION_STRINGS = [
-    "<|im_start|>system",
-    "<|im_start|>user",
-    "<|im_start|>assistant",
+    # "<|im_start|>system",
+    # "<|im_start|>user",
+    # "<|im_start|>assistant",
+    "## SUBTASK",
     # "----------</assistant",
     # "----------Message from agent",
 ]
@@ -516,57 +518,86 @@ class SimpleAgent:
             if idx not in idx_to_ignore:
                 self.truncated_chat_chain.chain.append(msg)
 
-    def _process_iteration(self, subtask_index: int, iteration: int, rollout_id: str = "") -> Iteration:
+    def _process_iteration(self, subtask_index: int, iteration: int, rollout_id: str = "", total_string: str = None) -> Tuple[Iteration, int, int, str]:
         if self.interactive_mode:
             print(colored("The agent is processing your answer!", "yellow"))
 
-        if iteration == 0:
-            truncated_input = self._truncate_input_to_max_tokens(str(self.chat_chain))
-        else:
-            truncated_input = self._truncate_input_to_max_tokens(
-                str(self.truncated_chat_chain)
-            )
+        write_str = total_string
+        if total_string is None:
+            if iteration == 0:
+                write_str = self._truncate_input_to_max_tokens(str(self.chat_chain))
+            else:
+                write_str = self._truncate_input_to_max_tokens(
+                    str(self.truncated_chat_chain)
+                )
         model_input = ModelInput(
-            value=truncated_input,
-            num_tokens=self._get_num_tokens(truncated_input),
+            value=write_str,
+            num_tokens=0, #self._get_num_tokens(write_str),
         )
+        write_str = model_input.value
         # Write model input to file
         with open(
-            os.path.join(self.log_dir, f"{rollout_id}_{subtask_index}_{iteration}.in"),
+            os.path.join(self.log_dir, f"{rollout_id}_{iteration}.in"),
             "w",
         ) as file:
-            file.write(model_input.value)
+            file.write(write_str)
         
         # model_response = self._handle_request(model_input)
         # Hang until we can read model response from file
         start_time = datetime.now()
         print("Waiting for model response...")
+        backoff = 0.01         # initial delay in seconds
+        max_backoff = 60    
         while True:
-            try:
-                with open(
-                    os.path.join(
-                        self.log_dir,
-                        f"{rollout_id}_{subtask_index}_{iteration}.out",
-                    ),
-                    "r",
-                ) as file:
-                    response = file.read().strip()
-                end_time = datetime.now()
-                request_duration = (end_time - start_time).total_seconds() * 1000
-                num_response_tokens = self._get_num_tokens(response)
-                cleaned_response = self.remove_hallucinations(response) + f"\n{STOP_TOKEN}"
-                model_response = ModelResponse(
-                    value=cleaned_response,
-                    full_response=response,
-                    time_taken_in_ms=request_duration,
-                    num_tokens=num_response_tokens,
-                )
-                break
-            except FileNotFoundError:
-                time.sleep(1)
+            # Can't figure out a way to have a consistent thread of commands so for now I am 
+            # assuming all commands can be executed in any order
+            # This means we just pick any generation 
+            # no need to track a certain rollout id or iteration number
+            input_files = glob.glob(os.path.join(self.log_dir, f"*.out"))
+            if not input_files:
+                time.sleep(backoff)
+                backoff = min(backoff * 2, max_backoff)
+                continue
+            else:
+                random_file = random.choice(input_files)
+                file_name = os.path.basename(random_file)
+                file_name = file_name.split('.')[0]
+                rollout_id, iteration = file_name.split('_') 
+                if not os.path.exists(os.path.join(self.log_dir, f"{rollout_id}_{iteration}_score.txt")):
+                    # only choose one we haven't scored yet. Otherwise we'll do a lot of redundant work
+                    # alternative is to delete ones we've scored.
+                    break
+       
+        with open(random_file, 'r') as f:
+            response = f.read().strip()
+
+        end_time = datetime.now()
+        request_duration = (end_time - start_time).total_seconds() * 1000
+        print(f"Got response with rollout id {rollout_id}: {response}")
+        # get_num_tokens uses encoder which can be finicky so I ignore for now
+        # num_response_tokens = self._get_num_tokens(response)
+        assistant_idx = response.rfind("<|im_start|>assistant")
+        history_response = response
+        if assistant_idx != -1:
+            history_response = response[:assistant_idx]
+            response = response[assistant_idx:]
+
+        end_idx = response.rfind("<END>")
+        if end_idx != -1:
+            # usually we would just pass <END> as a stop token but we're trying not to mess with verl generation.
+            response = response[:end_idx] 
+
+        cleaned_response = self.remove_hallucinations(response) + f"\n{STOP_TOKEN}"
+        model_response = ModelResponse(
+            value=cleaned_response,
+            full_response=response,
+            time_taken_in_ms=request_duration,
+            num_tokens=0,
+            # num_tokens=num_response_tokens,
+        )
         
         self.logger.info(
-            f"LLM response for subtask {subtask_index + 1}, iteration {iteration + 1}:\n{model_response.value}"
+            f"Picked LLM response for iteration {iteration}:\n{model_response.value}"
         )
         self.chat_chain.model_response_index.append(len(self.chat_chain))
         self.chat_chain.append({"role": "agent", "content": model_response.value})
@@ -574,25 +605,34 @@ class SimpleAgent:
 
         answer = self._parse_answer(model_response.value)
 
+        total_string = history_response + cleaned_response
+
         if answer:
             if self.interactive_mode:
                 self._print_chat_chain(subtask_index, iteration)
 
-            return Iteration(
+            ret_iteration = Iteration(
                 model_input=model_input,
                 model_response=model_response,
                 execution_output=CommandExecutionOutput(
                     command=answer,
                     stdout=answer.command_str,
                     stderr=None,
-                ),
+                )
             )
+            total_string += "<|im_start|>assistant\n"
+            return ret_iteration, rollout_id, int(iteration), total_string
 
         command = self._parse_command(model_response.value)
         if command:
+            with open(
+                os.path.join(self.log_dir, f"{rollout_id}_{iteration}_score.txt"),
+                "w",
+            ) as file:
+                file.write(str(0.2)) # score valid command 0.2
             execution_output = self._execute_command(command)
             self.logger.info(
-                f"Command result for subtask {subtask_index + 1}, iteration {iteration + 1}:\n{execution_output.stdout}"
+                f"Command result for iteration {iteration}:\n{execution_output.stdout}"
             )
             execution_result = execution_output.stdout or execution_output.stderr
             if execution_result is None:
@@ -603,35 +643,51 @@ class SimpleAgent:
                     "role": "assistant",
                     "content": f"Observation:\n{execution_result}\nThis is the end of assistant message. Agent, please provide your next response.",
                 }
-            )
+            ) 
+            total_string += f"<|im_end|>\n" 
+            total_string += "<|im_start|>user\n" 
+            total_string += f"Observation:\n{execution_result}\nThis is the end of assistant message. Agent, please provide your next response."
+            total_string += f"<|im_end|>\n"
+            total_string += "<|im_start|>assistant\n"
             self._truncate_chat_chain()
             if self.interactive_mode:
                 self._print_chat_chain(subtask_index, iteration)
-            return Iteration(
+            
+            ret_iteration =  Iteration(
                 model_input=model_input,
                 model_response=model_response,
                 execution_output=execution_output,
             )
 
+            return ret_iteration, rollout_id, int(iteration), total_string
+
         if self.interactive_mode:
             self._print_chat_chain(subtask_index, iteration)
 
         self.logger.warning(
-            f"No command found in the LLM response for subtask {subtask_index + 1}, iteration {iteration + 1}"
+            f"No command or answer found in the LLM response for subtask {subtask_index + 1}, iteration {iteration}"
         )
-        return Iteration(
+
+        with open(
+                os.path.join(self.log_dir, f"{rollout_id}_{iteration}_score.txt"),
+                "w",
+            ) as file:
+                file.write(str(0)) # score neither command nor answer 0.2
+
+        ret_iteration = Iteration(
             model_input=model_input,
             model_response=model_response,
-            execution_output=None,
+            execution_output=None
         )
+        if not total_string.strip().endswith("<|im_end|>"):
+            total_string += "<|im_end|>\n"
+        total_string += "<|im_start|>assistant\n"
+        return ret_iteration, rollout_id, int(iteration), total_string
 
     def _process_subtask(
         self, subtask: Subtask, subtask_index: int, iteration_index: int
     ) -> SubtaskRun:
         # create a unique rollout id for this subtask using a random string
-        rollout_id =  ''.join(random.choices(string.digits, k=16))
-        print(f"Subtask rollout id {rollout_id}")
-
         prime_with_prompt = bool(subtask_index == 0)
         default_subtask_prompt = (
             self._get_subtask_input_text(subtask, subtask_index, prime_with_prompt)
@@ -647,18 +703,21 @@ class SimpleAgent:
             curr_prompt = full_prompt
         iterations = []
         subtask_start_time = datetime.now().timestamp() * 1000
+        rollout_id = ""
+        total_string = None
+        curr_it = iteration_index - 1
         for iteration in range(
             iteration_index, self.subtask_config.iteration_config.max_iterations
         ):
             self.logger.info(
-                f"==========Starting iteration {iteration + 1} for subtask {subtask_index + 1}=========="
+                f"==========Starting iteration {curr_it} for subtask {subtask_index + 1}=========="
             )
             if self.interactive_mode:
                 new_prompt = self._get_interactive_prompt(curr_prompt, iteration == 0)
                 if new_prompt:
                     self.chat_chain.append({"role": "system", "content": new_prompt})
                     curr_prompt = new_prompt
-            if iteration == self.subtask_config.iteration_config.iterations_until_hint:
+            if curr_it == self.subtask_config.iteration_config.iterations_until_hint:
                 default_hints = subtask.hints
                 if len(default_hints) > 0:
                     hints_prompt = (
@@ -672,8 +731,9 @@ class SimpleAgent:
                     self.logger.info(hints_prompt)
                     self.chat_chain.append({"role": "system", "content": hints_prompt})
 
-            iteration_result = self._process_iteration(subtask_index, iteration, rollout_id)
+            iteration_result, rollout_id, curr_it, total_string = self._process_iteration(subtask_index, curr_it + 1, rollout_id, total_string)
             iterations.append(iteration_result)
+
             # if is_answer
             if (
                 iteration_result.execution_output
@@ -691,7 +751,7 @@ class SimpleAgent:
                 with open(
                     os.path.join(
                         self.log_dir,
-                        f"{rollout_id}_{subtask_index}_{iteration}_score.txt",
+                        f"{rollout_id}_{curr_it}_score.txt",
                     ),
                     "w",
                 ) as file:
@@ -731,15 +791,9 @@ class SimpleAgent:
 
         subtask_end_time = datetime.now().timestamp() * 1000
         subtask_duration_in_ms = subtask_end_time - subtask_start_time
-        # Write score to file
-        with open(
-            os.path.join(
-                self.log_dir,
-                f"{rollout_id}_score_subtask_{subtask_index}_it_{iteration}.txt",
-            ),
-            "w",
-        ) as file:
-            file.write(str(0))
+        # We ran out of iterations; however we're already scoring all responses
+        # (0 for nothing, 0.2 for command, 1 for answer)
+        # so nothing is needed here.
 
         return SubtaskRun(
             iterations=iterations,

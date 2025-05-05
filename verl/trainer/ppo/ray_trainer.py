@@ -400,7 +400,7 @@ class RayPPOTrainer(object):
             if self.config.reward_model.enable and test_batch[0].non_tensor_batch['reward_model']['style'] == 'model':
                 return {}
 
-            test_gen_batch = test_batch.pop(['input_ids', 'attention_mask', 'position_ids', 'subtask_idx', 'iteration', 'rollout_id'])
+            test_gen_batch = test_batch.pop(['input_ids', 'attention_mask', 'position_ids'])
             test_gen_batch.meta_info = {
                 'eos_token_id': self.tokenizer.eos_token_id,
                 'pad_token_id': self.tokenizer.pad_token_id,
@@ -582,7 +582,9 @@ class RayPPOTrainer(object):
                 batch: DataProto = DataProto.from_single_dict(batch_dict)
 
                 # pop those keys for generation
-                gen_batch = batch.pop(batch_keys=['input_ids', 'attention_mask', 'position_ids', 'subtask_idx', 'iteration', 'rollout_id'])
+                gen_batch = batch.pop(batch_keys=['input_ids', 'attention_mask', 'position_ids'])
+
+                print(gen_batch)
 
                 with _timer('step', timing_raw):
                     # generate a batch

@@ -23,18 +23,19 @@ from verl.trainer.ppo.ray_trainer import RayPPOTrainer
 
 
 def _select_rm_score_fn(data_source):
-    if data_source == 'openai/gsm8k':
-        return gsm8k.compute_score
-    elif data_source == 'lighteval/MATH':
-        return math.compute_score
-    elif "multiply" in data_source or "arithmetic" in data_source:
-        return multiply.compute_score
-    elif "countdown" in data_source:
-        return countdown.compute_score
-    elif "cybench" in data_source:
-        return cybench.compute_score
-    else:
-        raise NotImplementedError
+    return cybench.compute_score
+    # if data_source == 'openai/gsm8k':
+    #     return gsm8k.compute_score
+    # elif data_source == 'lighteval/MATH':
+    #     return math.compute_score
+    # elif "multiply" in data_source or "arithmetic" in data_source:
+    #     return multiply.compute_score
+    # elif "countdown" in data_source:
+    #     return countdown.compute_score
+    # elif "cybench" in data_source:
+    #     return cybench.compute_score
+    # else:
+    #     raise NotImplementedError
 
 
 class RewardManager():
@@ -72,26 +73,24 @@ class RewardManager():
             response_ids = data_item.batch['responses']
             valid_response_length = data_item.batch['attention_mask'][prompt_length:].sum()
             valid_response_ids = response_ids[:valid_response_length]
-            subtask_idx = data_item.batch['subtask_idx']
-            iteration = data_item.batch['iteration']
-            rollout_id = data_item.batch['rollout_id']
+
+
+            ground_truth = data_item.non_tensor_batch['reward_model']['ground_truth']
+            iteration = data_item.non_tensor_batch['iteration']
+            rollout_id = data_item.non_tensor_batch['rollout_id']
 
             # decode
             sequences = torch.cat((valid_prompt_ids, valid_response_ids))
             sequences_str = self.tokenizer.decode(sequences)
-            print(f"Decoded sequences: {sequences_str[:30]}...")
-            print(f"Writing to file")
             # Write sequences_str to file
-            with open(os.path.join(self.log_dir, f'{rollout_id}_{subtask_idx}_{iteration}.out'), 'w') as f:
+            with open(os.path.join(self.log_dir, f'{rollout_id}_{iteration}.out'), 'w') as f:
                 f.write(sequences_str)
-
-            ground_truth = data_item.non_tensor_batch['reward_model']['ground_truth']
 
             # select rm_score
             data_source = data_item.non_tensor_batch['data_source']
             compute_score_fn = _select_rm_score_fn(data_source)
 
-            score = compute_score_fn(solution_str=sequences_str, ground_truth=ground_truth)
+            score = compute_score_fn(solution_str=sequences_str, ground_truth=ground_truth, iteration=iteration, rollout_id=rollout_id, log_dir=self.log_dir)
             reward_tensor[i, valid_response_length - 1] = score
 
             if data_source not in already_print_data_sources:

@@ -21,6 +21,7 @@ import pandas as pd
 
 import glob
 import random
+import string
 import torch
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
@@ -57,6 +58,8 @@ def collate_fn(data_list: list[dict]) -> dict:
     output.update(non_tensors)
     return output
 
+def random_alphanumeric_string(length=7):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
 class RLHFDataset(Dataset):
     """
@@ -141,11 +144,13 @@ class RLHFDataset(Dataset):
         # Read prompt from file
         # get all files in log_dir with .in extension and choose a random one to read from
 
-        print("Waiting for input files...")
+        backoff = 0.01
+        max_backoff = 60
         while True:
             input_files = glob.glob(os.path.join(self.log_dir, "*.in"))
             if not input_files:
-                time.sleep(1)
+                time.sleep(backoff)
+                backoff = min(backoff * 2, max_backoff)
                 continue
             else:
                 break
@@ -153,14 +158,16 @@ class RLHFDataset(Dataset):
         # Choose a random input file
         random_file = random.choice(input_files)
         with open(random_file, 'r') as f:
-            prompt_with_chat_template = f.read().strip()
+            prompt_with_chat_template = f.read()
 
-        print(f"Got prompt from file: {prompt_with_chat_template[:30]}...")
-
-        # get rollout_id, subtask_idx, iteration from the file name
+        # get rollout_id, iteration from the file name
         file_name = os.path.basename(random_file)
+        print(f"chosen filename {file_name}")
         file_name = file_name.split('.')[0]
-        rollout_id, subtask_idx, iteration = file_name.split('_')
+        file_ids = file_name.split('_')
+        # create random string to be used as new rollout_id.
+        rollout_id = random_alphanumeric_string(7)
+        iteration = file_ids[-1]
 
         input_ids, attention_mask = verl_F.tokenize_and_postprocess_data(prompt=prompt_with_chat_template,
                                                                          tokenizer=self.tokenizer,
@@ -174,9 +181,8 @@ class RLHFDataset(Dataset):
         row_dict['input_ids'] = input_ids[0]
         row_dict['attention_mask'] = attention_mask[0]
         row_dict['position_ids'] = position_ids[0]
-        row_dict['subtask_idx'] = torch.tensor(int(subtask_idx), dtype=torch.int64)
-        row_dict['iteration'] = torch.tensor(int(iteration), dtype=torch.int64)
-        row_dict['rollout_id'] = torch.tensor(int(rollout_id), dtype=torch.int64)
+        row_dict['iteration'] = iteration
+        row_dict['rollout_id'] = rollout_id
 
         # encode prompts without chat template
         if self.return_raw_chat:

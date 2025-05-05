@@ -333,7 +333,7 @@ class TaskRunner:
 
         return task_description
 
-    def run_task(
+    def _run_task(
         self,
         max_input_tokens: int,
         max_output_tokens: int,
@@ -347,10 +347,7 @@ class TaskRunner:
         unguided_mode: bool = False,
         previous_state: Optional[Dict] = None,
         azure: bool = False,
-    ) -> TaskRunCompletion:
-        logger.info("Setting up environment")
-        self.setup_environment()
-
+    ) ->TaskRunCompletion:
         verl_log_dir = os.path.join("logs", "verl", "dynastic")
         os.makedirs(verl_log_dir, exist_ok=True)
         logger.info(f"VERL log directory: {verl_log_dir}")
@@ -479,14 +476,14 @@ Command: ping {target_host}
         override_index = 0
 
         # load relevant state from previous log
-        if self.task_completion:
-            task_start_time -= self.task_completion.time_taken_in_ms
-            subtask_completions = self.task_completion.subtask_completions
-            input_tokens = self.task_completion.usage.input_tokens_used
-            output_tokens = self.task_completion.usage.output_tokens_used
-            override_index = len(
-                previous_state["subtask_completions"]["subtask_1"]["iterations"]
-            )
+        # if self.task_completion:
+        #     task_start_time -= self.task_completion.time_taken_in_ms
+        #     subtask_completions = self.task_completion.subtask_completions
+        #     input_tokens = self.task_completion.usage.input_tokens_used
+        #     output_tokens = self.task_completion.usage.output_tokens_used
+        #     override_index = len(
+        #         previous_state["subtask_completions"]["subtask_1"]["iterations"]
+        #     )
         for subtask_index, subtask_completion in enumerate(
             agent.run(override_index=override_index)
         ):
@@ -537,6 +534,44 @@ Command: ping {target_host}
         logger.info("Task run finished")
         logger.info(f"Task log saved to {log_location}")
         return self.task_completion
+        
+
+    def run_task(
+        self,
+        max_input_tokens: int,
+        max_output_tokens: int,
+        responses_to_keep: int,
+        observations_to_keep: int,
+        task_objective: str,
+        use_easy_prompt: bool = False,
+        helm: bool = False,
+        mock_calls: bool = False,
+        interactive_mode: bool = False,
+        unguided_mode: bool = False,
+        previous_state: Optional[Dict] = None,
+        azure: bool = False,
+    ) -> TaskRunCompletion:
+        logger.info("Setting up environment")
+        self.setup_environment()
+
+        while True:
+            ret_completion = self._run_task(
+                max_input_tokens=max_input_tokens, 
+                max_output_tokens=max_output_tokens, 
+                responses_to_keep=responses_to_keep, 
+                observations_to_keep=observations_to_keep, 
+                task_objective=task_objective, 
+                use_easy_prompt=use_easy_prompt, 
+                helm=helm, 
+                mock_calls=mock_calls, 
+                interactive_mode=interactive_mode, 
+                unguided_mode=unguided_mode, 
+                previous_state=previous_state,
+                azure=azure
+            )
+        
+        return ret_completion
+        
 
 
 def parse_args() -> argparse.Namespace:
@@ -702,21 +737,20 @@ def main() -> None:
         )
         args.max_iterations = max(args.max_iterations, last_iteration)
 
-    while True:
-        runner.run_task(
-            interactive_mode=args.interactive_mode,
-            use_easy_prompt=args.easy_prompt,
-            mock_calls=args.mock_calls,
-            unguided_mode=args.unguided_mode,
-            max_input_tokens=args.max_input_tokens,
-            max_output_tokens=args.max_output_tokens,
-            responses_to_keep=args.responses_to_keep,
-            observations_to_keep=args.observations_to_keep,
-            task_objective=args.task_objective,
-            previous_state=previous_state,
-            helm=args.helm,
-            azure=args.azure,
-        )
+    runner.run_task(
+        interactive_mode=args.interactive_mode,
+        use_easy_prompt=args.easy_prompt,
+        mock_calls=args.mock_calls,
+        unguided_mode=args.unguided_mode,
+        max_input_tokens=args.max_input_tokens,
+        max_output_tokens=args.max_output_tokens,
+        responses_to_keep=args.responses_to_keep,
+        observations_to_keep=args.observations_to_keep,
+        task_objective=args.task_objective,
+        previous_state=previous_state,
+        helm=args.helm,
+        azure=args.azure,
+    )
 
 
 if __name__ == "__main__":
