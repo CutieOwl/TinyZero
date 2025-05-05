@@ -110,7 +110,7 @@ critic:
   ppo_micro_batch_size: 64
   forward_micro_batch_size: ${critic.ppo_micro_batch_size}
   use_dynamic_bsz: ${actor_rollout_ref.actor.use_dynamic_bsz}
-  ppo_max_token_len_per_gpu: 32768 # (${actor_rollout_ref.actor.ppo_max_token_len_per_gpu}) * 2
+  ppo_max_token_len_per_gpu: (${actor_rollout_ref.actor.ppo_max_token_len_per_gpu}) * 2
   forward_max_token_len_per_gpu: ${critic.ppo_max_token_len_per_gpu}
   ulysses_sequence_parallel_size: 1 # sp size
   ppo_epochs: ${actor_rollout_ref.actor.ppo_epochs}

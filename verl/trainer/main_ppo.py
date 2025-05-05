@@ -23,19 +23,18 @@ from verl.trainer.ppo.ray_trainer import RayPPOTrainer
 
 
 def _select_rm_score_fn(data_source):
-    return cybench.compute_score
-    # if data_source == 'openai/gsm8k':
-    #     return gsm8k.compute_score
-    # elif data_source == 'lighteval/MATH':
-    #     return math.compute_score
-    # elif "multiply" in data_source or "arithmetic" in data_source:
-    #     return multiply.compute_score
-    # elif "countdown" in data_source:
-    #     return countdown.compute_score
-    # elif "cybench" in data_source:
-    #     return cybench.compute_score
-    # else:
-    #     raise NotImplementedError
+    if data_source == 'openai/gsm8k':
+        return gsm8k.compute_score
+    elif data_source == 'lighteval/MATH':
+        return math.compute_score
+    elif "multiply" in data_source or "arithmetic" in data_source:
+        return multiply.compute_score
+    elif "countdown" in data_source:
+        return countdown.compute_score
+    elif "cybench" in data_source:
+        return cybench.compute_score
+    else:
+        raise NotImplementedError
 
 
 class RewardManager():
