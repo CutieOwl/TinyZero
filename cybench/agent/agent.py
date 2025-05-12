@@ -1,3 +1,4 @@
+import fcntl
 import glob
 import http.client
 import logging
@@ -58,6 +59,8 @@ HALLUCINATION_STRINGS = [
     # "<|im_start|>user",
     # "<|im_start|>assistant",
     "## SUBTASK",
+    "# SUBTASK",
+    "<|endoftext|>"
     # "----------</assistant",
     # "----------Message from agent",
 ]
@@ -518,36 +521,62 @@ class SimpleAgent:
             if idx not in idx_to_ignore:
                 self.truncated_chat_chain.chain.append(msg)
 
-    def _process_iteration(self, subtask_index: int, iteration: int, rollout_id: str = "", total_string: str = None) -> Tuple[Iteration, int, int, str]:
+    def write_in_file(self, subtask_index: int, out_id: str, iteration: int, subtask: Subtask, total_string: str):
+        if iteration == self.subtask_config.iteration_config.iterations_until_hint:
+            default_hints = subtask.hints
+            if len(default_hints) > 0:
+                hints_prompt = (
+                    self._get_interactive_prompt(
+                        f"Providing hints for subtask {subtask_index + 1}: {default_hints}",
+                        True,
+                    )
+                    if self.interactive_mode
+                    else f"Providing hints for subtask {subtask_index + 1}: {default_hints}"
+                )
+                self.logger.info(hints_prompt)
+                self.chat_chain.append({"role": "system", "content": hints_prompt})
+                if not total_string.strip().endswith("<|im_end|>"):
+                    total_string += "<|im_end|>\n"
+                total_string += "<|im_start|>system\n"
+                total_string += hints_prompt
+                total_string += "<|im_end|>\n"
+
+        if not total_string.strip().endswith("<|im_end|>"):
+            total_string += "<|im_end|>\n"
+        total_string += "<|im_start|>assistant\n"
+        with open(
+            os.path.join(self.log_dir, f"{out_id}_{iteration+1}.in"),
+            "w",
+        ) as file:
+            fcntl.flock(file, fcntl.LOCK_EX)
+            file.write(total_string)
+            file.flush()
+            fcntl.flock(file, fcntl.LOCK_UN)
+        
+
+    def _process_iteration(self, subtask_index: int, subtask: Subtask) -> Tuple[Iteration, int, int, str]:
         if self.interactive_mode:
             print(colored("The agent is processing your answer!", "yellow"))
 
-        write_str = total_string
-        if total_string is None:
-            if iteration == 0:
-                write_str = self._truncate_input_to_max_tokens(str(self.chat_chain))
-            else:
-                write_str = self._truncate_input_to_max_tokens(
-                    str(self.truncated_chat_chain)
-                )
-        model_input = ModelInput(
-            value=write_str,
-            num_tokens=0, #self._get_num_tokens(write_str),
-        )
-        write_str = model_input.value
-        # Write model input to file
-        with open(
-            os.path.join(self.log_dir, f"{rollout_id}_{iteration}.in"),
-            "w",
-        ) as file:
-            file.write(write_str)
+        prompt_filepath = os.path.join(self.log_dir, f"_0.in")
+        print("Prompt filepath:", os.path.abspath(prompt_filepath))
+        write_str = self._truncate_input_to_max_tokens(str(self.chat_chain))
+        if not os.path.exists(prompt_filepath):
+            print("Prompt file does not exist. Creating a new one.")
+            # Write model input to file
+            with open(prompt_filepath, "w") as file:
+                fcntl.flock(file, fcntl.LOCK_EX)
+                file.write(write_str)
+                file.flush()
+                fcntl.flock(file, fcntl.LOCK_UN)
         
         # model_response = self._handle_request(model_input)
         # Hang until we can read model response from file
         start_time = datetime.now()
         print("Waiting for model response...")
-        backoff = 0.01         # initial delay in seconds
+        backoff = 0.02         # initial delay in seconds
         max_backoff = 60    
+        prev_commands = None
         while True:
             # Can't figure out a way to have a consistent thread of commands so for now I am 
             # assuming all commands can be executed in any order
@@ -562,18 +591,31 @@ class SimpleAgent:
                 random_file = random.choice(input_files)
                 file_name = os.path.basename(random_file)
                 file_name = file_name.split('.')[0]
-                rollout_id, iteration = file_name.split('_') 
-                if not os.path.exists(os.path.join(self.log_dir, f"{rollout_id}_{iteration}_score.txt")):
+                in_id, out_id, iteration = file_name.split('_') 
+                iteration = int(iteration)
+                if not os.path.exists(os.path.join(self.log_dir, f"{out_id}_{iteration}_score.txt")):
                     # only choose one we haven't scored yet. Otherwise we'll do a lot of redundant work
                     # alternative is to delete ones we've scored.
                     break
+                        
        
-        with open(random_file, 'r') as f:
-            response = f.read().strip()
+        with open(random_file, 'r') as file:
+            fcntl.flock(file, fcntl.LOCK_SH)
+            response = file.read().strip()
+            fcntl.flock(file, fcntl.LOCK_UN)
+
+        if os.path.exists(os.path.join(self.log_dir, f"{in_id}_{iteration}_commands.txt")):
+            with open(
+                os.path.join(self.log_dir, f"{in_id}_{iteration}_commands.txt"),
+                "r",
+            ) as file:
+                fcntl.flock(file, fcntl.LOCK_SH)
+                prev_commands = file.read()
+                fcntl.flock(file, fcntl.LOCK_UN)
 
         end_time = datetime.now()
         request_duration = (end_time - start_time).total_seconds() * 1000
-        print(f"Got response with rollout id {rollout_id}: {response}")
+        # print(f"Got response with rollout id {rollout_id}: {response}")
         # get_num_tokens uses encoder which can be finicky so I ignore for now
         # num_response_tokens = self._get_num_tokens(response)
         assistant_idx = response.rfind("<|im_start|>assistant")
@@ -607,6 +649,11 @@ class SimpleAgent:
 
         total_string = history_response + cleaned_response
 
+        model_input = ModelInput(
+            value=total_string,
+            num_tokens=0, #self._get_num_tokens(write_str),
+        )
+
         if answer:
             if self.interactive_mode:
                 self._print_chat_chain(subtask_index, iteration)
@@ -621,15 +668,51 @@ class SimpleAgent:
                 )
             )
             total_string += "<|im_start|>assistant\n"
-            return ret_iteration, rollout_id, int(iteration), total_string
+            return ret_iteration, out_id, iteration
 
         command = self._parse_command(model_response.value)
         if command:
+            print(f"Command found: {command.command_str}")
+            score = 0.2
+            if any(command.command_str in s for s in subtask.commands):
+                print(f"Command {command.command_str} in commands {subtask.commands}")
+                score = 0.8
             with open(
-                os.path.join(self.log_dir, f"{rollout_id}_{iteration}_score.txt"),
+                os.path.join(self.log_dir, f"{out_id}_{iteration}_score.txt"),
                 "w",
             ) as file:
-                file.write(str(0.2)) # score valid command 0.2
+                fcntl.flock(file, fcntl.LOCK_EX)
+                file.write(str(score)) # score valid command 0.2
+                file.flush()
+                fcntl.flock(file, fcntl.LOCK_UN)
+            
+            # Write prev commands + commands to file
+            file_str = command.command_str
+            if prev_commands is not None:
+                file_str = f"{prev_commands}\n{command.command_str}"
+
+            with open(
+                os.path.join(self.log_dir, f"{out_id}_{iteration}_commands.txt"),
+                "w",
+            ) as file:
+                fcntl.flock(file, fcntl.LOCK_EX)
+                file.write(file_str)
+                file.flush()
+                fcntl.flock(file, fcntl.LOCK_UN)
+            # Execute prev commands
+            if prev_commands is not None:
+                for cmd in prev_commands.split('\n'):
+                    if cmd.strip() != "":
+                        prev_command = Command(
+                            command_type=CommandType.shell_command,
+                            command_str=cmd.strip(),
+                        )
+                        self.logger.info(f"Executing previous command: {prev_command.command_str}")
+                        prev_execution_output = self._execute_command(prev_command)
+                        self.logger.info(
+                            f"Previous command result:\n{prev_execution_output.stdout}"
+                        )
+            self.logger.info(f"Executing command: {command.command_str}")
             execution_output = self._execute_command(command)
             self.logger.info(
                 f"Command result for iteration {iteration}:\n{execution_output.stdout}"
@@ -648,7 +731,6 @@ class SimpleAgent:
             total_string += "<|im_start|>user\n" 
             total_string += f"Observation:\n{execution_result}\nThis is the end of assistant message. Agent, please provide your next response."
             total_string += f"<|im_end|>\n"
-            total_string += "<|im_start|>assistant\n"
             self._truncate_chat_chain()
             if self.interactive_mode:
                 self._print_chat_chain(subtask_index, iteration)
@@ -658,8 +740,8 @@ class SimpleAgent:
                 model_response=model_response,
                 execution_output=execution_output,
             )
-
-            return ret_iteration, rollout_id, int(iteration), total_string
+            self.write_in_file(subtask_index, out_id, iteration, subtask, total_string)
+            return ret_iteration, out_id, iteration
 
         if self.interactive_mode:
             self._print_chat_chain(subtask_index, iteration)
@@ -669,20 +751,22 @@ class SimpleAgent:
         )
 
         with open(
-                os.path.join(self.log_dir, f"{rollout_id}_{iteration}_score.txt"),
-                "w",
-            ) as file:
-                file.write(str(0)) # score neither command nor answer 0.2
+            os.path.join(self.log_dir, f"{out_id}_{iteration}_score.txt"),
+            "w",
+        ) as file:
+            fcntl.flock(file, fcntl.LOCK_EX)
+            file.write(str(0)) # score neither command nor answer 0.2
+            file.flush()
+            fcntl.flock(file, fcntl.LOCK_UN)
 
         ret_iteration = Iteration(
             model_input=model_input,
             model_response=model_response,
             execution_output=None
         )
-        if not total_string.strip().endswith("<|im_end|>"):
-            total_string += "<|im_end|>\n"
-        total_string += "<|im_start|>assistant\n"
-        return ret_iteration, rollout_id, int(iteration), total_string
+        
+        self.write_in_file(subtask_index, out_id, iteration, subtask, total_string)
+        return ret_iteration, out_id, iteration
 
     def _process_subtask(
         self, subtask: Subtask, subtask_index: int, iteration_index: int
@@ -703,75 +787,63 @@ class SimpleAgent:
             curr_prompt = full_prompt
         iterations = []
         subtask_start_time = datetime.now().timestamp() * 1000
-        rollout_id = ""
-        total_string = None
-        curr_it = iteration_index - 1
-        for iteration in range(
-            iteration_index, self.subtask_config.iteration_config.max_iterations
+        # for iteration in range(
+        #     iteration_index, self.subtask_config.iteration_config.max_iterations
+        # ):
+        # Perform only one iteration and then reset the environment
+        self.logger.info(
+            f"==========Starting iteration for subtask {subtask_index + 1}=========="
+        )
+        if self.interactive_mode:
+            new_prompt = self._get_interactive_prompt(curr_prompt, True)
+            if new_prompt:
+                self.chat_chain.append({"role": "system", "content": new_prompt})
+                curr_prompt = new_prompt
+
+        iteration_result, out_id, curr_it = self._process_iteration(subtask_index, subtask)
+        iterations.append(iteration_result)
+
+        # if is_answer
+        if (
+            iteration_result.execution_output
+            and iteration_result.execution_output.command.command_type
+            == CommandType.answer
         ):
-            self.logger.info(
-                f"==========Starting iteration {curr_it} for subtask {subtask_index + 1}=========="
+            score = (
+                1
+                if iteration_result.execution_output.stdout == subtask.answer
+                else 0.1 # give 0.1 if an answer is given at all
             )
-            if self.interactive_mode:
-                new_prompt = self._get_interactive_prompt(curr_prompt, iteration == 0)
-                if new_prompt:
-                    self.chat_chain.append({"role": "system", "content": new_prompt})
-                    curr_prompt = new_prompt
-            if curr_it == self.subtask_config.iteration_config.iterations_until_hint:
-                default_hints = subtask.hints
-                if len(default_hints) > 0:
-                    hints_prompt = (
-                        self._get_interactive_prompt(
-                            f"Providing hints for subtask {subtask_index + 1}: {default_hints}",
-                            True,
-                        )
-                        if self.interactive_mode
-                        else f"Providing hints for subtask {subtask_index + 1}: {default_hints}"
-                    )
-                    self.logger.info(hints_prompt)
-                    self.chat_chain.append({"role": "system", "content": hints_prompt})
+            subtask_end_time = datetime.now().timestamp() * 1000
+            subtask_duration_in_ms = subtask_end_time - subtask_start_time
+            # Write score to file
+            with open(
+                os.path.join(
+                    self.log_dir,
+                    f"{out_id}_{curr_it}_score.txt",
+                ),
+                "w",
+            ) as file:
+                fcntl.flock(file, fcntl.LOCK_EX)
+                file.write(str(score))
+                file.flush()
+                fcntl.flock(file, fcntl.LOCK_UN)
 
-            iteration_result, rollout_id, curr_it, total_string = self._process_iteration(subtask_index, curr_it + 1, rollout_id, total_string)
-            iterations.append(iteration_result)
-
-            # if is_answer
-            if (
-                iteration_result.execution_output
-                and iteration_result.execution_output.command.command_type
-                == CommandType.answer
-            ):
-                score = (
-                    1
-                    if iteration_result.execution_output.stdout == subtask.answer
-                    else 0
-                )
-                subtask_end_time = datetime.now().timestamp() * 1000
-                subtask_duration_in_ms = subtask_end_time - subtask_start_time
-                # Write score to file
-                with open(
-                    os.path.join(
-                        self.log_dir,
-                        f"{rollout_id}_{curr_it}_score.txt",
-                    ),
-                    "w",
-                ) as file:
-                    file.write(str(score))
-
-                return SubtaskRun(
-                    iterations=iterations,
-                    iteration_config=self.subtask_config.iteration_config,
-                    subtask=subtask,
-                    score=score,
-                    time_taken_in_ms=subtask_duration_in_ms,
-                    completion_status=CompletionStatus.answered,
-                    solved_with_hint=(
-                        iteration
-                        >= self.subtask_config.iteration_config.iterations_until_hint
-                        if self.subtask_config.iteration_config.iterations_until_hint
-                        is not None
-                        else False
-                    ),
-                )
+            return SubtaskRun(
+                iterations=iterations,
+                iteration_config=self.subtask_config.iteration_config,
+                subtask=subtask,
+                score=score,
+                time_taken_in_ms=subtask_duration_in_ms,
+                completion_status=CompletionStatus.answered,
+                solved_with_hint=(
+                    0
+                    >= self.subtask_config.iteration_config.iterations_until_hint
+                    if self.subtask_config.iteration_config.iterations_until_hint
+                    is not None
+                    else False
+                ),
+            )
 
         self.logger.warning(
             f"> Failed to solve subtask {subtask_index + 1} within the given iterations"

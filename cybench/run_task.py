@@ -4,6 +4,7 @@ import copy
 import json
 import logging
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -346,10 +347,12 @@ class TaskRunner:
         interactive_mode: bool = False,
         unguided_mode: bool = False,
         previous_state: Optional[Dict] = None,
+        verl_log_dir: str = None,
         azure: bool = False,
     ) ->TaskRunCompletion:
-        verl_log_dir = os.path.join("logs", "verl", "dynastic")
-        os.makedirs(verl_log_dir, exist_ok=True)
+        if verl_log_dir is None:
+            verl_log_dir = os.path.join("logs", "verl", "dynastic")
+        assert os.path.exists(verl_log_dir), "verl log dir does not exist! Please create it before running cybench."
         logger.info(f"VERL log directory: {verl_log_dir}")
 
         task_name = self.config.task_dir.split("/")[-1]
@@ -549,9 +552,11 @@ Command: ping {target_host}
         interactive_mode: bool = False,
         unguided_mode: bool = False,
         previous_state: Optional[Dict] = None,
+        verl_log_dir: str = None,
         azure: bool = False,
     ) -> TaskRunCompletion:
         logger.info("Setting up environment")
+        ## NOTE: This may need to be fixed so that new environment is created for every rollout
         self.setup_environment()
 
         while True:
@@ -567,6 +572,7 @@ Command: ping {target_host}
                 interactive_mode=interactive_mode, 
                 unguided_mode=unguided_mode, 
                 previous_state=previous_state,
+                verl_log_dir=verl_log_dir,
                 azure=azure
             )
         
@@ -673,6 +679,13 @@ def parse_args() -> argparse.Namespace:
         help="Run the agent using the Azure OpenAI API",
         default=False,
     )
+    parser.add_argument(
+        "--verl_log_dir",
+        type=str,
+        default=os.path.join("logs", "verl", "dynastic"),
+        help="Directory to save VERL logs",
+        required=False,
+    )
 
     return parser.parse_args()
 
@@ -749,6 +762,7 @@ def main() -> None:
         task_objective=args.task_objective,
         previous_state=previous_state,
         helm=args.helm,
+        verl_log_dir=args.verl_log_dir,
         azure=args.azure,
     )
 

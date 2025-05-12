@@ -94,6 +94,7 @@ class HFRollout(BaseRollout):
                     # renormalize_logits=True,
                     output_scores=False,  # this is potentially very large
                     return_dict_in_generate=True,
+                    stop_strings=["<END>", "<|endoftext|>", "<|im_end|>"], # Use <END> to stop generation
                     use_cache=True)
         # TODO: filter out the seq with no answers like ds-chat
         seq = output.sequences

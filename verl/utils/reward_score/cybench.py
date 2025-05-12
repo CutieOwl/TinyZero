@@ -1,3 +1,4 @@
+import fcntl
 import os
 import json
 import re
@@ -20,7 +21,7 @@ def compute_score(solution_str, ground_truth, iteration, rollout_id, log_dir, ha
     #     return 0
 
     backoff = 0.01
-    max_backoff = 60
+    max_backoff = 5
     while True:
         try:
             with open(
@@ -30,7 +31,9 @@ def compute_score(solution_str, ground_truth, iteration, rollout_id, log_dir, ha
                 ),
                 "r",
             ) as file:
+                fcntl.flock(file, fcntl.LOCK_SH) 
                 score = float(file.read().strip())
+                fcntl.flock(file, fcntl.LOCK_UN) 
             break
         except FileNotFoundError:
             time.sleep(backoff)

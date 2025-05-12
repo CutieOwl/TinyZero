@@ -16,6 +16,7 @@ Note that we don't combine the main with ray_trainer as ray_trainer is used by o
 """
 
 from verl import DataProto
+import fcntl
 import os
 import torch
 from verl.utils.reward_score import gsm8k, math, multiply, countdown, cybench
@@ -47,6 +48,7 @@ class RewardManager():
         self.log_dir = log_dir
         if self.log_dir == None:
             self.log_dir = os.path.join("cybench", "logs", "verl", "dynastic")
+        os.makedirs(self.log_dir, exist_ok=True)
 
     def __call__(self, data: DataProto):
         """We will expand this function gradually based on the available datasets"""
@@ -76,20 +78,24 @@ class RewardManager():
 
             ground_truth = data_item.non_tensor_batch['reward_model']['ground_truth']
             iteration = data_item.non_tensor_batch['iteration']
-            rollout_id = data_item.non_tensor_batch['rollout_id']
+            out_id = data_item.non_tensor_batch['out_id']
+            in_id = data_item.non_tensor_batch['in_id']
 
             # decode
             sequences = torch.cat((valid_prompt_ids, valid_response_ids))
             sequences_str = self.tokenizer.decode(sequences)
             # Write sequences_str to file
-            with open(os.path.join(self.log_dir, f'{rollout_id}_{iteration}.out'), 'w') as f:
+            with open(os.path.join(self.log_dir, f'{in_id}_{out_id}_{iteration}.out'), 'w') as f:
+                fcntl.flock(f, fcntl.LOCK_EX) 
                 f.write(sequences_str)
+                f.flush()
+                fcntl.flock(f, fcntl.LOCK_UN) 
 
             # select rm_score
             data_source = data_item.non_tensor_batch['data_source']
             compute_score_fn = _select_rm_score_fn(data_source)
 
-            score = compute_score_fn(solution_str=sequences_str, ground_truth=ground_truth, iteration=iteration, rollout_id=rollout_id, log_dir=self.log_dir)
+            score = compute_score_fn(solution_str=sequences_str, ground_truth=ground_truth, iteration=iteration, rollout_id=out_id, log_dir=self.log_dir)
             reward_tensor[i, valid_response_length - 1] = score
 
             if data_source not in already_print_data_sources:
@@ -183,10 +189,10 @@ def main_task(config):
         role_worker_mapping[Role.RewardModel] = ray.remote(RewardModelWorker)
         mapping[Role.RewardModel] = global_pool_id
 
-    reward_fn = RewardManager(tokenizer=tokenizer, num_examine=0)
+    reward_fn = RewardManager(tokenizer=tokenizer, num_examine=0, log_dir=config.reward_model.log_dir)
 
     # Note that we always use function-based RM for validation
-    val_reward_fn = RewardManager(tokenizer=tokenizer, num_examine=1)
+    val_reward_fn = RewardManager(tokenizer=tokenizer, num_examine=1, log_dir=config.reward_model.log_dir)
 
     resource_pool_manager = ResourcePoolManager(resource_pool_spec=resource_pool_spec, mapping=mapping)
 

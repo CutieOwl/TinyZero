@@ -19,6 +19,7 @@ from typing import List, Union
 
 import pandas as pd
 
+import fcntl
 import glob
 import random
 import string
@@ -144,8 +145,8 @@ class RLHFDataset(Dataset):
         # Read prompt from file
         # get all files in log_dir with .in extension and choose a random one to read from
 
-        backoff = 0.01
-        max_backoff = 60
+        backoff = 0.02
+        max_backoff = 5
         while True:
             input_files = glob.glob(os.path.join(self.log_dir, "*.in"))
             if not input_files:
@@ -158,7 +159,9 @@ class RLHFDataset(Dataset):
         # Choose a random input file
         random_file = random.choice(input_files)
         with open(random_file, 'r') as f:
+            fcntl.flock(f, fcntl.LOCK_SH) 
             prompt_with_chat_template = f.read()
+            fcntl.flock(f, fcntl.LOCK_UN) 
 
         # get rollout_id, iteration from the file name
         file_name = os.path.basename(random_file)
@@ -166,8 +169,9 @@ class RLHFDataset(Dataset):
         file_name = file_name.split('.')[0]
         file_ids = file_name.split('_')
         # create random string to be used as new rollout_id.
-        rollout_id = random_alphanumeric_string(7)
+        out_id = random_alphanumeric_string(7)
         iteration = file_ids[-1]
+        in_id = file_ids[-2]
 
         input_ids, attention_mask = verl_F.tokenize_and_postprocess_data(prompt=prompt_with_chat_template,
                                                                          tokenizer=self.tokenizer,
@@ -182,7 +186,8 @@ class RLHFDataset(Dataset):
         row_dict['attention_mask'] = attention_mask[0]
         row_dict['position_ids'] = position_ids[0]
         row_dict['iteration'] = iteration
-        row_dict['rollout_id'] = rollout_id
+        row_dict['out_id'] = out_id
+        row_dict['in_id'] = in_id
 
         # encode prompts without chat template
         if self.return_raw_chat:
