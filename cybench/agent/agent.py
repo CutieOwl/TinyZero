@@ -624,9 +624,9 @@ class SimpleAgent:
             history_response = response[:assistant_idx]
             response = response[assistant_idx:]
 
-        end_idx = response.rfind("<END>")
+        end_idx = response.find("<END>")
         if end_idx != -1:
-            # usually we would just pass <END> as a stop token but we're trying not to mess with verl generation.
+            # usually we would just pass <END> as a stop token but not sure if I want to detokenize
             response = response[:end_idx] 
 
         cleaned_response = self.remove_hallucinations(response) + f"\n{STOP_TOKEN}"
@@ -667,7 +667,6 @@ class SimpleAgent:
                     stderr=None,
                 )
             )
-            total_string += "<|im_start|>assistant\n"
             return ret_iteration, out_id, iteration
 
         command = self._parse_command(model_response.value)
