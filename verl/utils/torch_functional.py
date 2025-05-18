@@ -233,7 +233,9 @@ def tokenize_and_postprocess_data(prompt: str,
     """
     assert truncation in ['left', 'right', 'error']
 
-    input_data = tokenizer(prompt, return_tensors='pt', add_special_tokens=False)
+    messages = [{"role": "user", "content": prompt}]
+
+    input_data = tokenizer.apply_chat_template(messages, return_tensors='pt', add_special_tokens=False)
 
     input_ids = input_data['input_ids']
     attention_mask = input_data['attention_mask']

@@ -5,6 +5,8 @@ from typing import Dict, List, Type
 
 import google.generativeai as gemini
 import tiktoken
+import torch
+import transformers
 from anthropic import Anthropic
 from dotenv import load_dotenv
 from openai import AzureOpenAI, OpenAI
@@ -17,6 +19,7 @@ from tenacity import (
     wait_exponential,
 )
 from together import Together
+from transformers import AutoModelForCausalLM, AutoTokenizer    
 
 from agent.dataclasses.agent_spec import DeploymentName, NonHELMMapping
 from agent.models.model_provider import ModelProvider
@@ -267,6 +270,82 @@ class TogetherModels(ModelProvider):
         raise NotImplementedError(
             "Getting number of tokens is not supported for Together models"
         )
+    
+class QwenModels(ModelProvider):
+    def __init__(self):
+        self.model_name = None
+        self.tokenizer = None
+        self.model = None
+
+    def query_model_provider(
+        self,
+        model_name: str,  # ignored for Qwen, since it's local
+        input_message: str,
+        temperature: float,
+        max_tokens: int,
+        stop_sequences: List[str],
+    ):
+        if self.model_name == None:
+            tokenizer = AutoTokenizer.from_pretrained(model_name)
+            self.model = AutoModelForCausalLM.from_pretrained(
+                model_name
+            )
+            self.model_name = model_name
+            self.model.eval()
+            
+        # Wrap message for chat format
+        messages = [{"role": "user", "content": input_message}]
+        input_ids = self.tokenizer.apply_chat_template(
+            messages, tokenize=True, return_tensors="pt"
+        ).to(self.model.device)
+
+        with torch.no_grad():
+            output_ids = self.model.generate(
+                input_ids,
+                max_new_tokens=max_tokens,
+                temperature=temperature,
+                eos_token_id=self.tokenizer.eos_token_id,
+                pad_token_id=self.tokenizer.pad_token_id,
+                stop_strings=stop_sequences,
+            )
+
+        output_text = self.tokenizer.decode(output_ids[0][input_ids.shape[-1]:], skip_special_tokens=True)
+
+        # Mimic OpenAI-style response
+        return type("ChatCompletion", (), {
+            "choices": [type("Choice", (), {
+                "message": type("Message", (), {"content": output_text})
+            })()],
+            "usage": type("Usage", (), {
+                "prompt_tokens": len(input_ids[0]),
+                "completion_tokens": len(output_ids[0]) - len(input_ids[0]),
+            })()
+        })
+
+    def parse_model_response(
+        self, response, input_message: str, time_taken_in_ms: float
+    ) -> tuple[ModelInput, ModelResponse]:
+        model_response = response.choices[0].message.content or ""
+        model_input = ModelInput(
+            value=input_message,
+            num_tokens=response.usage.prompt_tokens,
+        )
+        model_response = ModelResponse(
+            value=model_response,
+            full_response=model_response,
+            num_tokens=response.usage.completion_tokens,
+            time_taken_in_ms=time_taken_in_ms,
+        )
+        return model_input, model_response
+
+    def tokenize(self, model_name: str, input: str) -> List[int]:
+        return self.tokenizer.encode(input, add_special_tokens=False)
+
+    def decode_tokens(self, model_name: str, input_tokens: List[int]) -> str:
+        return self.tokenizer.decode(input_tokens)
+
+    def get_num_tokens(self, model_name: str, input: str) -> int:
+        return len(self.tokenize(model_name, input))
 
 
 PROVIDERS: Dict[str, Type[ModelProvider]] = {
@@ -275,6 +354,7 @@ PROVIDERS: Dict[str, Type[ModelProvider]] = {
     "anthropic": AnthropicModels,
     "google": GoogleModels,
     "together": TogetherModels,
+    "qwen": QwenModels,
 }
 
 

@@ -1,14 +1,19 @@
 #!/bin/bash
 
 #SBATCH --account=nlp                 # Specify the account
-#SBATCH --partition=sphinx               # Specify the partition
-#SBATCH --nodelist=sphinx6      # Request the specific node
+##SBATCH --partition=sphinx               # Specify the partition
+##SBATCH --nodelist=sphinx6      # Request the specific node
 #SBATCH --gres=gpu:2                        # Request GPUs
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=160GB                         # Memory request
 #SBATCH --time=256:00:00                    # Time limit
 #SBATCH --output=run_nlp.out
 #SBATCH --error=run_nlp.err
+
+#SBATCH --job-name=dclm_process
+#SBATCH --partition=sc-loprio
+#SBATCH --constraint=[141G]
+
 
 source /nlp/scr/kathli/miniconda3/etc/profile.d/conda.sh
 conda activate cyagent

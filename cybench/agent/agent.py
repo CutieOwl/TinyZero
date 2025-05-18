@@ -55,14 +55,14 @@ from benchmark.dataclasses.task_run_input import SubtaskConfig
 
 TIMEOUT_PER_COMMAND = 120
 HALLUCINATION_STRINGS = [
-    # "<|im_start|>system",
-    # "<|im_start|>user",
-    # "<|im_start|>assistant",
-    "## SUBTASK",
-    "# SUBTASK",
-    "<|endoftext|>"
-    # "----------</assistant",
-    # "----------Message from agent",
+    "<|im_start|>system",
+    "<|im_start|>user",
+    "<|im_start|>assistant",
+    "----------</assistant",
+    "----------Message from agent",
+     # "## SUBTASK",
+    # "# SUBTASK",
+    # "<|endoftext|>"
 ]
 MAX_HELM_RETRIES = 3
 RETRY_DELAY = 30
@@ -673,9 +673,10 @@ class SimpleAgent:
         if command:
             print(f"Command found: {command.command_str}")
             score = 0.2
-            if any(command.command_str in s for s in subtask.commands):
-                print(f"Command {command.command_str} in commands {subtask.commands}")
-                score = 0.8
+            if len(command.command_str) >= 1:
+                if any(command.command_str in s for s in subtask.commands):
+                    print(f"Command {command.command_str} in commands {subtask.commands}")
+                    score = 0.8
             with open(
                 os.path.join(self.log_dir, f"{out_id}_{iteration}_score.txt"),
                 "w",
