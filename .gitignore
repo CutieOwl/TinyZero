@@ -117,3 +117,6 @@ data/*
 
 # Model
 model/*
+
+# Benchmark tasks
+cybench/benchmark/*
