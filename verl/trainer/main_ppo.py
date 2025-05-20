@@ -47,7 +47,8 @@ class RewardManager():
         self.num_examine = num_examine  # the number of batches of decoded responses to print to the console
         self.log_dir = log_dir
         if self.log_dir == None:
-            self.log_dir = os.path.join("cybench", "logs", "verl", "dynastic")
+            self.log_dir = os.path.join("cybench", "logs", "cyagent", "dynastic")
+        self.verl_dir = os.path.join(self.log_dir, "verl")
         os.makedirs(self.log_dir, exist_ok=True)
 
     def __call__(self, data: DataProto):
@@ -85,7 +86,7 @@ class RewardManager():
             sequences = torch.cat((valid_prompt_ids, valid_response_ids))
             sequences_str = self.tokenizer.decode(sequences)
             # Write sequences_str to file
-            with open(os.path.join(self.log_dir, f'{in_id}_{out_id}_{iteration}.out'), 'w') as f:
+            with open(os.path.join(self.verl_dir, f'{in_id}_{out_id}_{iteration}.out'), 'w') as f:
                 fcntl.flock(f, fcntl.LOCK_EX) 
                 f.write(sequences_str)
                 f.flush()

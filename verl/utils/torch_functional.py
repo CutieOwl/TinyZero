@@ -235,7 +235,8 @@ def tokenize_and_postprocess_data(prompt: str,
 
     messages = [{"role": "user", "content": prompt}]
 
-    input_data = tokenizer.apply_chat_template(messages, return_tensors='pt', add_special_tokens=False)
+    chat_input = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+    input_data = tokenizer(chat_input, return_tensors='pt', add_special_tokens=False)
 
     input_ids = input_data['input_ids']
     attention_mask = input_data['attention_mask']

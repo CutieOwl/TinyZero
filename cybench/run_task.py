@@ -13,6 +13,7 @@ from datetime import datetime
 from typing import Dict, Optional, Union
 
 from agent.agent import SimpleAgent
+from agent.eval_agent import EvalAgent
 from agent.dataclasses.agent_spec import AgentConfig, IterationConfig, ModelRegistry
 from agent.dataclasses.chat_chain import ChatChain
 from agent.prompt import END_TO_END_PROMPT as PROMPT
@@ -348,6 +349,7 @@ class TaskRunner:
         unguided_mode: bool = False,
         previous_state: Optional[Dict] = None,
         verl_log_dir: str = None,
+        eval_mode: bool = False,
         azure: bool = False,
     ) ->TaskRunCompletion:
         if verl_log_dir is None:
@@ -429,45 +431,85 @@ Command: ping {target_host}
                     }
                 )
             truncated_chat_chain = copy.deepcopy(chat_chain)
-            agent = SimpleAgent(
-                config=self.config.agent_config,
-                subtask_config=self.config.task_run_config.subtask_config,
-                work_dir=self.agent_dir,
-                mock_calls=mock_calls,
-                results_dir=self.benchmark_id,
-                interactive_mode=interactive_mode,
-                unguided_mode=unguided_mode,
-                log_dir = verl_log_dir,
-                task_name=task_name,
-                prompt=prompt,
-                max_input_tokens=max_input_tokens,
-                max_output_tokens=max_output_tokens,
-                responses_to_keep=responses_to_keep,
-                observations_to_keep=observations_to_keep,
-                chat_chain=chat_chain,
-                truncated_chat_chain=truncated_chat_chain,
-                helm=helm,
-                azure=azure,
-            )
+            if eval_mode:
+                agent = EvalAgent(
+                    config=self.config.agent_config,
+                    subtask_config=self.config.task_run_config.subtask_config,
+                    work_dir=self.agent_dir,
+                    mock_calls=mock_calls,
+                    results_dir=self.benchmark_id,
+                    interactive_mode=interactive_mode,
+                    unguided_mode=unguided_mode,
+                    task_name=task_name,
+                    prompt=prompt,
+                    max_input_tokens=max_input_tokens,
+                    max_output_tokens=max_output_tokens,
+                    responses_to_keep=responses_to_keep,
+                    observations_to_keep=observations_to_keep,
+                    chat_chain=chat_chain,
+                    truncated_chat_chain=truncated_chat_chain,
+                    helm=helm,
+                    azure=azure,
+                )
+            else:
+                agent = SimpleAgent(
+                    config=self.config.agent_config,
+                    subtask_config=self.config.task_run_config.subtask_config,
+                    work_dir=self.agent_dir,
+                    mock_calls=mock_calls,
+                    results_dir=self.benchmark_id,
+                    interactive_mode=interactive_mode,
+                    unguided_mode=unguided_mode,
+                    log_dir = verl_log_dir,
+                    task_name=task_name,
+                    prompt=prompt,
+                    max_input_tokens=max_input_tokens,
+                    max_output_tokens=max_output_tokens,
+                    responses_to_keep=responses_to_keep,
+                    observations_to_keep=observations_to_keep,
+                    chat_chain=chat_chain,
+                    truncated_chat_chain=truncated_chat_chain,
+                    helm=helm,
+                    azure=azure,
+                )
         else:
-            agent = SimpleAgent(
-                config=self.config.agent_config,
-                subtask_config=self.config.task_run_config.subtask_config,
-                work_dir=self.agent_dir,
-                mock_calls=mock_calls,
-                results_dir=self.benchmark_id,
-                interactive_mode=interactive_mode,
-                unguided_mode=unguided_mode,
-                task_name=task_name,
-                log_dir = verl_log_dir,
-                prompt=prompt,
-                max_input_tokens=max_input_tokens,
-                max_output_tokens=max_output_tokens,
-                responses_to_keep=responses_to_keep,
-                observations_to_keep=observations_to_keep,
-                helm=helm,
-                azure=azure,
-            )
+            if eval_mode:
+                agent = EvalAgent(
+                    config=self.config.agent_config,
+                    subtask_config=self.config.task_run_config.subtask_config,
+                    work_dir=self.agent_dir,
+                    mock_calls=mock_calls,
+                    results_dir=self.benchmark_id,
+                    interactive_mode=interactive_mode,
+                    unguided_mode=unguided_mode,
+                    task_name=task_name,
+                    prompt=prompt,
+                    max_input_tokens=max_input_tokens,
+                    max_output_tokens=max_output_tokens,
+                    responses_to_keep=responses_to_keep,
+                    observations_to_keep=observations_to_keep,
+                    helm=helm,
+                    azure=azure,
+                )
+            else:
+                agent = SimpleAgent(
+                    config=self.config.agent_config,
+                    subtask_config=self.config.task_run_config.subtask_config,
+                    work_dir=self.agent_dir,
+                    mock_calls=mock_calls,
+                    results_dir=self.benchmark_id,
+                    interactive_mode=interactive_mode,
+                    unguided_mode=unguided_mode,
+                    task_name=task_name,
+                    log_dir = verl_log_dir,
+                    prompt=prompt,
+                    max_input_tokens=max_input_tokens,
+                    max_output_tokens=max_output_tokens,
+                    responses_to_keep=responses_to_keep,
+                    observations_to_keep=observations_to_keep,
+                    helm=helm,
+                    azure=azure,
+                )
 
         logger.info(f"Running task: {task_name}")
 
@@ -479,14 +521,14 @@ Command: ping {target_host}
         override_index = 0
 
         # load relevant state from previous log
-        # if self.task_completion:
-        #     task_start_time -= self.task_completion.time_taken_in_ms
-        #     subtask_completions = self.task_completion.subtask_completions
-        #     input_tokens = self.task_completion.usage.input_tokens_used
-        #     output_tokens = self.task_completion.usage.output_tokens_used
-        #     override_index = len(
-        #         previous_state["subtask_completions"]["subtask_1"]["iterations"]
-        #     )
+        if eval_mode and self.task_completion:
+            task_start_time -= self.task_completion.time_taken_in_ms
+            subtask_completions = self.task_completion.subtask_completions
+            input_tokens = self.task_completion.usage.input_tokens_used
+            output_tokens = self.task_completion.usage.output_tokens_used
+            override_index = len(
+                previous_state["subtask_completions"]["subtask_1"]["iterations"]
+            )
         for subtask_index, subtask_completion in enumerate(
             agent.run(override_index=override_index)
         ):
@@ -553,29 +595,30 @@ Command: ping {target_host}
         unguided_mode: bool = False,
         previous_state: Optional[Dict] = None,
         verl_log_dir: str = None,
+        eval_mode: bool = False,
         azure: bool = False,
     ) -> TaskRunCompletion:
         logger.info("Setting up environment")
         ## NOTE: This may need to be fixed so that new environment is created for every rollout
         self.setup_environment()
 
-        while True:
-            ret_completion = self._run_task(
-                max_input_tokens=max_input_tokens, 
-                max_output_tokens=max_output_tokens, 
-                responses_to_keep=responses_to_keep, 
-                observations_to_keep=observations_to_keep, 
-                task_objective=task_objective, 
-                use_easy_prompt=use_easy_prompt, 
-                helm=helm, 
-                mock_calls=mock_calls, 
-                interactive_mode=interactive_mode, 
-                unguided_mode=unguided_mode, 
-                previous_state=previous_state,
-                verl_log_dir=verl_log_dir,
-                azure=azure
-            )
-        
+        ret_completion = self._run_task(
+            max_input_tokens=max_input_tokens, 
+            max_output_tokens=max_output_tokens, 
+            responses_to_keep=responses_to_keep, 
+            observations_to_keep=observations_to_keep, 
+            task_objective=task_objective, 
+            use_easy_prompt=use_easy_prompt, 
+            helm=helm, 
+            mock_calls=mock_calls, 
+            interactive_mode=interactive_mode, 
+            unguided_mode=unguided_mode, 
+            previous_state=previous_state,
+            verl_log_dir=verl_log_dir,
+            eval_mode=eval_mode,
+            azure=azure
+        )
+    
         return ret_completion
         
 
@@ -593,6 +636,9 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--easy_prompt", action="store_true", help="Use the easy prompt for the agent"
+    )
+    parser.add_argument(
+        "--eval_mode", action="store_true", help="Eval a model (original cybench logic) instead of generating responses for training"
     )
     parser.add_argument(
         "--unguided_mode",
@@ -763,6 +809,7 @@ def main() -> None:
         previous_state=previous_state,
         helm=args.helm,
         verl_log_dir=args.verl_log_dir,
+        eval_mode=args.eval_mode,
         azure=args.azure,
     )
 

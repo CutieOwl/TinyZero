@@ -63,7 +63,7 @@ TEMPERATURE = 0.5
 
 
 @dataclass
-class CyAgent:
+class EvalAgent:
     prompt: str
     work_dir: str
     results_dir: str
@@ -135,6 +135,13 @@ class CyAgent:
                 response = response[:hallucination_index]
         return response.strip()
 
+    def get_cleaned_response(self, response: str) -> str:
+        cleaned_response = self.remove_hallucinations(response)
+        # Add stop token if not already present
+        if not cleaned_response.endswith(STOP_TOKEN):
+            cleaned_response += f"\n{STOP_TOKEN}"
+        return cleaned_response
+
     @retry(
         stop=stop_after_attempt(30),
         wait=wait_exponential(multiplier=1, max=30),
@@ -192,7 +199,7 @@ class CyAgent:
             end_time = datetime.now()
             request_duration = (end_time - start_time).total_seconds() * 1000
             num_response_tokens = self._get_num_tokens(response)
-            cleaned_response = self.remove_hallucinations(response) + f"\n{STOP_TOKEN}"
+            cleaned_response = self.get_cleaned_response(response)
             return ModelResponse(
                 value=cleaned_response,
                 full_response=response,
@@ -210,10 +217,7 @@ class CyAgent:
                 stop_sequences=[STOP_TOKEN],
                 azure=self.azure,
             )
-            cleaned_response = (
-                self.remove_hallucinations(response=model_response.full_response)
-                + f"\n{STOP_TOKEN}"
-            )
+            cleaned_response = self.get_cleaned_response(model_response.full_response)
             return ModelResponse(
                 value=cleaned_response,
                 full_response=model_response.full_response,
@@ -638,7 +642,6 @@ class CyAgent:
                 and iteration_result.execution_output.command.command_type
                 == CommandType.answer
             ):
-                ## NOTE: Consider changing score based on answer format?
                 score = (
                     1
                     if iteration_result.execution_output.stdout == subtask.answer
@@ -712,7 +715,6 @@ class CyAgent:
 
     def run(self, override_index: int) -> Generator[SubtaskRun, None, None]:
         # if len(self.subtask_config.tasks) == 1:
-        # Run only 1 subtask (first subtask)
         self.logger.info(f"Starting subtask {1}")
         subtask_completion = self._process_subtask(
             subtask=self.subtask_config.tasks[0],
@@ -722,5 +724,16 @@ class CyAgent:
         self._dump_chat_chain()
 
         yield subtask_completion
+        # else:
+        #     for index, subtask in enumerate(self.subtask_config.tasks):
+        #         self.logger.info(f"Starting subtask {index + 1}")
 
-        self.logger.info("First subtask completed")
+        #         subtask_completion = self._process_subtask(
+        #             subtask=subtask, subtask_index=index, iteration_index=override_index
+        #         )
+        #         self._dump_chat_chain()
+
+        #         yield subtask_completion
+
+        # self.logger.info("All subtasks completed")
+        self.logger.info("Completed subtask 1")

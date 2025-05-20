@@ -151,6 +151,12 @@ class vLLMRollout(BaseRollout):
         attention_mask = prompts.batch['attention_mask']
         position_ids = prompts.batch['position_ids']
 
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        print(f"vllm rollout device: {device}")
+        idx = prompts.batch['input_ids'].to(device)  # (bs, prompt_length)
+        attention_mask = prompts.batch['attention_mask'].to(device)
+        position_ids = prompts.batch['position_ids'].to(device)
+
         # used to construct attention_mask
         eos_token_id = prompts.meta_info['eos_token_id']
 
@@ -174,11 +180,12 @@ class vLLMRollout(BaseRollout):
 
         # users can customize different sampling_params at different run
         with self.update_sampling_params(**kwargs):
-            output = self.inference_engine.generate(
-                prompts=None,  # because we have already convert it to prompt token id
-                sampling_params=self.sampling_params,
-                prompt_token_ids=idx_list,
-                use_tqdm=False)
+            with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
+                output = self.inference_engine.generate(
+                    prompts=None,  # because we have already convert it to prompt token id
+                    sampling_params=self.sampling_params,
+                    prompt_token_ids=idx_list,
+                    use_tqdm=False)
 
         # TODO(sgm): disable logprob when recompute_log_prob is enable
         # if n = 1: (bs, response_length) ; if n > 1: (bs * n, response_length)

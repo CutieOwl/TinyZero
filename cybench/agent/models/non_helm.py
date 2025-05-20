@@ -276,6 +276,22 @@ class QwenModels(ModelProvider):
         self.model_name = None
         self.tokenizer = None
         self.model = None
+        self.device = "cpu"
+
+    def create_client(self):
+        return None
+
+    def load_model(self, model_name: str):
+        if self.model_name == None:
+            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            self.tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+            self.model = AutoModelForCausalLM.from_pretrained(
+                model_name,
+                torch_dtype=torch.float16 if self.device.type == "cuda" else torch.float32,
+                trust_remote_code=True
+            ).to(self.device)
+            self.model_name = model_name
+            self.model.eval()
 
     def query_model_provider(
         self,
@@ -285,31 +301,38 @@ class QwenModels(ModelProvider):
         max_tokens: int,
         stop_sequences: List[str],
     ):
-        if self.model_name == None:
-            tokenizer = AutoTokenizer.from_pretrained(model_name)
-            self.model = AutoModelForCausalLM.from_pretrained(
-                model_name
-            )
-            self.model_name = model_name
-            self.model.eval()
-            
+        self.load_model(model_name)
         # Wrap message for chat format
         messages = [{"role": "user", "content": input_message}]
-        input_ids = self.tokenizer.apply_chat_template(
-            messages, tokenize=True, return_tensors="pt"
-        ).to(self.model.device)
+        chat_input = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        input_data = self.tokenizer(chat_input, return_tensors='pt', add_special_tokens=False)
+
+        input_ids = input_data["input_ids"]
+        attention_mask = input_data["attention_mask"]
+
+        # print(f"Input IDs: {input_ids}")
+        # print(f"Decoded {self.tokenizer.decode(input_ids[0])}")
+
+        # print(f"Attention Mask: {attention_mask}")
 
         with torch.no_grad():
             output_ids = self.model.generate(
                 input_ids,
+                attention_mask=attention_mask,
+                tokenizer=self.tokenizer,
                 max_new_tokens=max_tokens,
                 temperature=temperature,
+                do_sample=True,
                 eos_token_id=self.tokenizer.eos_token_id,
                 pad_token_id=self.tokenizer.pad_token_id,
                 stop_strings=stop_sequences,
             )
 
         output_text = self.tokenizer.decode(output_ids[0][input_ids.shape[-1]:], skip_special_tokens=True)
+
+        # print(f"output_text {output_text}")
+
+        output_text = output_text.replace(input_message, "")
 
         # Mimic OpenAI-style response
         return type("ChatCompletion", (), {
@@ -339,12 +362,15 @@ class QwenModels(ModelProvider):
         return model_input, model_response
 
     def tokenize(self, model_name: str, input: str) -> List[int]:
+        self.load_model(model_name)
         return self.tokenizer.encode(input, add_special_tokens=False)
 
     def decode_tokens(self, model_name: str, input_tokens: List[int]) -> str:
+        self.load_model(model_name)
         return self.tokenizer.decode(input_tokens)
 
     def get_num_tokens(self, model_name: str, input: str) -> int:
+        self.load_model(model_name)
         return len(self.tokenize(model_name, input))
 
 
@@ -354,7 +380,7 @@ PROVIDERS: Dict[str, Type[ModelProvider]] = {
     "anthropic": AnthropicModels,
     "google": GoogleModels,
     "together": TogetherModels,
-    "qwen": QwenModels,
+    "Qwen": QwenModels,
 }
 
 

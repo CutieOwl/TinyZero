@@ -95,8 +95,10 @@ class RLHFDataset(Dataset):
 
         self.log_dir = log_dir
         if self.log_dir is None:
-            self.log_dir = os.path.join("cybench", "logs", "verl", "dynastic")
+            self.log_dir = os.path.join("cybench", "logs", "cyagent", "dynastic")
         os.makedirs(self.log_dir, exist_ok=True)
+        self.cybench_dir = os.path.join(self.log_dir, "cybench")
+        os.makedirs(self.cybench_dir, exist_ok=True)
 
         self._download()
         self._read_files_and_tokenize()
@@ -148,7 +150,7 @@ class RLHFDataset(Dataset):
         backoff = 0.02
         max_backoff = 5
         while True:
-            input_files = glob.glob(os.path.join(self.log_dir, "*.in"))
+            input_files = glob.glob(os.path.join(self.cybench_dir, "*.in"))
             if not input_files:
                 time.sleep(backoff)
                 backoff = min(backoff * 2, max_backoff)
@@ -179,8 +181,13 @@ class RLHFDataset(Dataset):
                                                                          pad_token_id=self.tokenizer.pad_token_id,
                                                                          left_pad=True,
                                                                          truncation=self.truncation)
+    
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        input_ids = input_ids.to(device)
+        attention_mask = attention_mask.to(device)
 
         position_ids = compute_position_id_with_mask(attention_mask)
+        position_ids = position_ids.to(device)
 
         row_dict['input_ids'] = input_ids[0]
         row_dict['attention_mask'] = attention_mask[0]

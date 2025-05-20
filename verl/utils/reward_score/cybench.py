@@ -27,7 +27,8 @@ def compute_score(solution_str, ground_truth, iteration, rollout_id, log_dir, ha
             with open(
                 os.path.join(
                     log_dir,
-                    f"{rollout_id}_{iteration}_score.txt",
+                    "cybench",
+                    f"{rollout_id}_{iteration}_grade.txt",
                 ),
                 "r",
             ) as file:

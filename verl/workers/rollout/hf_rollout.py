@@ -53,6 +53,12 @@ class HFRollout(BaseRollout):
         attention_mask = prompts.batch['attention_mask']  # left-padded attention_mask
         position_ids = prompts.batch['position_ids']
 
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        print(f"hf rollout device: {device}")
+        idx = prompts.batch['input_ids'].to(device)  # (bs, prompt_length)
+        attention_mask = prompts.batch['attention_mask'].to(device)
+        position_ids = prompts.batch['position_ids'].to(device)
+
         # used to construct attention_mask
         eos_token_id = prompts.meta_info['eos_token_id']
         pad_token_id = prompts.meta_info['pad_token_id']

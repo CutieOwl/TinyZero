@@ -3,9 +3,9 @@
 #SBATCH --account=nlp                 # Specify the account
 ##SBATCH --partition=sphinx               # Specify the partition
 ##SBATCH --nodelist=sphinx6      # Request the specific node
-#SBATCH --gres=gpu:2                        # Request GPUs
+#SBATCH --gres=gpu:4                        # Request GPUs
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=160GB                         # Memory request
+#SBATCH --mem=560GB                         # Memory request
 #SBATCH --time=256:00:00                    # Time limit
 #SBATCH --output=run_nlp.out
 #SBATCH --error=run_nlp.err
@@ -30,7 +30,7 @@ export EXPERIMENT_NAME=$DATA_DIR-qwen2.5-3B
 # export EXPERIMENT_NAME=$DATA_DIR-qwen3-0.6b
 # export EXPERIMENT_NAME=$DATA_DIR-qwen2.5-0.5b
 export VLLM_ATTENTION_BACKEND=XFORMERS
-export LOG_DIR=cybench/logs/verl/dynastic3b
+export LOG_DIR=cybench/logs/verl/dynastic
 
 bash ./wandb_login.sh
 bash ./scripts/train_tiny_zero_a100.sh
