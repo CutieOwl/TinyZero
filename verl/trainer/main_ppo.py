@@ -64,6 +64,7 @@ class RewardManager():
 
         for i in range(len(data)):
             data_item = data[i]  # DataProtoItem
+            print(f"Data item {i}: {data_item}")
 
             prompt_ids = data_item.batch['prompts']
 
@@ -76,27 +77,13 @@ class RewardManager():
             valid_response_length = data_item.batch['attention_mask'][prompt_length:].sum()
             valid_response_ids = response_ids[:valid_response_length]
 
-
-            ground_truth = data_item.non_tensor_batch['reward_model']['ground_truth']
-            iteration = data_item.non_tensor_batch['iteration']
-            out_id = data_item.non_tensor_batch['out_id']
-            in_id = data_item.non_tensor_batch['in_id']
-
-            # decode
-            sequences = torch.cat((valid_prompt_ids, valid_response_ids))
-            sequences_str = self.tokenizer.decode(sequences)
-            # Write sequences_str to file
-            with open(os.path.join(self.verl_dir, f'{in_id}_{out_id}_{iteration}.out'), 'w') as f:
-                fcntl.flock(f, fcntl.LOCK_EX) 
-                f.write(sequences_str)
-                f.flush()
-                fcntl.flock(f, fcntl.LOCK_UN) 
+            rollout_id = data_item.non_tensor_batch['rollout_id']
 
             # select rm_score
             data_source = data_item.non_tensor_batch['data_source']
             compute_score_fn = _select_rm_score_fn(data_source)
 
-            score = compute_score_fn(solution_str=sequences_str, ground_truth=ground_truth, iteration=iteration, rollout_id=out_id, log_dir=self.log_dir)
+            score = compute_score_fn(rollout_id=rollout_id, log_dir=self.log_dir)
             reward_tensor[i, valid_response_length - 1] = score
 
             if data_source not in already_print_data_sources:
@@ -104,7 +91,6 @@ class RewardManager():
 
             if already_print_data_sources[data_source] < self.num_examine:
                 already_print_data_sources[data_source] += 1
-                print(sequences_str)
 
         return reward_tensor
 

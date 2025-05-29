@@ -372,6 +372,80 @@ class QwenModels(ModelProvider):
     def get_num_tokens(self, model_name: str, input: str) -> int:
         self.load_model(model_name)
         return len(self.tokenize(model_name, input))
+    
+class QwenTrainModels(ModelProvider):
+    # A version of QwenModels that doesn't load the model (to save time)
+    # Used when doing local training where the model is queried in verl
+    def __init__(self):
+        self.model_name = None
+        self.tokenizer = None
+        self.device = "cpu"
+
+    def create_client(self):
+        return None
+
+    def load_model(self, model_name: str):
+        if self.model_name == None:
+            self.model_name = model_name.replace("Qwen-train/", "Qwen/")
+            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            self.tokenizer = AutoTokenizer.from_pretrained(self.model_name, trust_remote_code=True) 
+
+    def query_model_provider(
+        self,
+        model_name: str,  
+        input_message: str,
+        temperature: float,
+        max_tokens: int,
+        stop_sequences: List[str],
+    ):
+        # This method is a no-op for QwenTrainModels, as it doesn't load the model
+        self.load_model(model_name)
+        # Wrap message for chat format
+        messages = [{"role": "user", "content": input_message}]
+        chat_input = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        input_data = self.tokenizer(chat_input, return_tensors='pt', add_special_tokens=False)
+
+        input_ids = input_data["input_ids"]
+        attention_mask = input_data["attention_mask"]
+
+        # Mimic OpenAI-style response
+        return type("ChatCompletion", (), {
+            "choices": [type("Choice", (), {
+                "message": type("Message", (), {"content": ""})
+            })()],
+            "usage": type("Usage", (), {
+                "prompt_tokens": len(input_ids[0]),
+                "completion_tokens": 0,
+            })()
+        })
+
+    def parse_model_response(
+        self, response, input_message: str, time_taken_in_ms: float
+    ) -> tuple[ModelInput, ModelResponse]:
+        model_response = response.choices[0].message.content or ""
+        model_input = ModelInput(
+            value=input_message,
+            num_tokens=response.usage.prompt_tokens,
+        )
+        model_response = ModelResponse(
+            value=model_response,
+            full_response=model_response,
+            num_tokens=response.usage.completion_tokens,
+            time_taken_in_ms=time_taken_in_ms,
+        )
+        return model_input, model_response
+
+    def tokenize(self, model_name: str, input: str) -> List[int]:
+        self.load_model(model_name)
+        return self.tokenizer.encode(input, add_special_tokens=False)
+
+    def decode_tokens(self, model_name: str, input_tokens: List[int]) -> str:
+        self.load_model(model_name)
+        return self.tokenizer.decode(input_tokens)
+
+    def get_num_tokens(self, model_name: str, input: str) -> int:
+        self.load_model(model_name)
+        return len(self.tokenize(model_name, input))
 
 
 PROVIDERS: Dict[str, Type[ModelProvider]] = {
@@ -381,6 +455,7 @@ PROVIDERS: Dict[str, Type[ModelProvider]] = {
     "google": GoogleModels,
     "together": TogetherModels,
     "Qwen": QwenModels,
+    "Qwen-train": QwenTrainModels,
 }
 
 

@@ -47,6 +47,8 @@ class DeploymentName(Enum):
     QWEN_3_0_6B = "Qwen/Qwen3-0.6B"
     QWEN_3_1_7B = "Qwen/Qwen3-1.7B"
     QWEN_2_5_3B_INSTRUCT = "Qwen/Qwen2.5-3B-instruct"
+    QWEN_TRAIN_2_5_3B_INSTRUCT = "Qwen-train/Qwen2.5-3B-instruct"
+    QWEN_TRAIN_2_5_0_5B_INSTRUCT = "Qwen-train/Qwen2.5-0.5B-instruct"
 
     @classmethod
     def from_string(cls, name: str) -> "DeploymentName":
@@ -90,6 +92,8 @@ class TokenizerMapping:
         DeploymentName.QWEN_3_0_6B: "Qwen/Qwen3-0.6B",
         DeploymentName.QWEN_3_1_7B: "Qwen/Qwen3-1.7B",
         DeploymentName.QWEN_2_5_3B_INSTRUCT: "Qwen/Qwen2.5-3B-instruct",
+        DeploymentName.QWEN_TRAIN_2_5_3B_INSTRUCT: "Qwen-train/Qwen2.5-3B-instruct",
+        DeploymentName.QWEN_TRAIN_2_5_0_5B_INSTRUCT: "Qwen-train/Qwen2.5-0.5B-instruct",
     }
 
 
@@ -124,6 +128,8 @@ class ModelMapping:
         DeploymentName.QWEN_3_0_6B: "Qwen/Qwen3-0.6B",
         DeploymentName.QWEN_3_1_7B: "Qwen/Qwen3-1.7B",
         DeploymentName.QWEN_2_5_3B_INSTRUCT: "Qwen/Qwen2.5-3B-instruct",
+        DeploymentName.QWEN_TRAIN_2_5_3B_INSTRUCT: "Qwen-train/Qwen2.5-3B-instruct",
+        DeploymentName.QWEN_TRAIN_2_5_0_5B_INSTRUCT: "Qwen-train/Qwen2.5-0.5B-instruct",
     }
 
 
@@ -146,6 +152,8 @@ class NonHELMMapping:
         DeploymentName.QWEN_3_0_6B: "Qwen/Qwen3-0.6B",
         DeploymentName.QWEN_3_1_7B: "Qwen/Qwen3-1.7B",
         DeploymentName.QWEN_2_5_3B_INSTRUCT: "Qwen/Qwen2.5-3B-instruct",
+        DeploymentName.QWEN_TRAIN_2_5_3B_INSTRUCT: "Qwen-train/Qwen2.5-3B-instruct",
+        DeploymentName.QWEN_TRAIN_2_5_0_5B_INSTRUCT: "Qwen-train/Qwen2.5-0.5B-instruct",
     }
 
 

@@ -147,11 +147,12 @@ class RLHFDataset(Dataset):
         # Read prompt from file
         # get all files in log_dir with .in extension and choose a random one to read from
 
-        backoff = 0.02
-        max_backoff = 5
+        backoff = 0.01
+        max_backoff = 0.1
         while True:
-            input_files = glob.glob(os.path.join(self.cybench_dir, "*.in"))
-            if not input_files:
+            if not os.path.exists(os.path.join(self.cybench_dir, "_0.in")):
+            # input_files = glob.glob(os.path.join(self.cybench_dir, "_0.in"))
+            # if not input_files:
                 time.sleep(backoff)
                 backoff = min(backoff * 2, max_backoff)
                 continue
@@ -159,21 +160,20 @@ class RLHFDataset(Dataset):
                 break
 
         # Choose a random input file
-        random_file = random.choice(input_files)
-        with open(random_file, 'r') as f:
+        # random_file = random.choice(input_files)
+        with open(os.path.join(self.cybench_dir, "_0.in"), 'r') as f:
             fcntl.flock(f, fcntl.LOCK_SH) 
             prompt_with_chat_template = f.read()
             fcntl.flock(f, fcntl.LOCK_UN) 
 
         # get rollout_id, iteration from the file name
-        file_name = os.path.basename(random_file)
-        print(f"chosen filename {file_name}")
-        file_name = file_name.split('.')[0]
-        file_ids = file_name.split('_')
+        # file_name = os.path.basename(random_file)
+        # print(f"chosen filename {file_name}")
+        # file_name = file_name.split('.')[0]
+        # file_ids = file_name.split('_')
         # create random string to be used as new rollout_id.
-        out_id = random_alphanumeric_string(7)
-        iteration = file_ids[-1]
-        in_id = file_ids[-2]
+        rollout_id = random_alphanumeric_string(7)
+        iteration = 0
 
         input_ids, attention_mask = verl_F.tokenize_and_postprocess_data(prompt=prompt_with_chat_template,
                                                                          tokenizer=self.tokenizer,
@@ -192,9 +192,7 @@ class RLHFDataset(Dataset):
         row_dict['input_ids'] = input_ids[0]
         row_dict['attention_mask'] = attention_mask[0]
         row_dict['position_ids'] = position_ids[0]
-        row_dict['iteration'] = iteration
-        row_dict['out_id'] = out_id
-        row_dict['in_id'] = in_id
+        row_dict['rollout_id'] = rollout_id
 
         # encode prompts without chat template
         if self.return_raw_chat:

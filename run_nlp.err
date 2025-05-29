@@ -1,2 +1,1 @@
 wandb: Currently logged in as: kathli (crfm-kathli) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
-slurmstepd: error: *** JOB 10363950 ON miso5 CANCELLED AT 2025-05-19T17:14:26 ***

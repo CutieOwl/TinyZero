@@ -34,6 +34,7 @@ from verl.single_controller.ray import RayResourcePool, RayWorkerGroup, RayClass
 from verl.single_controller.ray.base import create_colocated_worker_cls
 from verl.trainer.ppo import core_algos
 from verl.utils.seqlen_balancing import get_seqlen_balanced_partitions, log_seqlen_unbalance
+from verl.utils.cyagent.rollout_manager import RolloutManager
 
 WorkerType = Type[Worker]
 
@@ -574,6 +575,15 @@ class RayPPOTrainer(object):
         # we start from step 1
         self.global_steps += 1
 
+        self.rollout_manager = RolloutManager(
+            max_iterations=self.config.data.max_iterations,
+            actor_rollout_wg=self.actor_rollout_wg,
+            tokenizer=self.tokenizer,
+            log_dir=self.config.reward_model.log_dir,
+            max_prompt_length=self.config.data.max_prompt_length,
+            truncation='error',
+        )
+
         for epoch in range(self.config.trainer.total_epochs):
             for batch_dict in self.train_dataloader:
                 print(f'epoch {epoch}, step {self.global_steps}')
@@ -583,15 +593,15 @@ class RayPPOTrainer(object):
 
                 batch: DataProto = DataProto.from_single_dict(batch_dict)
 
-                # pop those keys for generation
-                gen_batch = batch.pop(batch_keys=['input_ids', 'attention_mask', 'position_ids'])
+                print(f"batch: {batch}")
 
-                print(f"gen_batch: {gen_batch}")
+                # pop those keys for generation
+                gen_batch = batch.pop(batch_keys=['input_ids', 'attention_mask', 'position_ids'], non_tensor_batch_keys=['rollout_id'])
 
                 with _timer('step', timing_raw):
                     # generate a batch
                     with _timer('gen', timing_raw):
-                        gen_batch_output = self.actor_rollout_wg.generate_sequences(gen_batch)
+                        gen_batch_output = self.rollout_manager.get_rollout(gen_batch)
 
                     print(f'gen_batch_output: {gen_batch_output}')  
 
