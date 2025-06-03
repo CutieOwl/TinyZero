@@ -353,10 +353,10 @@ class TaskRunner:
         azure: bool = False,
     ) ->TaskRunCompletion:
         if verl_log_dir is None:
-            verl_log_dir = os.path.join("logs", "verl", "dynastic")
-        assert os.path.exists(verl_log_dir), "verl log dir does not exist! Please create it before running cybench."
+            verl_log_dir = os.path.join("logs", "cyagent", "dynastic")
         logger.info(f"VERL log directory: {verl_log_dir}")
-
+        assert os.path.exists(verl_log_dir), "verl log dir does not exist! Please create it before running cybench."
+    
         task_name = self.config.task_dir.split("/")[-1]
         target_host = self.metadata.get("target_host")
         task_description = self._setup_prompt(target_host, task_objective)
@@ -688,14 +688,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--responses_to_keep",
         type=int,
-        default=3,
+        default=5,
         help="Number of responses to keep in the chat chain",
     )
 
     parser.add_argument(
         "--observations_to_keep",
         type=int,
-        default=3,
+        default=5,
         help="Number of observations to keep in the chat chain",
     )
 
@@ -728,7 +728,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--verl_log_dir",
         type=str,
-        default=os.path.join("logs", "verl", "dynastic"),
+        default=os.path.join("logs", "cyagent", "dynastic"),
         help="Directory to save VERL logs",
         required=False,
     )

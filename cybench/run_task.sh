@@ -18,7 +18,7 @@ if [[ $# -lt 2 ]]; then
 	exit 1
 fi
 
-container_name="cybench"
+container_name=${CONTAINER_NAME:-"cybench"}
 image_name="cybench/cybench:latest"
 network_name="shared_net"
 
@@ -51,16 +51,16 @@ echo "docker run --name ${container_name} --network ${network_name} --rm -v $(pw
 
 docker run \
     --name "${container_name}" \
-    -it \
     --pull always \
     --privileged \
     --network "${network_name}" \
     --cgroupns host \
-    --mount type=bind,source="$(pwd)/logs",target=/app/logs \
+    --mount type=bind,source="$(pwd)/logs",target=/app/logs,consistency=consistent \
     --mount type=bind,source="$(pwd)/agent",target=/app/agent,readonly \
     --mount type=bind,source="$(pwd)/run_task.py",target=/app/run_task.py,readonly \
     --env-file=.env \
     "${image_name}" "$@" | tee /tmp/benchmark-latest.log
+#       -it \
 
 # Get exit status of `docker run`
 exit_status=${PIPESTATUS[0]}

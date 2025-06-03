@@ -13,6 +13,7 @@
 #SBATCH --job-name=dclm_process
 #SBATCH --partition=sc-loprio
 #SBATCH --constraint=[80G|141G]
+#SBATCH --constraint="gpu!=2080ti" 
 
 
 source /nlp/scr/kathli/miniconda3/etc/profile.d/conda.sh

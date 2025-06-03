@@ -124,8 +124,10 @@ class DataParallelPPOActor(BasePPOActor):
                                            seqlen=seqlen)
 
                 # only return response part:
-                entropy = full_entropy.squeeze(-1)[:, -response_length - 1:-1]  # (bsz, response_length)
-                log_probs = full_log_probs.squeeze(-1)[:, -response_length - 1:-1]  # (bsz, response_length)
+                # entropy = full_entropy.squeeze(-1)[:, -response_length - 1:-1]  # (bsz, response_length)
+                # log_probs = full_log_probs.squeeze(-1)[:, -response_length - 1:-1]  # (bsz, response_length)
+                entropy = full_entropy.squeeze(-1)
+                log_probs = full_log_probs.squeeze(-1)
 
             else:  # not using rmpad and no ulysses sp
                 output = self.actor_module(input_ids=input_ids,
@@ -134,8 +136,12 @@ class DataParallelPPOActor(BasePPOActor):
                                            use_cache=False)  # prevent model thinks we are generating
                 logits = output.logits
                 logits.div_(temperature)
-                logits = logits[:, -response_length - 1:-1]  # (bsz, response_length)
-                log_probs = logprobs_from_logits(logits, micro_batch['responses'])
+                #logits = logits[:, -response_length - 1:-1]  # (bsz, response_length) # Commented this out for response mask
+
+                # These two should be the same, which they are currently, so things are right
+                # print(f"micro_batch input_ids {micro_batch['input_ids'][:, -response_length:]}")
+                # print(f"micro_batch responses {micro_batch['responses']}")
+                log_probs = logprobs_from_logits(logits, micro_batch['input_ids'])
                 entropy = verl_F.entropy_from_logits(logits)  # (bsz, response_length)
 
             return entropy, log_probs
@@ -208,7 +214,7 @@ class DataParallelPPOActor(BasePPOActor):
         self.gradient_accumulation = self.config.ppo_mini_batch_size // self.config.ppo_micro_batch_size
         temperature = data.meta_info['temperature']  # temperature must be in the data.meta_info to avoid slient error
 
-        select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids', 'old_log_probs', 'advantages']
+        select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids', 'old_log_probs', 'advantages', 'response_mask']
         if self.config.use_kl_loss:
             select_keys.append('ref_log_prob')
         batch = data.select(batch_keys=select_keys).batch
@@ -235,7 +241,7 @@ class DataParallelPPOActor(BasePPOActor):
                 responses = data['responses']
                 response_length = responses.size(1)
                 attention_mask = data['attention_mask']
-                response_mask = attention_mask[:, -response_length:]
+                response_mask = data['response_mask'] if 'response_mask' in data else attention_mask[:, -response_length:]
                 old_log_prob = data['old_log_probs']
                 advantages = data['advantages']
 

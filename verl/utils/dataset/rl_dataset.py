@@ -97,8 +97,8 @@ class RLHFDataset(Dataset):
         if self.log_dir is None:
             self.log_dir = os.path.join("cybench", "logs", "cyagent", "dynastic")
         os.makedirs(self.log_dir, exist_ok=True)
-        self.cybench_dir = os.path.join(self.log_dir, "cybench")
-        os.makedirs(self.cybench_dir, exist_ok=True)
+        # self.cybench_dir = os.path.join(self.log_dir, "cybench")
+        # os.makedirs(self.cybench_dir, exist_ok=True)
 
         self._download()
         self._read_files_and_tokenize()
@@ -150,8 +150,8 @@ class RLHFDataset(Dataset):
         backoff = 0.01
         max_backoff = 0.1
         while True:
-            if not os.path.exists(os.path.join(self.cybench_dir, "_0.in")):
-            # input_files = glob.glob(os.path.join(self.cybench_dir, "_0.in"))
+            if not os.path.exists(os.path.join(self.log_dir, "_0.in")):
+            # input_files = glob.glob(os.path.join(self.log_dir, "_0.in"))
             # if not input_files:
                 time.sleep(backoff)
                 backoff = min(backoff * 2, max_backoff)
@@ -161,7 +161,7 @@ class RLHFDataset(Dataset):
 
         # Choose a random input file
         # random_file = random.choice(input_files)
-        with open(os.path.join(self.cybench_dir, "_0.in"), 'r') as f:
+        with open(os.path.join(self.log_dir, "_0.in"), 'r') as f:
             fcntl.flock(f, fcntl.LOCK_SH) 
             prompt_with_chat_template = f.read()
             fcntl.flock(f, fcntl.LOCK_UN) 

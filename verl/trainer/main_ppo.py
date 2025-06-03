@@ -58,13 +58,15 @@ class RewardManager():
         if 'rm_scores' in data.batch.keys():
             return data.batch['rm_scores']
 
-        reward_tensor = torch.zeros_like(data.batch['responses'], dtype=torch.float32)
+        reward_tensor = torch.zeros_like(data.batch['input_ids'], dtype=torch.float32) # data.batch['responses']
 
         already_print_data_sources = {}
 
+        print(f"Main ppo data {data}")
+
         for i in range(len(data)):
             data_item = data[i]  # DataProtoItem
-            print(f"Data item {i}: {data_item}")
+            # print(f"Data item {i}: {data_item}")
 
             prompt_ids = data_item.batch['prompts']
 
@@ -75,7 +77,7 @@ class RewardManager():
 
             response_ids = data_item.batch['responses']
             valid_response_length = data_item.batch['attention_mask'][prompt_length:].sum()
-            valid_response_ids = response_ids[:valid_response_length]
+            # valid_response_ids = response_ids[:valid_response_length]
 
             rollout_id = data_item.non_tensor_batch['rollout_id']
 
@@ -84,7 +86,7 @@ class RewardManager():
             compute_score_fn = _select_rm_score_fn(data_source)
 
             score = compute_score_fn(rollout_id=rollout_id, log_dir=self.log_dir)
-            reward_tensor[i, valid_response_length - 1] = score
+            reward_tensor[i, prompt_length + valid_response_length-1] = score
 
             if data_source not in already_print_data_sources:
                 already_print_data_sources[data_source] = 0

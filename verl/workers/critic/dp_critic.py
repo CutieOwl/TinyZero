@@ -90,14 +90,15 @@ class DataParallelPPOCritic(BasePPOCritic):
 
                 # pad it back
                 values = pad_input(values_rmpad, indices=indices, batch=batch, seqlen=seqlen).squeeze(-1)
-                values = values[:, -response_length - 1:-1]
+                #values = values[:, -response_length - 1:-1]
             else:
                 output = self.critic_module(input_ids=input_ids,
                                             attention_mask=attention_mask,
                                             position_ids=position_ids,
                                             use_cache=False)  # prevent model thinks we are generating
                 values = output.logits
-                values = values[:, -response_length - 1:-1].squeeze(-1)
+                values = values.squeeze(-1) # Replaced line under this 
+                #values = values[:, -response_length - 1:-1].squeeze(-1) # Commented this out for response mask
             return values
 
     def _optimizer_step(self):
@@ -132,8 +133,12 @@ class DataParallelPPOCritic(BasePPOCritic):
         values = torch.concat(values_lst, dim=0)
         responses = data.batch['responses']
         attention_mask = data.batch['attention_mask']
+        response_mask = data.batch['response_mask']
         response_length = responses.size(1)
-        values = values * attention_mask[:, -response_length - 1:-1]
+        print(f"Values inside critic {values.shape}")
+        print(f"Response mask inside critic {response_mask.shape}")
+        values = values * response_mask 
+        #values = values * attention_mask[:, -response_length - 1:-1]
 
         if use_dynamic_bsz:
             indices = list(itertools.chain.from_iterable(indices))
@@ -148,7 +153,7 @@ class DataParallelPPOCritic(BasePPOCritic):
         self.critic_module.train()
         metrics = {}
 
-        select_keys = ['input_ids', 'responses', 'attention_mask', 'position_ids', 'values', 'returns']
+        select_keys = ['input_ids', 'responses', 'attention_mask', 'position_ids', 'values', 'returns', 'response_mask']
         batch = data.select(batch_keys=select_keys).batch
         # Split to make minibatch iterator for updating the actor
         # See PPO paper for details. https://arxiv.org/abs/1707.06347
@@ -175,11 +180,12 @@ class DataParallelPPOCritic(BasePPOCritic):
                 returns = data['returns']
                 response_length = responses.size(1)
 
-                eos_mask = attention_mask[:, -response_length - 1:-1]
+                eos_mask = data['response_mask'] if 'response_mask' in data else attention_mask[:, -response_length - 1:-1] #<3 Do I need to shift the mask?
 
                 vpreds = self._forward_micro_batch(data)
 
                 # assert not torch.any(torch.isnan(vpreds)).item()
+                print(f"values shape {values.shape}, vpreds shape {vpreds.shape}, eos_mask shape {eos_mask.shape}, returns shape {returns.shape}")
 
                 vf_loss, vf_clipfrac = core_algos.compute_value_loss(vpreds=vpreds,
                                                                      values=values,

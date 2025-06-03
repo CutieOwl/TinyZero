@@ -1,0 +1,6 @@
+version: "2"
+syncs:
+  logs-sync:
+    src: './logs/cyagent/dynastic'
+    dest: '/app/logs'
+    sync_strategy: 'rsync'

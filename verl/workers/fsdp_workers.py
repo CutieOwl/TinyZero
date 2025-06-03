@@ -919,7 +919,7 @@ class RewardModelWorker(Worker):
         token_level_scores[torch.arange(batch_size), eos_mask_idx] = scores
 
         # select the response part
-        token_level_scores = token_level_scores[:, -response_length:]
+        # token_level_scores = token_level_scores[:, -response_length:] # Commented out for response mask
 
         return token_level_scores
 

@@ -98,10 +98,10 @@ class SimpleAgent:
 
     def __post_init__(self) -> None:
         assert os.path.exists(self.log_dir), f"Log directory {self.log_dir} does not exist"
-        self.verl_dir = os.path.join(self.log_dir, "verl")
-        assert os.path.exists(self.verl_dir), f"verl directory {self.verl_dir} does not exist"
-        self.cybench_dir = os.path.join(self.log_dir, "cybench")
-        assert os.path.exists(self.cybench_dir), f"cybench directory {self.cybench_dir} does not exist"
+        # self.verl_dir = os.path.join(self.log_dir, "verl")
+        # assert os.path.exists(self.verl_dir), f"verl directory {self.verl_dir} does not exist"
+        # self.cybench_dir = os.path.join(self.log_dir, "cybench")
+        # assert os.path.exists(self.cybench_dir), f"cybench directory {self.cybench_dir} does not exist"
         self.logger = self._setup_logger()
         if self.helm:
             self.crfm_auth = Authentication(api_key=self._get_env_var("HELM_API_KEY"))
@@ -531,7 +531,16 @@ class SimpleAgent:
             if idx not in idx_to_ignore:
                 self.truncated_chat_chain.chain.append(msg)
 
-    def write_in_file(self, subtask_index: int, rollout_id: str, iteration: int, subtask: Subtask, total_string: str):
+    def fsync_dir(self):
+        print(f"Syncing directory {self.log_dir}...")
+        dir_fd = os.open(self.log_dir, os.O_DIRECTORY)
+        try:
+            os.fsync(dir_fd)
+        finally:
+            os.close(dir_fd)
+        subprocess.run(["sync"])
+
+    def write_in_file(self, subtask_index: int, rollout_id: str, iteration: int, subtask: Subtask):
         if iteration + 1 == self.subtask_config.iteration_config.iterations_until_hint:
             default_hints = subtask.hints
             if len(default_hints) > 0:
@@ -545,26 +554,32 @@ class SimpleAgent:
                 )
                 self.logger.info(hints_prompt)
                 self.chat_chain.append({"role": "system", "content": hints_prompt})
+                self._truncate_chat_chain()
 
         truncated_input = self._truncate_input_to_max_tokens(
             str(self.truncated_chat_chain)
         )
+        write_filepath = os.path.join(self.log_dir, f"{rollout_id}_{iteration+1}.in")
         with open(
-            os.path.join(self.cybench_dir, f"{rollout_id}_{iteration+1}.in"),
+            write_filepath,
             "w",
         ) as file:
             fcntl.flock(file, fcntl.LOCK_EX)
             file.write(truncated_input)
             file.flush()
+            # os.fsync(file.fileno())
             fcntl.flock(file, fcntl.LOCK_UN)
+        # self.fsync_dir()
+
+        print(f"Wrote to {write_filepath} at time {datetime.now(timezone.utc)}")
 
 
     def _process_newrollout(self) -> Tuple[str, str, float]:
         if self.interactive_mode:
             print(colored("The agent is processing your answer!", "yellow"))
 
-        prompt_filepath = os.path.join(self.cybench_dir, f"_0.in")
-        chat_filepath = os.path.join(self.cybench_dir, f"_0.chat")
+        prompt_filepath = os.path.join(self.log_dir, f"_0.in")
+        chat_filepath = os.path.join(self.log_dir, f"_0.chat")
         print("Prompt filepath:", os.path.abspath(prompt_filepath))
         write_str = self._truncate_input_to_max_tokens(str(self.chat_chain))
         if not os.path.exists(prompt_filepath):
@@ -577,7 +592,7 @@ class SimpleAgent:
                 fcntl.flock(file, fcntl.LOCK_UN)
             self.chat_chain.save_chat_chain_as_json(chat_filepath)
         
-        processed_filepath = os.path.join(self.cybench_dir, f"processed_files.txt")
+        processed_filepath = os.path.join(self.log_dir, f"processed_files.txt")
         if not os.path.exists(processed_filepath):
             print("Processed files list does not exist. Creating a new one.")
             # Create the processed files list
@@ -598,7 +613,7 @@ class SimpleAgent:
             # assuming all commands can be executed in any order
             # This means we just pick any generation 
             # no need to track a certain rollout id or iteration number
-            input_files = glob.glob(os.path.join(self.verl_dir, f"*_0.out"))
+            input_files = glob.glob(os.path.join(self.log_dir, f"*_0.out"))
             if not input_files:
                 time.sleep(backoff)
                 backoff = min(backoff * 2, max_backoff)
@@ -621,7 +636,7 @@ class SimpleAgent:
         print(f"Found new rollout: {rollout_id} with iteration {iteration} in {request_duration} ms at {end_time}")
 
         # Write the current file to the processed files list
-        with open(os.path.join(self.cybench_dir, f"processed_files.txt"), "a+") as file:
+        with open(os.path.join(self.log_dir, f"processed_files.txt"), "a+") as file:
             file.write(f"{rollout_id}\n")
 
         return rollout_id, write_str, request_duration
@@ -638,10 +653,10 @@ class SimpleAgent:
             find_duration = 0.0
         
         start_time = datetime.now(timezone.utc)
-        print(f"Waiting for model response starting at {start_time}...")
         backoff = 0.01         # initial delay in seconds
         max_backoff = 0.1   
-        file_path = os.path.join(self.verl_dir, f"{rollout_id}_{iteration}.out")
+        file_path = os.path.join(self.log_dir, f"{rollout_id}_{iteration}.out")
+        print(f"Waiting for model response {file_path} starting at {start_time}...")
         while True:
             # Ensure that desired file exists 
             if os.path.exists(file_path):
@@ -662,7 +677,7 @@ class SimpleAgent:
             history_response = file.read().strip()
             fcntl.flock(file, fcntl.LOCK_UN)
 
-        print(f"Response before cleaning: {history_response} at {datetime.now(timezone.utc)}")
+        # print(f"Response before cleaning: {history_response} at {datetime.now(timezone.utc)}")
 
         # remove prompt from response
         # response = history_response.replace(prompt, "")
@@ -679,10 +694,11 @@ class SimpleAgent:
             response = response[:end_idx] 
 
         cleaned_response = self.get_cleaned_response(response=response)
+        # cleaned_response = response
 
         print(f"Response after cleaning: {cleaned_response}")
         model_response = ModelResponse(
-            value=cleaned_response,
+            value=history_response,
             full_response=history_response,
             time_taken_in_ms=request_duration,
             num_tokens=0,
@@ -729,7 +745,7 @@ class SimpleAgent:
                     print(f"Command {command.command_str} in commands {subtask.commands}")
                     grade = 0.8
             with open(
-                os.path.join(self.cybench_dir, f"{rollout_id}_{iteration}_grade.txt"),
+                os.path.join(self.log_dir, f"{rollout_id}_{iteration}_grade.txt"),
                 "w",
             ) as file:
                 fcntl.flock(file, fcntl.LOCK_EX)
@@ -761,7 +777,8 @@ class SimpleAgent:
                 model_response=model_response,
                 execution_output=execution_output,
             )
-            self.write_in_file(subtask_index, rollout_id, iteration, subtask, total_string)
+            if iteration < self.subtask_config.iteration_config.max_iterations - 1:
+                self.write_in_file(subtask_index, rollout_id, iteration, subtask)
             return ret_iteration, rollout_id
 
         if self.interactive_mode:
@@ -772,7 +789,7 @@ class SimpleAgent:
         )
 
         with open(
-            os.path.join(self.cybench_dir, f"{rollout_id}_{iteration}_grade.txt"),
+            os.path.join(self.log_dir, f"{rollout_id}_{iteration}_grade.txt"),
             "w",
         ) as file:
             fcntl.flock(file, fcntl.LOCK_EX)
@@ -786,7 +803,8 @@ class SimpleAgent:
             execution_output=None
         )
         
-        self.write_in_file(subtask_index, rollout_id, iteration, subtask, total_string)
+        if iteration < self.subtask_config.iteration_config.max_iterations - 1:
+            self.write_in_file(subtask_index, rollout_id, iteration, subtask)
         return ret_iteration, rollout_id
 
     def _process_subtask(
@@ -845,7 +863,7 @@ class SimpleAgent:
                 # Write grade to file
                 with open(
                     os.path.join(
-                        self.cybench_dir,
+                        self.log_dir,
                         f"{rollout_id}_{iteration}_grade.txt",
                     ),
                     "w",
@@ -856,7 +874,7 @@ class SimpleAgent:
                     fcntl.flock(file, fcntl.LOCK_UN)
                 with open(
                     os.path.join(
-                        self.cybench_dir,
+                        self.log_dir,
                         f"{rollout_id}_{iteration}_score.txt",
                     ),
                     "w",
@@ -864,7 +882,9 @@ class SimpleAgent:
                     fcntl.flock(file, fcntl.LOCK_EX)
                     file.write(str(score))
                     file.flush()
+                    # os.fsync(file.fileno())
                     fcntl.flock(file, fcntl.LOCK_UN)
+                # self.fsync_dir()
 
                 return SubtaskRun(
                     iterations=iterations,
@@ -905,7 +925,7 @@ class SimpleAgent:
         # so nothing is needed here.
         with open(
             os.path.join(
-                self.cybench_dir,
+                self.log_dir,
                 f"{rollout_id}_{iteration}_score.txt",
             ),
             "w",
@@ -913,7 +933,9 @@ class SimpleAgent:
             fcntl.flock(file, fcntl.LOCK_EX)
             file.write(str(0.0))
             file.flush()
+            # os.fsync(file.fileno())
             fcntl.flock(file, fcntl.LOCK_UN)
+        # self.fsync_dir()
 
         return SubtaskRun(
             iterations=iterations,

@@ -88,7 +88,7 @@ def apply_kl_penalty(data: DataProto, kl_ctrl: core_algos.AdaptiveKLController, 
     token_level_scores = data.batch['token_level_scores']
     batch_size = data.batch.batch_size[0]
     attention_mask = data.batch['attention_mask']
-    response_mask = attention_mask[:, -response_length:]
+    response_mask = data.batch['response_mask'] if 'response_mask' in data.batch else attention_mask[:, -response_length:] 
 
     # compute kl between ref_policy and current policy
     if 'ref_log_prob' in data.batch.keys():
@@ -100,6 +100,8 @@ def apply_kl_penalty(data: DataProto, kl_ctrl: core_algos.AdaptiveKLController, 
         beta = 0
         kld = torch.zeros_like(response_mask, dtype=torch.float32)
 
+    # print(f"token_level_scores {token_level_scores}")
+    # print(f"kld {kld}")
     token_level_rewards = token_level_scores - beta * kld
 
     current_kl = masked_mean(kld, mask=response_mask, axis=-1)  # average over sequence
@@ -122,8 +124,11 @@ def compute_advantage(data: DataProto, adv_estimator, gamma=1.0, lam=1.0, num_re
         responses = data.batch['responses']
         response_length = responses.size(-1)
         attention_mask = data.batch['attention_mask']
-        response_mask = attention_mask[:, -response_length:]
+        response_mask = data.batch['response_mask'] if 'response_mask' in data.batch else attention_mask[:, -response_length:]
         token_level_rewards = data.batch['token_level_rewards']
+        print(f"token_level_rewards shape {token_level_rewards.shape}")
+        print(f"values shape {values.shape}")
+        print(f"eos mask shape {response_mask.shape}")
         advantages, returns = core_algos.compute_gae_advantage_return(token_level_rewards=token_level_rewards,
                                                                       values=values,
                                                                       eos_mask=response_mask,
@@ -137,7 +142,7 @@ def compute_advantage(data: DataProto, adv_estimator, gamma=1.0, lam=1.0, num_re
         responses = data.batch['responses']
         response_length = responses.size(-1)
         attention_mask = data.batch['attention_mask']
-        response_mask = attention_mask[:, -response_length:]
+        response_mask = data.batch['response_mask'] if 'response_mask' in data.batch else attention_mask[:, -response_length:]
         advantages, returns = core_algos.compute_grpo_outcome_advantage(token_level_rewards=token_level_rewards,
                                                                         eos_mask=response_mask,
                                                                         index=index)
@@ -158,7 +163,8 @@ def _compute_response_info(batch):
     response_length = batch.batch['responses'].shape[-1]
 
     prompt_mask = batch.batch['attention_mask'][:, :-response_length]
-    response_mask = batch.batch['attention_mask'][:, -response_length:]
+    # response_mask = batch.batch['attention_mask'][:, -response_length:]
+    response_mask = batch.batch['response_mask']
 
     prompt_length = prompt_mask.sum(-1).float()
     response_length = response_mask.sum(-1).float()  # (batch_size,)
@@ -181,7 +187,8 @@ def compute_data_metrics(batch, use_critic=True):
     max_response_length = batch.batch['responses'].shape[-1]
 
     prompt_mask = batch.batch['attention_mask'][:, :-max_response_length].bool()
-    response_mask = batch.batch['attention_mask'][:, -max_response_length:].bool()
+    # response_mask = batch.batch['attention_mask'][:, -max_response_length:].bool()
+    response_mask = batch.batch['response_mask'].bool()
 
     max_prompt_length = prompt_mask.size(-1)
 
@@ -414,7 +421,7 @@ class RayPPOTrainer(object):
 
             # pad to be divisible by dp_size
             test_gen_batch_padded, pad_size = pad_dataproto_to_divisor(test_gen_batch, self.actor_rollout_wg.world_size)
-            test_output_gen_batch_padded = self.actor_rollout_wg.generate_sequences(test_gen_batch_padded)
+            test_output_gen_batch_padded = self.rollout_manager.get_rollout(test_gen_batch_padded)
             # unpad
             test_output_gen_batch = unpad_dataproto(test_output_gen_batch_padded, pad_size=pad_size)
             print('validation generation end')
@@ -522,6 +529,7 @@ class RayPPOTrainer(object):
         actor_remote_path = None if self.config.trainer.default_hdfs_dir is None else os.path.join(
             self.config.trainer.default_hdfs_dir, 'actor')
         self.actor_rollout_wg.save_checkpoint(actor_local_path, actor_remote_path)
+        print(f"Saving actor checkpoint to {actor_local_path}, remote path {actor_remote_path}")
 
         if self.use_critic:
             critic_local_path = os.path.join(self.config.trainer.default_local_dir, 'critic',
@@ -529,6 +537,7 @@ class RayPPOTrainer(object):
             critic_remote_path = None if self.config.trainer.default_hdfs_dir is None else os.path.join(
                 self.config.trainer.default_hdfs_dir, 'critic')
             self.critic_wg.save_checkpoint(critic_local_path, critic_remote_path)
+            print(f"Saving critic checkpoint to {critic_local_path}, remote path {critic_remote_path}")
 
     def _balance_batch(self, batch: DataProto, metrics, logging_prefix='global_seqlen'):
         """Reorder the data on single controller such that each dp rank gets similar total tokens"""
@@ -593,7 +602,7 @@ class RayPPOTrainer(object):
 
                 batch: DataProto = DataProto.from_single_dict(batch_dict)
 
-                print(f"batch: {batch}")
+                # print(f"batch: {batch}")
 
                 # pop those keys for generation
                 gen_batch = batch.pop(batch_keys=['input_ids', 'attention_mask', 'position_ids'], non_tensor_batch_keys=['rollout_id'])
@@ -603,7 +612,7 @@ class RayPPOTrainer(object):
                     with _timer('gen', timing_raw):
                         gen_batch_output = self.rollout_manager.get_rollout(gen_batch)
 
-                    print(f'gen_batch_output: {gen_batch_output}')  
+                    # print(f'gen_batch_output: {gen_batch_output}')  
 
                     batch.non_tensor_batch['uid'] = np.array([str(uuid.uuid4()) for _ in range(len(batch.batch))],
                                                              dtype=object)
@@ -629,6 +638,7 @@ class RayPPOTrainer(object):
                     if self.use_critic:
                         with _timer('values', timing_raw):
                             values = self.critic_wg.compute_values(batch)
+                            # print(f"compute values ouput: {values}")
                             batch = batch.union(values)
 
                     with _timer('adv', timing_raw):

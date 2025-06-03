@@ -107,12 +107,13 @@ class vLLMRollout(BaseRollout):
             logprobs=1,  # can be set to 0 and let actor to recompute
             max_tokens=config.response_length,
             # Can't do stop strings without detokenize = True?
-            # stop=["<END>", "<|endoftext|>", "<|im_end|>"]  
+            stop=["<END>", "<|endoftext|>", "<|im_end|>"]  
         )
 
         # we may detokenize the result all together later
         if vllm_version in ('0.4.2', '0.5.4', '0.6.3'):
-            kwargs['detokenize'] = False
+            # print("vllm version is 0.4.2, 0.5.4 or 0.6.3, detokenize is set to True")
+            kwargs['detokenize'] = True
 
         # supporting adding any sampling params from the config file
         for k in config.keys():
@@ -151,11 +152,11 @@ class vLLMRollout(BaseRollout):
         attention_mask = prompts.batch['attention_mask']
         position_ids = prompts.batch['position_ids']
 
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        print(f"vllm rollout device: {device}")
-        idx = prompts.batch['input_ids'].to(device)  # (bs, prompt_length)
-        attention_mask = prompts.batch['attention_mask'].to(device)
-        position_ids = prompts.batch['position_ids'].to(device)
+        # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        # print(f"vllm rollout device: {device}")
+        # idx = idx.to(device)  # (bs, prompt_length)
+        # attention_mask = attention_mask.to(device)
+        # position_ids = position_ids.to(device)
 
         # used to construct attention_mask
         eos_token_id = prompts.meta_info['eos_token_id']
@@ -180,17 +181,23 @@ class vLLMRollout(BaseRollout):
 
         # users can customize different sampling_params at different run
         with self.update_sampling_params(**kwargs):
-            with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
-                output = self.inference_engine.generate(
-                    prompts=None,  # because we have already convert it to prompt token id
-                    sampling_params=self.sampling_params,
-                    prompt_token_ids=idx_list,
-                    use_tqdm=False)
+            # with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
+            output = self.inference_engine.generate(
+                prompts=None,  # because we have already convert it to prompt token id
+                sampling_params=self.sampling_params,
+                prompt_token_ids=idx_list,
+                use_tqdm=False)
+                # print(f"generate output: {output}")
+                # output = output[0]  # output is a list of outputs, we only need the first one
+                # retok_output = [self.inference_engine.tokenizer.encode(text) for text in texts]
+                # print(f"retok_output: {retok_output}")
+
 
         # TODO(sgm): disable logprob when recompute_log_prob is enable
         # if n = 1: (bs, response_length) ; if n > 1: (bs * n, response_length)
         response = output[0].to(idx.device)
         log_probs = output[1].to(idx.device)
+        # print(f"response: {response}, log_probs: {log_probs}")
 
         if response.shape[1] < self.config.response_length:
             response = pad_sequence_to_length(response, self.config.response_length, self.pad_token_id)
@@ -213,7 +220,12 @@ class vLLMRollout(BaseRollout):
         # position_ids:   [0,0,0,0,0,1,2,3, | 4,5,6,7,8,9,10,11]
         response_position_ids = position_ids[:, -1:] + delta_position_id
         position_ids = torch.cat([position_ids, response_position_ids], dim=-1)
-        response_attention_mask = get_eos_mask(response_id=response, eos_token=eos_token_id, dtype=attention_mask.dtype)
+        # torch.set_printoptions(profile="full")
+        # print(f"response id {response}")
+        # print(f"eos token {eos_token_id}")
+        # print(f"pad token id {self.pad_token_id}")
+        response_attention_mask = get_eos_mask(response_id=response, eos_token=self.pad_token_id, dtype=attention_mask.dtype)
+        # print(f"response attention mask {response_attention_mask}")
         attention_mask = torch.cat((attention_mask, response_attention_mask), dim=-1)
 
         # all the tp ranks should contain the same data here. data in all ranks are valid
