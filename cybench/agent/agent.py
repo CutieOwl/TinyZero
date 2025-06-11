@@ -493,12 +493,12 @@ class SimpleAgent:
         truncation_alert = "\n...TRUNCATED...\n"
         num_tokens_in_truncation_alert = self._get_num_tokens(truncation_alert)
 
-        if num_input_tokens >= self.max_input_tokens - num_tokens_in_truncation_alert:
+        if num_input_tokens >= self.max_input_tokens - num_tokens_in_truncation_alert - 100: # subtract 100 for buffer
             self.logger.warning(
                 f"Number of input tokens ({num_input_tokens}) exceeds max tokens ({self.max_input_tokens}). Truncating input."
             )
             tokens = self._tokenize_input(model_input=model_input)
-            tokens_to_keep = self.max_input_tokens - num_tokens_in_truncation_alert
+            tokens_to_keep = self.max_input_tokens - num_tokens_in_truncation_alert - 100
             half_tokens_to_keep = tokens_to_keep // 2
             beginning_tokens = tokens[:half_tokens_to_keep]
             end_tokens = tokens[-half_tokens_to_keep:]

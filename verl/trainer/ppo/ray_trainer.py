@@ -405,12 +405,13 @@ class RayPPOTrainer(object):
         for test_data in self.val_dataloader:
             test_batch = DataProto.from_single_dict(test_data)
             # test_batch = test_batch.to('cuda')
+            print(f"test_batch {test_batch}")
 
             # we only do validation on rule-based rm
             if self.config.reward_model.enable and test_batch[0].non_tensor_batch['reward_model']['style'] == 'model':
                 return {}
 
-            test_gen_batch = test_batch.pop(['input_ids', 'attention_mask', 'position_ids'])
+            test_gen_batch = test_batch.pop(batch_keys=['input_ids', 'attention_mask', 'position_ids'], non_tensor_batch_keys=['rollout_id'])
             test_gen_batch.meta_info = {
                 'eos_token_id': self.tokenizer.eos_token_id,
                 'pad_token_id': self.tokenizer.pad_token_id,
@@ -593,6 +594,7 @@ class RayPPOTrainer(object):
             truncation='error',
         )
 
+        print(f"Validating every {self.config.trainer.test_freq}")
         for epoch in range(self.config.trainer.total_epochs):
             for batch_dict in self.train_dataloader:
                 print(f'epoch {epoch}, step {self.global_steps}')
@@ -602,7 +604,7 @@ class RayPPOTrainer(object):
 
                 batch: DataProto = DataProto.from_single_dict(batch_dict)
 
-                # print(f"batch: {batch}")
+                print(f"batch: {batch}")
 
                 # pop those keys for generation
                 gen_batch = batch.pop(batch_keys=['input_ids', 'attention_mask', 'position_ids'], non_tensor_batch_keys=['rollout_id'])
@@ -688,6 +690,7 @@ class RayPPOTrainer(object):
                     # validate
                     if self.val_reward_fn is not None and self.config.trainer.test_freq > 0 and \
                         self.global_steps % self.config.trainer.test_freq == 0:
+                        print(f"Validating at step {self.global_steps}...")
                         with _timer('testing', timing_raw):
                             val_metrics: dict = self._validate()
                         metrics.update(val_metrics)

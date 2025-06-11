@@ -7,22 +7,22 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=320GB                         # Memory request
 #SBATCH --time=256:00:00                    # Time limit
-#SBATCH --output=run_nlp.out
-#SBATCH --error=run_nlp.err
+#SBATCH --output=logs/run_nlp_%j.out
+#SBATCH --error=logs/run_nlp_%j.err
 
 #SBATCH --job-name=dclm_process
 #SBATCH --partition=sc-loprio
-#SBATCH --constraint=[80G|141G]
+#SBATCH --constraint=(80G|141G)&hopper
 ##SBATCH --constraint=[ampere|hopper]
-#SBATCH --exclude=tiger6,pasteur1
+#SBATCH --exclude=tiger6,pasteur1,tiger-hgx-1
 
 set -euo pipefail
 
 source /nlp/scr/kathli/miniconda3/etc/profile.d/conda.sh
 conda activate cyagent
 
-export MAX_PROMPT_LENGTH=3072
-export MAX_RESPONSE_LENGTH=384
+export MAX_PROMPT_LENGTH=${3:-3072}
+export MAX_RESPONSE_LENGTH=${4:-384}
 
 TASK_NAME=${1:-"dynastic"}
 
@@ -32,10 +32,10 @@ CYAGENT_LOG_DIR="logs/cyagent/${TASK_NAME}"
 export LOG_DIR="cybench/$CYAGENT_LOG_DIR"
 export CONTAINER_NAME="cybench_${TASK_NAME}"
 
-if [ -n "$LOG_DIR" ] && [ -d "$LOG_DIR" ]; then
-    rm -rf "$LOG_DIR"
-fi
-mkdir -p "$LOG_DIR"
+# if [ -n "$LOG_DIR" ] && [ -d "$LOG_DIR" ]; then
+#     rm -rf "$LOG_DIR"
+# fi
+# mkdir -p "$LOG_DIR"
 
 # -------------- CLEANUP ----------------
 # Trap SIGINT (Ctrl+C) and SIGTERM (kill), to cleanup
@@ -61,7 +61,7 @@ echo "[$(date)] Launching verl training job..."
 
 cd /nlp/scr/kathli/repos/TinyZero
 
-export N_GPUS=2
+export N_GPUS=4
 # export BASE_MODEL=model/Qwen2.5-0.5B-instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775
 export BASE_MODEL=model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1
 # export BASE_MODEL=model/Qwen3-0.6B/snapshots/6130ef31402718485ca4d80a6234f70d9a4cf362
@@ -69,13 +69,13 @@ export BASE_MODEL=model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa5
 export DATA_DIR=data/cybench_512
 export ROLLOUT_TP_SIZE=1
 # export EXPERIMENT_NAME=$DATA_DIR-qwen2.5-0.5B-instruct
-export EXPERIMENT_NAME=$DATA_DIR-qwen2.5-3B-instruct
+export EXPERIMENT_NAME=$DATA_DIR-qwen2.5-3B-instruct-$TASK_NAME
 # export EXPERIMENT_NAME=$DATA_DIR-qwen3-0.6b
 # export EXPERIMENT_NAME=$DATA_DIR-qwen2.5-0.5b
 export VLLM_ATTENTION_BACKEND=XFORMERS
 
 bash ./wandb_login.sh
-bash ./scripts/train_tiny_zero_a100.sh 2>&1 | tee "verl_out_${TASK_NAME}.log" &
+bash ./scripts/train_cyagent.sh 2>&1 | tee "verl_out_${TASK_NAME}.log" &
 TRAIN_PID=$!
 
 # -------------- CYBENCH ----------------
