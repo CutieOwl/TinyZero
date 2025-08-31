@@ -560,16 +560,28 @@ class SimpleAgent:
             str(self.truncated_chat_chain)
         )
         write_filepath = os.path.join(self.log_dir, f"{rollout_id}_{iteration+1}.in")
-        with open(
-            write_filepath,
-            "w",
-        ) as file:
-            fcntl.flock(file, fcntl.LOCK_EX)
-            file.write(truncated_input)
-            file.flush()
-            # os.fsync(file.fileno())
-            fcntl.flock(file, fcntl.LOCK_UN)
-        # self.fsync_dir()
+        while True:
+            temp_fd, temp_path = tempfile.mkstemp(dir=os.path.dirname(write_filepath))
+            try:
+                with os.fdopen(temp_fd, 'w') as file:
+                    fcntl.flock(file, fcntl.LOCK_EX)
+                    file.write(truncated_input)
+                    file.flush()
+                    os.fsync(file.fileno())  # Force write to disk
+                    fcntl.flock(file, fcntl.LOCK_UN)
+                
+                # Atomic rename - file only appears when complete
+                os.rename(temp_path, write_filepath)
+                break
+            except:
+                try:
+                    os.unlink(temp_path)  # Clean up on error
+                except FileNotFoundError:
+                    pass  # Already deleted, that's fine
+                if os.path.exists(write_filepath):
+                    break
+                else:
+                    print(f"Write/rename failed: {e}. Retrying...")
 
         print(f"Wrote to {write_filepath} at time {datetime.now(timezone.utc)}")
 

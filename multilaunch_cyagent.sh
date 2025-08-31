@@ -12,7 +12,7 @@
 
 #SBATCH --job-name=dclm_process
 #SBATCH --partition=sc-loprio
-#SBATCH --constraint=(80G|141G)&hopper
+#SBATCH --constraint=[80G|141G]
 ##SBATCH --constraint=[ampere|hopper]
 #SBATCH --exclude=tiger6,pasteur1,tiger-hgx-1
 
@@ -23,6 +23,13 @@ conda activate cyagent
 
 export MAX_PROMPT_LENGTH=${3:-3072}
 export MAX_RESPONSE_LENGTH=${4:-384}
+export BATCH_SIZE=${5:-4}
+
+VAL_BATCH_SIZE=$(( BATCH_SIZE < 8 ? BATCH_SIZE : 8 ))
+PPO_MINI_BATCH_SIZE=$(( BATCH_SIZE < 128 ? BATCH_SIZE : 128 ))
+
+export VAL_BATCH_SIZE
+export PPO_MINI_BATCH_SIZE
 
 TASK_NAME=${1:-"dynastic"}
 
@@ -87,7 +94,7 @@ WORKER_PIDS=()
 for i in $(seq 1 $NUM_CYBENCH_INSTANCES); do
     (
         cd "$CYBENCH_DIR"
-        CUDA_VISIBLE_DEVICES="" ./run_train_interface.sh --task_dir "${TASK_DIR}" --max_iterations 5 --max_input_tokens $MAX_PROMPT_LENGTH --max_output_tokens $MAX_RESPONSE_LENGTH --model Qwen-train/Qwen2.5-3B-instruct --iterations_until_hint 1 --responses_to_keep 6 --observations_to_keep 6 --task_objective "answer a task" --verl_log_dir "${CYAGENT_LOG_DIR}" > "${SLURM_SUBMIT_DIR}/task_${TASK_NAME}_worker_${i}.log" 2>&1
+        CUDA_VISIBLE_DEVICES="" ./run_train_interface.sh --task_dir "${TASK_DIR}" --max_iterations 5 --max_input_tokens $MAX_PROMPT_LENGTH --max_output_tokens $MAX_RESPONSE_LENGTH --model Qwen-train/Qwen2.5-3B-instruct --iterations_until_hint 1 --responses_to_keep 6 --observations_to_keep 6 --task_objective "answer a task" --verl_log_dir "${CYAGENT_LOG_DIR}" > "${SLURM_SUBMIT_DIR}/task_${TASK_NAME}_worker_${i}_${SLURM_JOB_ID}.log" 2>&1
     ) &
     WORKER_PIDS+=($!)
 done

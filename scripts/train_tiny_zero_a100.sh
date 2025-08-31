@@ -2,8 +2,8 @@ python3 -m verl.trainer.main_ppo \
 data.train_files=$DATA_DIR/train.parquet \
 data.val_files='["'${DATA_DIR}'/test.parquet","'${DATA_DIR}'/trte.parquet"]' \
 reward_model.log_dir=$LOG_DIR \
-data.train_batch_size=4 \
-data.val_batch_size=4 \
+data.train_batch_size=8 \
+data.val_batch_size=8 \
 data.max_prompt_length=$MAX_PROMPT_LENGTH \
 data.max_response_length=$MAX_RESPONSE_LENGTH \
 actor_rollout_ref.model.path=$BASE_MODEL \

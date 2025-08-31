@@ -1,0 +1,2 @@
+wandb: Currently logged in as: kathli (crfm-kathli) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+slurmstepd: error: *** JOB 10415814 ON sphinx11 CANCELLED AT 2025-06-11T01:43:36 ***

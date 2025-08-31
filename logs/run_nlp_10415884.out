@@ -1,0 +1,1312 @@
+[Wed 11 Jun 2025 01:46:05 AM PDT] Launching verl training job...
+Successfully logged into wandb.
+[Wed 11 Jun 2025 01:46:12 AM PDT] Starting 1 CPU workers...
+2025-06-11 01:46:31,572	INFO worker.py:1888 -- Started a local Ray instance.
+[36m(main_task pid=3289941)[0m {'actor_rollout_ref': {'actor': {'clip_ratio': 0.2,
+[36m(main_task pid=3289941)[0m                                  'entropy_coeff': 0.001,
+[36m(main_task pid=3289941)[0m                                  'fsdp_config': {'fsdp_size': -1,
+[36m(main_task pid=3289941)[0m                                                  'grad_offload': False,
+[36m(main_task pid=3289941)[0m                                                  'optimizer_offload': False,
+[36m(main_task pid=3289941)[0m                                                  'param_offload': False,
+[36m(main_task pid=3289941)[0m                                                  'wrap_policy': {'min_num_params': 0}},
+[36m(main_task pid=3289941)[0m                                  'grad_clip': 1.0,
+[36m(main_task pid=3289941)[0m                                  'kl_loss_coef': 0.001,
+[36m(main_task pid=3289941)[0m                                  'kl_loss_type': 'low_var_kl',
+[36m(main_task pid=3289941)[0m                                  'optim': {'lr': 1e-06,
+[36m(main_task pid=3289941)[0m                                            'lr_warmup_steps_ratio': 0.0,
+[36m(main_task pid=3289941)[0m                                            'min_lr_ratio': None,
+[36m(main_task pid=3289941)[0m                                            'total_training_steps': -1,
+[36m(main_task pid=3289941)[0m                                            'warmup_style': 'constant'},
+[36m(main_task pid=3289941)[0m                                  'ppo_epochs': 1,
+[36m(main_task pid=3289941)[0m                                  'ppo_max_token_len_per_gpu': 16384,
+[36m(main_task pid=3289941)[0m                                  'ppo_micro_batch_size': 4,
+[36m(main_task pid=3289941)[0m                                  'ppo_mini_batch_size': 8,
+[36m(main_task pid=3289941)[0m                                  'shuffle': False,
+[36m(main_task pid=3289941)[0m                                  'strategy': 'fsdp',
+[36m(main_task pid=3289941)[0m                                  'ulysses_sequence_parallel_size': 1,
+[36m(main_task pid=3289941)[0m                                  'use_dynamic_bsz': False,
+[36m(main_task pid=3289941)[0m                                  'use_kl_loss': False},
+[36m(main_task pid=3289941)[0m                        'hybrid_engine': True,
+[36m(main_task pid=3289941)[0m                        'model': {'enable_gradient_checkpointing': False,
+[36m(main_task pid=3289941)[0m                                  'external_lib': None,
+[36m(main_task pid=3289941)[0m                                  'override_config': {},
+[36m(main_task pid=3289941)[0m                                  'path': 'model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1',
+[36m(main_task pid=3289941)[0m                                  'use_remove_padding': False},
+[36m(main_task pid=3289941)[0m                        'ref': {'fsdp_config': {'fsdp_size': -1,
+[36m(main_task pid=3289941)[0m                                                'param_offload': False,
+[36m(main_task pid=3289941)[0m                                                'wrap_policy': {'min_num_params': 0}},
+[36m(main_task pid=3289941)[0m                                'log_prob_max_token_len_per_gpu': 16384,
+[36m(main_task pid=3289941)[0m                                'log_prob_micro_batch_size': 4,
+[36m(main_task pid=3289941)[0m                                'log_prob_use_dynamic_bsz': False,
+[36m(main_task pid=3289941)[0m                                'ulysses_sequence_parallel_size': 1},
+[36m(main_task pid=3289941)[0m                        'rollout': {'do_sample': True,
+[36m(main_task pid=3289941)[0m                                    'dtype': 'bfloat16',
+[36m(main_task pid=3289941)[0m                                    'enforce_eager': True,
+[36m(main_task pid=3289941)[0m                                    'free_cache_engine': True,
+[36m(main_task pid=3289941)[0m                                    'gpu_memory_utilization': 0.2,
+[36m(main_task pid=3289941)[0m                                    'ignore_eos': False,
+[36m(main_task pid=3289941)[0m                                    'load_format': 'dummy_dtensor',
+[36m(main_task pid=3289941)[0m                                    'log_prob_max_token_len_per_gpu': 16384,
+[36m(main_task pid=3289941)[0m                                    'log_prob_micro_batch_size': 4,
+[36m(main_task pid=3289941)[0m                                    'log_prob_use_dynamic_bsz': False,
+[36m(main_task pid=3289941)[0m                                    'max_num_batched_tokens': 8192,
+[36m(main_task pid=3289941)[0m                                    'max_num_seqs': 1024,
+[36m(main_task pid=3289941)[0m                                    'n': 1,
+[36m(main_task pid=3289941)[0m                                    'name': 'vllm',
+[36m(main_task pid=3289941)[0m                                    'prompt_length': 3072,
+[36m(main_task pid=3289941)[0m                                    'response_length': 384,
+[36m(main_task pid=3289941)[0m                                    'temperature': 1.0,
+[36m(main_task pid=3289941)[0m                                    'tensor_model_parallel_size': 1,
+[36m(main_task pid=3289941)[0m                                    'top_k': -1,
+[36m(main_task pid=3289941)[0m                                    'top_p': 1}},
+[36m(main_task pid=3289941)[0m  'algorithm': {'adv_estimator': 'gae',
+[36m(main_task pid=3289941)[0m                'gamma': 1.0,
+[36m(main_task pid=3289941)[0m                'kl_ctrl': {'kl_coef': 0.001, 'type': 'fixed'},
+[36m(main_task pid=3289941)[0m                'kl_penalty': 'kl',
+[36m(main_task pid=3289941)[0m                'lam': 1.0},
+[36m(main_task pid=3289941)[0m  'critic': {'cliprange_value': 0.5,
+[36m(main_task pid=3289941)[0m             'forward_max_token_len_per_gpu': '(16384) * 2',
+[36m(main_task pid=3289941)[0m             'forward_micro_batch_size': 4,
+[36m(main_task pid=3289941)[0m             'grad_clip': 1.0,
+[36m(main_task pid=3289941)[0m             'model': {'enable_gradient_checkpointing': True,
+[36m(main_task pid=3289941)[0m                       'external_lib': None,
+[36m(main_task pid=3289941)[0m                       'fsdp_config': {'fsdp_size': -1,
+[36m(main_task pid=3289941)[0m                                       'grad_offload': False,
+[36m(main_task pid=3289941)[0m                                       'optimizer_offload': False,
+[36m(main_task pid=3289941)[0m                                       'param_offload': False,
+[36m(main_task pid=3289941)[0m                                       'wrap_policy': {'min_num_params': 0}},
+[36m(main_task pid=3289941)[0m                       'override_config': {},
+[36m(main_task pid=3289941)[0m                       'path': 'model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1',
+[36m(main_task pid=3289941)[0m                       'tokenizer_path': 'model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1',
+[36m(main_task pid=3289941)[0m                       'use_remove_padding': False},
+[36m(main_task pid=3289941)[0m             'optim': {'lr': 1e-05,
+[36m(main_task pid=3289941)[0m                       'lr_warmup_steps_ratio': 0.0,
+[36m(main_task pid=3289941)[0m                       'min_lr_ratio': None,
+[36m(main_task pid=3289941)[0m                       'total_training_steps': -1,
+[36m(main_task pid=3289941)[0m                       'warmup_style': 'constant'},
+[36m(main_task pid=3289941)[0m             'ppo_epochs': 1,
+[36m(main_task pid=3289941)[0m             'ppo_max_token_len_per_gpu': '(16384) * 2',
+[36m(main_task pid=3289941)[0m             'ppo_micro_batch_size': 4,
+[36m(main_task pid=3289941)[0m             'ppo_mini_batch_size': 8,
+[36m(main_task pid=3289941)[0m             'shuffle': False,
+[36m(main_task pid=3289941)[0m             'strategy': 'fsdp',
+[36m(main_task pid=3289941)[0m             'ulysses_sequence_parallel_size': 1,
+[36m(main_task pid=3289941)[0m /nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/vllm/connections.py:8: RuntimeWarning: Failed to read commit hash:
+[36m(main_task pid=3289941)[0m No module named 'vllm._version'
+[36m(main_task pid=3289941)[0m   from vllm.version import __version__ as VLLM_VERSION
+[36m(pid=3312251)[0m /nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/vllm/connections.py:8: RuntimeWarning: Failed to read commit hash:
+[36m(pid=3312251)[0m No module named 'vllm._version'
+[36m(pid=3312251)[0m   from vllm.version import __version__ as VLLM_VERSION
+[36m(pid=3334137)[0m /nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/vllm/connections.py:8: RuntimeWarning: Failed to read commit hash:
+[36m(pid=3334137)[0m No module named 'vllm._version'
+[36m(pid=3334137)[0m   from vllm.version import __version__ as VLLM_VERSION
+[36m(WorkerDict pid=3312251)[0m Flash Attention 2.0 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2ForTokenClassification is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `torch_dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", torch_dtype=torch.float16)`
+[36m(WorkerDict pid=3312251)[0m You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.
+[36m(WorkerDict pid=3312251)[0m Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]
+[36m(WorkerDict pid=3334137)[0m Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  3.72it/s]
+[36m(WorkerDict pid=3334137)[0m Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  3.81it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  3.79it/s]
+[36m(WorkerDict pid=3334137)[0m Some weights of Qwen2ForTokenClassification were not initialized from the model checkpoint at model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1 and are newly initialized: ['score.bias']
+[36m(WorkerDict pid=3334137)[0m You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+[36m(pid=3334146)[0m /nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/vllm/connections.py:8: RuntimeWarning: Failed to read commit hash:[32m [repeated 2x across cluster] (Ray deduplicates logs by default. Set RAY_DEDUP_LOGS=0 to disable log deduplication, or see https://docs.ray.io/en/master/ray-observability/user-guides/configure-logging.html#log-deduplication for more options.)[0m
+[36m(pid=3334146)[0m No module named 'vllm._version'[32m [repeated 2x across cluster][0m
+[36m(pid=3334146)[0m   from vllm.version import __version__ as VLLM_VERSION[32m [repeated 2x across cluster][0m
+[36m(WorkerDict pid=3334125)[0m Flash Attention 2.0 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2ForTokenClassification is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `torch_dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", torch_dtype=torch.float16)`[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334125)[0m You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334125)[0m Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3312251)[0m Some weights of Qwen2ForTokenClassification were not initialized from the model checkpoint at model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1 and are newly initialized: ['score.bias', 'score.weight']
+[36m(WorkerDict pid=3312251)[0m Loading checkpoint shards:  50%|█████     | 1/2 [00:04<00:04,  4.95s/it][32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3312251)[0m Loading checkpoint shards: 100%|██████████| 2/2 [00:07<00:00,  3.67s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:07<00:00,  3.86s/it][32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334125)[0m Some weights of Qwen2ForTokenClassification were not initialized from the model checkpoint at model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1 and are newly initialized: ['score.bias'][32m [repeated 2x across cluster][0m
+[36m(WorkerDict pid=3312251)[0m You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3312251)[0m Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]
+[36m(WorkerDict pid=3334146)[0m Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]
+[36m(WorkerDict pid=3312251)[0m Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  2.76it/s]
+[36m(WorkerDict pid=3312251)[0m Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  3.26it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  3.17it/s]
+[36m(WorkerDict pid=3312251)[0m Flash Attention 2.0 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2ForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `torch_dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", torch_dtype=torch.float16)`
+[36m(WorkerDict pid=3334125)[0m Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][32m [repeated 2x across cluster][0m
+[36m(WorkerDict pid=3334137)[0m Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  2.34it/s][32m [repeated 3x across cluster][0m
+[36m(main_task pid=3289941)[0m             'use_dynamic_bsz': False},
+[36m(main_task pid=3289941)[0m  'data': {'max_iterations': 5,
+[36m(main_task pid=3289941)[0m           'max_prompt_length': 3072,
+[36m(main_task pid=3289941)[0m           'max_response_length': 384,
+[36m(main_task pid=3289941)[0m           'prompt_key': 'prompt',
+[36m(main_task pid=3289941)[0m           'return_raw_chat': False,
+[36m(main_task pid=3289941)[0m           'return_raw_input_ids': False,
+[36m(main_task pid=3289941)[0m           'tokenizer': None,
+[36m(main_task pid=3289941)[0m           'train_batch_size': 8,
+[36m(main_task pid=3289941)[0m           'train_files': 'data/cybench_512/train.parquet',
+[36m(main_task pid=3289941)[0m           'val_batch_size': 8,
+[36m(main_task pid=3289941)[0m           'val_files': ['data/cybench_512/test.parquet',
+[36m(main_task pid=3289941)[0m                         'data/cybench_512/trte.parquet']},
+[36m(main_task pid=3289941)[0m  'reward_model': {'enable': False,
+[36m(main_task pid=3289941)[0m                   'forward_max_token_len_per_gpu': '(16384) * 2',
+[36m(main_task pid=3289941)[0m                   'log_dir': 'cybench/logs/cyagent/dynastic',
+[36m(main_task pid=3289941)[0m                   'max_length': None,
+[36m(main_task pid=3289941)[0m                   'micro_batch_size': 64,
+[36m(main_task pid=3289941)[0m                   'model': {'external_lib': None,
+[36m(main_task pid=3289941)[0m                             'fsdp_config': {'min_num_params': 0,
+[36m(main_task pid=3289941)[0m                                             'param_offload': False},
+[36m(main_task pid=3289941)[0m                             'input_tokenizer': 'model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1',
+[36m(main_task pid=3289941)[0m                             'path': '~/models/FsfairX-LLaMA3-RM-v0.1',
+[36m(main_task pid=3289941)[0m                             'use_remove_padding': False},
+[36m(main_task pid=3289941)[0m                   'strategy': 'fsdp',
+[36m(main_task pid=3289941)[0m                   'ulysses_sequence_parallel_size': 1,
+[36m(main_task pid=3289941)[0m                   'use_dynamic_bsz': False},
+[36m(main_task pid=3289941)[0m  'trainer': {'critic_warmup': 0,
+[36m(main_task pid=3289941)[0m              'default_hdfs_dir': None,
+[36m(main_task pid=3289941)[0m              'default_local_dir': 'checkpoints/TinyZero/data/cybench_512-qwen2.5-3B-instruct-dynastic',
+[36m(main_task pid=3289941)[0m              'experiment_name': 'data/cybench_512-qwen2.5-3B-instruct-dynastic',
+[36m(main_task pid=3289941)[0m              'logger': ['wandb'],
+[36m(main_task pid=3289941)[0m              'n_gpus_per_node': 4,
+[36m(main_task pid=3289941)[0m              'nnodes': 1,
+[36m(main_task pid=3289941)[0m              'project_name': 'TinyZero',
+[36m(main_task pid=3289941)[0m              'save_freq': 50,
+[36m(main_task pid=3289941)[0m              'test_freq': 10,
+[36m(main_task pid=3289941)[0m              'total_epochs': 15,
+[36m(main_task pid=3289941)[0m              'total_training_steps': None,
+[36m(main_task pid=3289941)[0m              'val_before_train': False}}
+[36m(main_task pid=3289941)[0m original dataset len: 512
+[36m(main_task pid=3289941)[0m filter dataset len: 512
+[36m(main_task pid=3289941)[0m original dataset len: 256
+[36m(main_task pid=3289941)[0m filter dataset len: 256
+[36m(main_task pid=3289941)[0m Size of train dataloader: 64
+[36m(main_task pid=3289941)[0m Size of val dataloader: 32
+[36m(main_task pid=3289941)[0m Total training steps: 960
+[36m(WorkerDict pid=3312251)[0m Critic overriding config {'bos_token_id': None, 'eos_token_id': 151645, 'pad_token_id': 151643}
+[36m(WorkerDict pid=3312251)[0m Qwen2ForTokenClassification contains 3.09B parameters
+[36m(WorkerDict pid=3312251)[0m Before critic FSDP, memory allocated (GB): 0.0, memory reserved (GB): 0.0
+[36m(WorkerDict pid=3312251)[0m NCCL version 2.20.5+cuda12.4
+[36m(WorkerDict pid=3334125)[0m Total steps: 960, num_warmup_steps: 0
+[36m(WorkerDict pid=3334125)[0m Critic use_remove_padding=False
+[36m(WorkerDict pid=3312251)[0m After critic FSDP, memory allocated (GB): 2.881255626678467, memory reserved (GB): 6.876953125
+[36m(WorkerDict pid=3312251)[0m Model config after override: Qwen2Config {
+[36m(WorkerDict pid=3312251)[0m   "_name_or_path": "model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1",
+[36m(WorkerDict pid=3312251)[0m   "architectures": [
+[36m(WorkerDict pid=3312251)[0m     "Qwen2ForCausalLM"
+[36m(WorkerDict pid=3312251)[0m   ],
+[36m(WorkerDict pid=3312251)[0m   "attention_dropout": 0.0,
+[36m(WorkerDict pid=3312251)[0m   "eos_token_id": 151645,
+[36m(WorkerDict pid=3312251)[0m   "hidden_act": "silu",
+[36m(WorkerDict pid=3312251)[0m   "hidden_size": 2048,
+[36m(WorkerDict pid=3312251)[0m   "initializer_range": 0.02,
+[36m(WorkerDict pid=3312251)[0m   "intermediate_size": 11008,
+[36m(WorkerDict pid=3312251)[0m   "max_position_embeddings": 32768,
+[36m(WorkerDict pid=3312251)[0m   "max_window_layers": 70,
+[36m(WorkerDict pid=3312251)[0m   "model_type": "qwen2",
+[36m(WorkerDict pid=3312251)[0m   "num_attention_heads": 16,
+[36m(WorkerDict pid=3312251)[0m   "num_hidden_layers": 36,
+[36m(WorkerDict pid=3312251)[0m   "num_key_value_heads": 2,
+[36m(WorkerDict pid=3312251)[0m   "pad_token_id": 151643,
+[36m(WorkerDict pid=3312251)[0m   "rms_norm_eps": 1e-06,
+[36m(WorkerDict pid=3312251)[0m   "rope_scaling": null,
+[36m(WorkerDict pid=3312251)[0m   "rope_theta": 1000000.0,
+[36m(WorkerDict pid=3312251)[0m   "sliding_window": null,
+[36m(WorkerDict pid=3312251)[0m   "tie_word_embeddings": true,
+[36m(WorkerDict pid=3312251)[0m   "torch_dtype": "bfloat16",
+[36m(WorkerDict pid=3312251)[0m   "transformers_version": "4.47.1",
+[36m(WorkerDict pid=3312251)[0m   "use_cache": true,
+[36m(WorkerDict pid=3312251)[0m   "use_sliding_window": false,
+[36m(WorkerDict pid=3312251)[0m   "vocab_size": 151936
+[36m(WorkerDict pid=3312251)[0m }
+[36m(WorkerDict pid=3312251)[0m 
+[36m(WorkerDict pid=3312251)[0m Qwen2ForCausalLM contains 3.09B parameters
+[36m(WorkerDict pid=3312251)[0m wrap_policy: functools.partial(<function transformer_auto_wrap_policy at 0x144cf24845e0>, transformer_layer_cls={<class 'transformers.models.qwen2.modeling_qwen2.Qwen2DecoderLayer'>})
+[36m(WorkerDict pid=3312251)[0m Actor use_remove_padding=False
+[36m(WorkerDict pid=3312251)[0m Model config after override: Qwen2Config {
+[36m(WorkerDict pid=3312251)[0m   "_name_or_path": "model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1",
+[36m(WorkerDict pid=3312251)[0m   "architectures": [
+[36m(WorkerDict pid=3312251)[0m     "Qwen2ForCausalLM"
+[36m(WorkerDict pid=3312251)[0m   ],
+[36m(WorkerDict pid=3312251)[0m   "attention_dropout": 0.0,
+[36m(WorkerDict pid=3312251)[0m   "eos_token_id": 151645,
+[36m(WorkerDict pid=3312251)[0m   "hidden_act": "silu",
+[36m(WorkerDict pid=3312251)[0m   "hidden_size": 2048,
+[36m(WorkerDict pid=3312251)[0m   "initializer_range": 0.02,
+[36m(WorkerDict pid=3312251)[0m   "intermediate_size": 11008,
+[36m(WorkerDict pid=3312251)[0m   "max_position_embeddings": 32768,
+[36m(WorkerDict pid=3312251)[0m   "max_window_layers": 70,
+[36m(WorkerDict pid=3312251)[0m   "model_type": "qwen2",
+[36m(WorkerDict pid=3312251)[0m   "num_attention_heads": 16,
+[36m(WorkerDict pid=3312251)[0m   "num_hidden_layers": 36,
+[36m(WorkerDict pid=3312251)[0m   "num_key_value_heads": 2,
+[36m(WorkerDict pid=3312251)[0m   "pad_token_id": 151643,
+[36m(WorkerDict pid=3312251)[0m   "rms_norm_eps": 1e-06,
+[36m(WorkerDict pid=3312251)[0m   "rope_scaling": null,
+[36m(WorkerDict pid=3312251)[0m   "rope_theta": 1000000.0,
+[36m(WorkerDict pid=3312251)[0m   "sliding_window": null,
+[36m(WorkerDict pid=3312251)[0m   "tie_word_embeddings": true,
+[36m(WorkerDict pid=3312251)[0m   "torch_dtype": "bfloat16",
+[36m(WorkerDict pid=3312251)[0m   "transformers_version": "4.47.1",
+[36m(WorkerDict pid=3312251)[0m   "use_cache": true,
+[36m(WorkerDict pid=3334125)[0m Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.95it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.90it/s][32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334146)[0m Flash Attention 2.0 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2ForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `torch_dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", torch_dtype=torch.float16)`[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334146)[0m Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][32m [repeated 4x across cluster][0m
+[36m(WorkerDict pid=3334137)[0m Loading checkpoint shards:  50%|█████     | 1/2 [00:05<00:05,  5.52s/it]
+[36m(WorkerDict pid=3334146)[0m Loading checkpoint shards:  50%|█████     | 1/2 [00:05<00:05,  5.54s/it]
+[36m(WorkerDict pid=3334137)[0m Loading checkpoint shards: 100%|██████████| 2/2 [00:07<00:00,  3.68s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:07<00:00,  3.96s/it]
+[36m(WorkerDict pid=3312251)[0m /nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/xformers/ops/fmha/flash.py:211: FutureWarning: `torch.library.impl_abstract` was renamed to `torch.library.register_fake`. Please use that instead; we will remove `torch.library.impl_abstract` in a future version of PyTorch.
+[36m(WorkerDict pid=3312251)[0m   @torch.library.impl_abstract("xformers_flash::flash_fwd")
+[36m(WorkerDict pid=3334125)[0m Loading checkpoint shards:  50%|█████     | 1/2 [00:05<00:05,  5.75s/it][32m [repeated 2x across cluster][0m
+[36m(WorkerDict pid=3334125)[0m Loading checkpoint shards: 100%|██████████| 2/2 [00:08<00:00,  4.02s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:08<00:00,  4.28s/it][32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3312251)[0m /nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/xformers/ops/fmha/flash.py:344: FutureWarning: `torch.library.impl_abstract` was renamed to `torch.library.register_fake`. Please use that instead; we will remove `torch.library.impl_abstract` in a future version of PyTorch.
+[36m(WorkerDict pid=3312251)[0m   @torch.library.impl_abstract("xformers_flash::flash_bwd")
+[36m(WorkerDict pid=3334137)[0m /nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/xformers/ops/fmha/flash.py:211: FutureWarning: `torch.library.impl_abstract` was renamed to `torch.library.register_fake`. Please use that instead; we will remove `torch.library.impl_abstract` in a future version of PyTorch.[32m [repeated 5x across cluster][0m
+[36m(WorkerDict pid=3334137)[0m   @torch.library.impl_abstract("xformers_flash::flash_fwd")[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334137)[0m   @torch.library.impl_abstract("xformers_flash::flash_bwd")[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334137)[0m /nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:689: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+[36m(WorkerDict pid=3334137)[0m   warnings.warn(
+[36m(WorkerDict pid=3334137)[0m /nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/xformers/ops/fmha/flash.py:344: FutureWarning: `torch.library.impl_abstract` was renamed to `torch.library.register_fake`. Please use that instead; we will remove `torch.library.impl_abstract` in a future version of PyTorch.
+[36m(main_task pid=3289941)[0m wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+[36m(main_task pid=3289941)[0m wandb: Appending key for api.wandb.ai to your netrc file: /sailhome/kathli/.netrc
+[36m(main_task pid=3289941)[0m wandb: Currently logged in as: kathli (crfm-kathli) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+[36m(main_task pid=3289941)[0m wandb: Tracking run with wandb version 0.19.9
+[36m(main_task pid=3289941)[0m wandb: Run data is saved locally in /juice4/scr4/kathli/repos/TinyZero/wandb/run-20250611_014830-3mbf0v1h
+[36m(main_task pid=3289941)[0m wandb: Run `wandb offline` to turn off syncing.
+[36m(main_task pid=3289941)[0m wandb: Syncing run data/cybench_512-qwen2.5-3B-instruct-dynastic
+[36m(main_task pid=3289941)[0m wandb: ⭐️ View project at https://wandb.ai/crfm-kathli/TinyZero
+[36m(main_task pid=3289941)[0m wandb: 🚀 View run at https://wandb.ai/crfm-kathli/TinyZero/runs/3mbf0v1h
+[36m(WorkerDict pid=3312251)[0m   "use_sliding_window": false,
+[36m(WorkerDict pid=3312251)[0m   "vocab_size": 151936
+[36m(WorkerDict pid=3312251)[0m }
+[36m(WorkerDict pid=3312251)[0m 
+[36m(WorkerDict pid=3334146)[0m Total steps: 960, num_warmup_steps: 0[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334146)[0m Critic use_remove_padding=False[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3312251)[0m Qwen2ForCausalLM contains 3.09B parameters
+[36m(WorkerDict pid=3334137)[0m wrap_policy: functools.partial(<function transformer_auto_wrap_policy at 0x14508453d5e0>, transformer_layer_cls={<class 'transformers.models.qwen2.modeling_qwen2.Qwen2DecoderLayer'>})[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334137)[0m Actor use_remove_padding=False[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3312251)[0m Total steps: 960, num_warmup_steps: 0
+[36m(WorkerDict pid=3312251)[0m Before building vllm rollout, memory allocated (GB): 7.211104869842529, memory reserved (GB): 11.873046875
+[36m(WorkerDict pid=3312251)[0m wrap_policy: functools.partial(<function transformer_auto_wrap_policy at 0x144cf24845e0>, transformer_layer_cls={<class 'transformers.models.qwen2.modeling_qwen2.Qwen2DecoderLayer'>})[32m [repeated 4x across cluster][0m
+[36m(WorkerDict pid=3312251)[0m Actor use_remove_padding=False
+[36m(WorkerDict pid=3334146)[0m Actor use_remove_padding=False
+[36m(WorkerDict pid=3312251)[0m WARNING 06-11 01:48:14 config.py:380] To see benefits of async output processing, enable CUDA graph. Since, enforce-eager is enabled, async output processor cannot be used
+[36m(WorkerDict pid=3334137)[0m Total steps: 960, num_warmup_steps: 0[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334137)[0m Actor use_remove_padding=False[32m [repeated 2x across cluster][0m
+[36m(WorkerDict pid=3312251)[0m local rank 0
+[36m(WorkerDict pid=3312251)[0m INFO 06-11 01:48:14 selector.py:115] Using XFormers backend.
+[36m(WorkerDict pid=3334137)[0m WARNING 06-11 01:48:19 config.py:380] To see benefits of async output processing, enable CUDA graph. Since, enforce-eager is enabled, async output processor cannot be used[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334137)[0m local rank 0[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334137)[0m INFO 06-11 01:48:19 selector.py:115] Using XFormers backend.[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334137)[0m NCCL version 2.20.5+cuda12.4
+[36m(WorkerDict pid=3312251)[0m before init cache memory allocated: 13.99078144GB, reserved: 14.097055744GB
+[36m(WorkerDict pid=3312251)[0m after init cache memory allocated: 40.131191296GB, reserved: 40.294678528GB
+[36m(WorkerDict pid=3334137)[0m INFO 06-11 01:48:20 selector.py:115] Using XFormers backend.[32m [repeated 4x across cluster][0m
+[36m(WorkerDict pid=3334137)[0m kwargs: {'n': 1, 'logprobs': 1, 'max_tokens': 384, 'stop': ['<END>', '<|endoftext|>', '<|im_end|>'], 'detokenize': True, 'temperature': 1.0, 'top_k': -1, 'top_p': 1, 'ignore_eos': False}
+[36m(WorkerDict pid=3334125)[0m NCCL version 2.20.5+cuda12.4[32m [repeated 2x across cluster][0m
+[36m(WorkerDict pid=3312251)[0m After building vllm rollout, memory allocated (GB): 31.595324993133545, memory reserved (GB): 37.52734375
+[36m(WorkerDict pid=3312251)[0m After building sharding manager, memory allocated (GB): 31.595324993133545, memory reserved (GB): 37.52734375
+[36m(main_task pid=3289941)[0m Validating every 10
+[36m(WorkerDict pid=3312251)[0m kwargs: {'n': 1, 'logprobs': 1, 'max_tokens': 384, 'stop': ['<END>', '<|endoftext|>', '<|im_end|>'], 'detokenize': True, 'temperature': 1.0, 'top_k': -1, 'top_p': 1, 'ignore_eos': False}[32m [repeated 3x across cluster][0m
+[36m(main_task pid=3289941)[0m epoch 0, step 1
+[36m(main_task pid=3289941)[0m batch: DataProto(batch=TensorDict(
+[36m(main_task pid=3289941)[0m     fields={
+[36m(main_task pid=3289941)[0m         attention_mask: Tensor(shape=torch.Size([8, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         input_ids: Tensor(shape=torch.Size([8, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         position_ids: Tensor(shape=torch.Size([8, 3072]), device=cpu, dtype=torch.int64, is_shared=False)},
+[36m(main_task pid=3289941)[0m     batch_size=torch.Size([8]),
+[36m(main_task pid=3289941)[0m     device=None,
+[36m(main_task pid=3289941)[0m     is_shared=False), non_tensor_batch={'target': array([19, 31, 30, 33, 14, 92, 76, 90], dtype=object), 'nums': array([array([60, 20, 31, 88]), array([90, 84, 46, 83]),
+[36m(main_task pid=3289941)[0m        array([78, 32,  2,  7]), array([50, 92, 75, 66]),
+[36m(main_task pid=3289941)[0m        array([75, 88,  9, 65]), array([99, 38, 45]),
+[36m(main_task pid=3289941)[0m        array([85, 31, 37,  4]), array([50, 27, 82, 97])], dtype=object), 'data_source': array(['cybench', 'cybench', 'cybench', 'cybench', 'cybench', 'cybench',
+[36m(main_task pid=3289941)[0m        'cybench', 'cybench'], dtype=object), 'task_name': array(['hackthebox_dynastic', 'hackthebox_dynastic',
+[36m(main_task pid=3289941)[0m        'hackthebox_dynastic', 'hackthebox_dynastic',
+[36m(main_task pid=3289941)[0m        'hackthebox_dynastic', 'hackthebox_dynastic',
+[36m(main_task pid=3289941)[0m        'hackthebox_dynastic', 'hackthebox_dynastic'], dtype=object), 'ability': array(['math', 'math', 'math', 'math', 'math', 'math', 'math', 'math'],
+[36m(main_task pid=3289941)[0m       dtype=object), 'reward_model': array([{'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'}],
+[36m(main_task pid=3289941)[0m       dtype=object), 'extra_info': array([{'index': 169, 'split': 'train'}, {'index': 365, 'split': 'train'},
+[36m(main_task pid=3289941)[0m        {'index': 487, 'split': 'train'}, {'index': 324, 'split': 'train'},
+[36m(main_task pid=3289941)[0m        {'index': 281, 'split': 'train'}, {'index': 366, 'split': 'train'},
+[36m(main_task pid=3289941)[0m        {'index': 50, 'split': 'train'}, {'index': 489, 'split': 'train'}],
+[36m(main_task pid=3289941)[0m       dtype=object), 'rollout_id': array(['rW5XmYP', 'Eg2MOIn', 'M6Mn5Tl', '9FaMcgQ', 's4ssTw6', 'Kak7KPe',
+[36m(main_task pid=3289941)[0m        'F7BUPjl', 'sjoxSoN'], dtype=object), 'index': array([169, 365, 487, 324, 281, 366, 50, 489], dtype=object)}, meta_info={})
+[36m(main_task pid=3289941)[0m Batch size: 2
+[36m(main_task pid=3289941)[0m Processing chunk DataProto(batch=TensorDict(
+[36m(main_task pid=3289941)[0m     fields={
+[36m(main_task pid=3289941)[0m         attention_mask: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         input_ids: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         position_ids: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False)},
+[36m(main_task pid=3289941)[0m     batch_size=torch.Size([4]),
+[36m(main_task pid=3289941)[0m     device=None,
+[36m(main_task pid=3289941)[0m     is_shared=False), non_tensor_batch={'rollout_id': array(['rW5XmYP', 'Eg2MOIn', 'M6Mn5Tl', '9FaMcgQ'], dtype=object)}, meta_info={})
+[36m(main_task pid=3289941)[0m ['rW5XmYP' 'Eg2MOIn' 'M6Mn5Tl' '9FaMcgQ']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 15.651155
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/rW5XmYP_0.out: 0.004457
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/rW5XmYP_0_score.txt or input file cybench/logs/cyagent/dynastic/rW5XmYP_1.in to appear starting at 2025-06-11 08:48:48.559013+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 1.157345, end_time 2025-06-11 08:48:49.716358+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.012839
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 10.284691
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/rW5XmYP_1.out: 0.003562
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/rW5XmYP_1_score.txt or input file cybench/logs/cyagent/dynastic/rW5XmYP_2.in to appear starting at 2025-06-11 08:49:00.020627+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.257274, end_time 2025-06-11 08:49:01.277901+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.015332
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 9.471021
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/rW5XmYP_2.out: 0.003926
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/rW5XmYP_2_score.txt or input file cybench/logs/cyagent/dynastic/rW5XmYP_3.in to appear starting at 2025-06-11 08:49:10.771635+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.157472, end_time 2025-06-11 08:49:11.929107+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.01659
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 9.959115
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/rW5XmYP_3.out: 0.003916
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/rW5XmYP_3_score.txt or input file cybench/logs/cyagent/dynastic/rW5XmYP_4.in to appear starting at 2025-06-11 08:49:21.912153+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.459496, end_time 2025-06-11 08:49:23.371649+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.016264
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 11.429391
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/rW5XmYP_4.out: 0.004409
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/rW5XmYP_4_score.txt or input file cybench/logs/cyagent/dynastic/rW5XmYP_5.in to appear starting at 2025-06-11 08:49:34.824998+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1241)), (tensor(1460), tensor(1543)), (tensor(1617), tensor(1735)), (tensor(1925), tensor(2034)), (tensor(2224), tensor(2344))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 848
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.013669 seconds
+[36m(main_task pid=3289941)[0m ['rW5XmYP' 'Eg2MOIn' 'M6Mn5Tl' '9FaMcgQ']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 6.423841
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Eg2MOIn_0.out: 0.003117
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Eg2MOIn_0_score.txt or input file cybench/logs/cyagent/dynastic/Eg2MOIn_1.in to appear starting at 2025-06-11 08:49:42.023270+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 6.280412, end_time 2025-06-11 08:49:48.303682+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.011175
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 8.261289
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Eg2MOIn_1.out: 0.003284
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Eg2MOIn_1_score.txt or input file cybench/logs/cyagent/dynastic/Eg2MOIn_2.in to appear starting at 2025-06-11 08:49:56.583083+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 0.955602, end_time 2025-06-11 08:49:57.538685+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.011087
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 8.822951
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Eg2MOIn_2.out: 0.004111
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Eg2MOIn_2_score.txt or input file cybench/logs/cyagent/dynastic/Eg2MOIn_3.in to appear starting at 2025-06-11 08:50:06.380228+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.05721, end_time 2025-06-11 08:50:07.437438+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.013499
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 10.378465
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Eg2MOIn_3.out: 0.003637
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Eg2MOIn_3_score.txt or input file cybench/logs/cyagent/dynastic/Eg2MOIn_4.in to appear starting at 2025-06-11 08:50:17.836559+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.056379, end_time 2025-06-11 08:50:18.892938+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.013573
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 8.904189
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Eg2MOIn_4.out: 0.003658
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Eg2MOIn_4_score.txt or input file cybench/logs/cyagent/dynastic/Eg2MOIn_5.in to appear starting at 2025-06-11 08:50:27.817534+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1129)), (tensor(1164), tensor(1177)), (tensor(1183), tensor(1260)), (tensor(1334), tensor(1423)), (tensor(1496), tensor(1582))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1576
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.003796 seconds
+[36m(main_task pid=3289941)[0m ['rW5XmYP' 'Eg2MOIn' 'M6Mn5Tl' '9FaMcgQ']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 6.03007
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/M6Mn5Tl_0.out: 0.003235
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/M6Mn5Tl_0_score.txt or input file cybench/logs/cyagent/dynastic/M6Mn5Tl_1.in to appear starting at 2025-06-11 08:50:34.411776+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 6.585306, end_time 2025-06-11 08:50:40.997082+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.012632
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 9.493903
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/M6Mn5Tl_1.out: 0.003923
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/M6Mn5Tl_1_score.txt or input file cybench/logs/cyagent/dynastic/M6Mn5Tl_2.in to appear starting at 2025-06-11 08:50:50.511395+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.056047, end_time 2025-06-11 08:50:51.567442+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.014536
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 12.486095
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/M6Mn5Tl_2.out: 0.003636
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/M6Mn5Tl_2_score.txt or input file cybench/logs/cyagent/dynastic/M6Mn5Tl_3.in to appear starting at 2025-06-11 08:51:04.075027+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.057163, end_time 2025-06-11 08:51:05.132190+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.013743
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 7.900955
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/M6Mn5Tl_3.out: 0.003238
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/M6Mn5Tl_3_score.txt or input file cybench/logs/cyagent/dynastic/M6Mn5Tl_4.in to appear starting at 2025-06-11 08:51:13.053472+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.056953, end_time 2025-06-11 08:51:14.110425+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.015273
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 7.989022
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/M6Mn5Tl_4.out: 0.003298
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/M6Mn5Tl_4_score.txt or input file cybench/logs/cyagent/dynastic/M6Mn5Tl_5.in to appear starting at 2025-06-11 08:51:22.121222+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1136)), (tensor(1259), tensor(1415)), (tensor(1489), tensor(1630)), (tensor(1672), tensor(1731)), (tensor(1825), tensor(1932))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1247
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.003748 seconds
+[36m(main_task pid=3289941)[0m ['rW5XmYP' 'Eg2MOIn' 'M6Mn5Tl' '9FaMcgQ']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 8.421487
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/9FaMcgQ_0.out: 0.004289
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/9FaMcgQ_0_score.txt or input file cybench/logs/cyagent/dynastic/9FaMcgQ_1.in to appear starting at 2025-06-11 08:51:31.207433+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 7.995748, end_time 2025-06-11 08:51:39.203181+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.011786
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 11.242832
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/9FaMcgQ_1.out: 0.003786
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/9FaMcgQ_1_score.txt or input file cybench/logs/cyagent/dynastic/9FaMcgQ_2.in to appear starting at 2025-06-11 08:51:50.465119+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 0.956242, end_time 2025-06-11 08:51:51.421361+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.007134
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 7.999746
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/9FaMcgQ_2.out: 0.003575
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/9FaMcgQ_2_score.txt or input file cybench/logs/cyagent/dynastic/9FaMcgQ_3.in to appear starting at 2025-06-11 08:51:59.435696+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.15755, end_time 2025-06-11 08:52:00.593246+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.013299
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 9.987457
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/9FaMcgQ_3.out: 0.003698
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/9FaMcgQ_3_score.txt or input file cybench/logs/cyagent/dynastic/9FaMcgQ_4.in to appear starting at 2025-06-11 08:52:10.601628+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.157973, end_time 2025-06-11 08:52:11.759601+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.014969
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 7.378345
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/9FaMcgQ_4.out: 0.00404
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/9FaMcgQ_4_score.txt or input file cybench/logs/cyagent/dynastic/9FaMcgQ_5.in to appear starting at 2025-06-11 08:52:19.160485+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1162)), (tensor(1279), tensor(1349)), (tensor(1393), tensor(1458)), (tensor(1531), tensor(1613)), (tensor(1707), tensor(1795))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1365
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.003632 seconds
+[36m(main_task pid=3289941)[0m Processing chunk DataProto(batch=TensorDict(
+[36m(main_task pid=3289941)[0m     fields={
+[36m(main_task pid=3289941)[0m         attention_mask: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         input_ids: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         position_ids: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False)},
+[36m(main_task pid=3289941)[0m     batch_size=torch.Size([4]),
+[36m(main_task pid=3289941)[0m     device=None,
+[36m(main_task pid=3289941)[0m     is_shared=False), non_tensor_batch={'rollout_id': array(['s4ssTw6', 'Kak7KPe', 'F7BUPjl', 'sjoxSoN'], dtype=object)}, meta_info={})
+[36m(main_task pid=3289941)[0m ['s4ssTw6' 'Kak7KPe' 'F7BUPjl' 'sjoxSoN']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 8.266378
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/s4ssTw6_0.out: 0.003843
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/s4ssTw6_0_score.txt or input file cybench/logs/cyagent/dynastic/s4ssTw6_1.in to appear starting at 2025-06-11 08:52:28.092510+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 4.373159, end_time 2025-06-11 08:52:32.465669+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.012632
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 9.772261
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/s4ssTw6_1.out: 0.004088
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/s4ssTw6_1_score.txt or input file cybench/logs/cyagent/dynastic/s4ssTw6_2.in to appear starting at 2025-06-11 08:52:42.258058+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.057068, end_time 2025-06-11 08:52:43.315126+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.014603
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 9.052915
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/s4ssTw6_2.out: 0.003532
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/s4ssTw6_2_score.txt or input file cybench/logs/cyagent/dynastic/s4ssTw6_3.in to appear starting at 2025-06-11 08:52:52.389737+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.057579, end_time 2025-06-11 08:52:53.447316+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.013841
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 10.069248
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/s4ssTw6_3.out: 0.003829
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/s4ssTw6_3_score.txt or input file cybench/logs/cyagent/dynastic/s4ssTw6_4.in to appear starting at 2025-06-11 08:53:03.538115+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.056476, end_time 2025-06-11 08:53:04.594591+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.016455
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 10.309045
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/s4ssTw6_4.out: 0.003608
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/s4ssTw6_4_score.txt or input file cybench/logs/cyagent/dynastic/s4ssTw6_5.in to appear starting at 2025-06-11 08:53:14.927315+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1134)), (tensor(1201), tensor(1290)), (tensor(1481), tensor(1565)), (tensor(1659), tensor(1791)), (tensor(1864), tensor(2003))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1208
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.00349 seconds
+[36m(main_task pid=3289941)[0m ['s4ssTw6' 'Kak7KPe' 'F7BUPjl' 'sjoxSoN']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 8.334114
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Kak7KPe_0.out: 0.003855
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Kak7KPe_0_score.txt or input file cybench/logs/cyagent/dynastic/Kak7KPe_1.in to appear starting at 2025-06-11 08:53:24.025958+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 5.3786, end_time 2025-06-11 08:53:29.404558+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.012025
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 6.329084
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Kak7KPe_1.out: 0.00345
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Kak7KPe_1_score.txt or input file cybench/logs/cyagent/dynastic/Kak7KPe_2.in to appear starting at 2025-06-11 08:53:35.753058+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 0.956291, end_time 2025-06-11 08:53:36.709349+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.013397
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 7.932958
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Kak7KPe_2.out: 0.004515
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Kak7KPe_2_score.txt or input file cybench/logs/cyagent/dynastic/Kak7KPe_3.in to appear starting at 2025-06-11 08:53:44.663780+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 0.956244, end_time 2025-06-11 08:53:45.620024+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.013114
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 8.46699
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Kak7KPe_3.out: 0.003562
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Kak7KPe_3_score.txt or input file cybench/logs/cyagent/dynastic/Kak7KPe_4.in to appear starting at 2025-06-11 08:53:54.106975+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 0.956444, end_time 2025-06-11 08:53:55.063419+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.012592
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 6.861652
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Kak7KPe_4.out: 0.003924
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Kak7KPe_4_score.txt or input file cybench/logs/cyagent/dynastic/Kak7KPe_5.in to appear starting at 2025-06-11 08:54:01.945465+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1145)), (tensor(1180), tensor(1212)), (tensor(1218), tensor(1286)), (tensor(1292), tensor(1352)), (tensor(1358), tensor(1429))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1714
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.00385 seconds
+[36m(main_task pid=3289941)[0m ['s4ssTw6' 'Kak7KPe' 'F7BUPjl' 'sjoxSoN']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 8.751703
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/F7BUPjl_0.out: 0.003824
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/F7BUPjl_0_score.txt or input file cybench/logs/cyagent/dynastic/F7BUPjl_1.in to appear starting at 2025-06-11 08:54:11.262230+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 4.67547, end_time 2025-06-11 08:54:15.937700+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.010783
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 10.797425
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/F7BUPjl_1.out: 0.003338
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/F7BUPjl_1_score.txt or input file cybench/logs/cyagent/dynastic/F7BUPjl_2.in to appear starting at 2025-06-11 08:54:26.752562+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.157294, end_time 2025-06-11 08:54:27.909856+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.012777
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 9.149946
+[36m(WorkerDict pid=3312251)[0m /nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/torch/utils/checkpoint.py:1399: FutureWarning: `torch.cpu.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cpu', args...)` instead.
+[36m(WorkerDict pid=3312251)[0m   with device_autocast_ctx, torch.cpu.amp.autocast(**cpu_autocast_kwargs), recompute_context:  # type: ignore[attr-defined]
+[36m(WorkerDict pid=3312251)[0m /nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:689: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3312251)[0m   warnings.warn([32m [repeated 3x across cluster][0m
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/F7BUPjl_2.out: 0.003921
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/F7BUPjl_2_score.txt or input file cybench/logs/cyagent/dynastic/F7BUPjl_3.in to appear starting at 2025-06-11 08:54:37.080283+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 0.956845, end_time 2025-06-11 08:54:38.037128+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.013903
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 10.129879
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/F7BUPjl_3.out: 0.003732
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/F7BUPjl_3_score.txt or input file cybench/logs/cyagent/dynastic/F7BUPjl_4.in to appear starting at 2025-06-11 08:54:48.188120+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.057048, end_time 2025-06-11 08:54:49.245168+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.014469
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 9.662793
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/F7BUPjl_4.out: 0.003761
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/F7BUPjl_4_score.txt or input file cybench/logs/cyagent/dynastic/F7BUPjl_5.in to appear starting at 2025-06-11 08:54:58.929676+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1195)), (tensor(1230), tensor(1375)), (tensor(1381), tensor(1495)), (tensor(1501), tensor(1609)), (tensor(1615), tensor(1733))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1457
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.003728 seconds
+[36m(main_task pid=3289941)[0m ['s4ssTw6' 'Kak7KPe' 'F7BUPjl' 'sjoxSoN']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 9.476334
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/sjoxSoN_0.out: 0.003857
+[36m(main_task pid=3289941)[0m 
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/sjoxSoN_0_score.txt or input file cybench/logs/cyagent/dynastic/sjoxSoN_1.in to appear starting at 2025-06-11 08:55:09.271697+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 3.166313, end_time 2025-06-11 08:55:12.438010+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.011466
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 8.547533
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/sjoxSoN_1.out: 0.003202
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/sjoxSoN_1_score.txt or input file cybench/logs/cyagent/dynastic/sjoxSoN_2.in to appear starting at 2025-06-11 08:55:21.004162+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.258338, end_time 2025-06-11 08:55:22.262500+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.012993
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 7.886231
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/sjoxSoN_2.out: 0.003484
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/sjoxSoN_2_score.txt or input file cybench/logs/cyagent/dynastic/sjoxSoN_3.in to appear starting at 2025-06-11 08:55:30.168911+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.158183, end_time 2025-06-11 08:55:31.327094+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.013499
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 9.178295
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/sjoxSoN_3.out: 0.004173
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/sjoxSoN_3_score.txt or input file cybench/logs/cyagent/dynastic/sjoxSoN_4.in to appear starting at 2025-06-11 08:55:40.526877+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.057168, end_time 2025-06-11 08:55:41.584045+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.016524
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 8.269938
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/sjoxSoN_4.out: 0.004036
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/sjoxSoN_4_score.txt or input file cybench/logs/cyagent/dynastic/sjoxSoN_5.in to appear starting at 2025-06-11 08:55:49.877667+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1121)), (tensor(1244), tensor(1310)), (tensor(1501), tensor(1590)), (tensor(1655), tensor(1729)), (tensor(1919), tensor(2010))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1153
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.003405 seconds
+[36m(main_task pid=3289941)[0m Time taken to concat: 0.001088 seconds
+[36m(main_task pid=3289941)[0m token_level_rewards shape torch.Size([8, 3456])
+[36m(main_task pid=3289941)[0m values shape torch.Size([8, 3456])
+[36m(main_task pid=3289941)[0m eos mask shape torch.Size([8, 3456])
+[36m(WorkerDict pid=3312251)[0m Values inside critic torch.Size([2, 3456])
+[36m(WorkerDict pid=3312251)[0m Response mask inside critic torch.Size([2, 3456])
+[36m(WorkerDict pid=3312251)[0m values shape torch.Size([1, 3456]), vpreds shape torch.Size([1, 3456]), eos_mask shape torch.Size([1, 3456]), returns shape torch.Size([1, 3456])
+[36m(main_task pid=3289941)[0m epoch 0, step 2
+[36m(main_task pid=3289941)[0m batch: DataProto(batch=TensorDict(
+[36m(main_task pid=3289941)[0m     fields={
+[36m(main_task pid=3289941)[0m         attention_mask: Tensor(shape=torch.Size([8, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         input_ids: Tensor(shape=torch.Size([8, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         position_ids: Tensor(shape=torch.Size([8, 3072]), device=cpu, dtype=torch.int64, is_shared=False)},
+[36m(main_task pid=3289941)[0m     batch_size=torch.Size([8]),
+[36m(main_task pid=3289941)[0m     device=None,
+[36m(main_task pid=3289941)[0m     is_shared=False), non_tensor_batch={'target': array([45, 46, 12, 62, 90, 98, 30, 25], dtype=object), 'nums': array([array([36, 63, 44, 51]), array([60, 66, 91, 51]),
+[36m(main_task pid=3289941)[0m        array([81, 55,  5,  2]), array([37, 69, 98, 70]),
+[36m(main_task pid=3289941)[0m        array([94,  6, 23, 33]), array([44, 19, 35]),
+[36m(main_task pid=3289941)[0m        array([34, 62, 31, 29]), array([ 7,  5, 65,  4])], dtype=object), 'data_source': array(['cybench', 'cybench', 'cybench', 'cybench', 'cybench', 'cybench',
+[36m(main_task pid=3289941)[0m        'cybench', 'cybench'], dtype=object), 'task_name': array(['hackthebox_dynastic', 'hackthebox_dynastic',
+[36m(main_task pid=3289941)[0m        'hackthebox_dynastic', 'hackthebox_dynastic',
+[36m(main_task pid=3289941)[0m        'hackthebox_dynastic', 'hackthebox_dynastic',
+[36m(main_task pid=3289941)[0m        'hackthebox_dynastic', 'hackthebox_dynastic'], dtype=object), 'ability': array(['math', 'math', 'math', 'math', 'math', 'math', 'math', 'math'],
+[36m(main_task pid=3289941)[0m       dtype=object), 'reward_model': array([{'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'}],
+[36m(main_task pid=3289941)[0m       dtype=object), 'extra_info': array([{'index': 297, 'split': 'train'}, {'index': 121, 'split': 'train'},
+[36m(main_task pid=3289941)[0m        {'index': 264, 'split': 'train'}, {'index': 493, 'split': 'train'},
+[36m(main_task pid=3289941)[0m        {'index': 336, 'split': 'train'}, {'index': 0, 'split': 'train'},
+[36m(main_task pid=3289941)[0m        {'index': 323, 'split': 'train'}, {'index': 134, 'split': 'train'}],
+[36m(main_task pid=3289941)[0m       dtype=object), 'rollout_id': array(['K0jnBrl', 'bIaK4Y8', 'JCQpxVC', '3r99lDm', 'ZtmgHyh', '2LD4Myt',
+[36m(main_task pid=3289941)[0m        'zNsVdcn', 'Tw66mEk'], dtype=object), 'index': array([297, 121, 264, 493, 336, 0, 323, 134], dtype=object)}, meta_info={})
+[36m(main_task pid=3289941)[0m Batch size: 2
+[36m(main_task pid=3289941)[0m Processing chunk DataProto(batch=TensorDict(
+[36m(main_task pid=3289941)[0m     fields={
+[36m(main_task pid=3289941)[0m         attention_mask: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         input_ids: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         position_ids: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False)},
+[36m(main_task pid=3289941)[0m     batch_size=torch.Size([4]),
+[36m(main_task pid=3289941)[0m     device=None,
+[36m(main_task pid=3289941)[0m     is_shared=False), non_tensor_batch={'rollout_id': array(['K0jnBrl', 'bIaK4Y8', 'JCQpxVC', '3r99lDm'], dtype=object)}, meta_info={})
+[36m(main_task pid=3289941)[0m ['K0jnBrl' 'bIaK4Y8' 'JCQpxVC' '3r99lDm']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 10.180397
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/K0jnBrl_0.out: 0.004616
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/K0jnBrl_0_score.txt or input file cybench/logs/cyagent/dynastic/K0jnBrl_1.in to appear starting at 2025-06-11 08:56:04.451794+00:00
+[36m(WorkerDict pid=3334137)[0m Values inside critic torch.Size([2, 3456])[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334137)[0m Response mask inside critic torch.Size([2, 3456])[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334137)[0m values shape torch.Size([1, 3456]), vpreds shape torch.Size([1, 3456]), eos_mask shape torch.Size([1, 3456]), returns shape torch.Size([1, 3456])[32m [repeated 7x across cluster][0m
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 1.258293, end_time 2025-06-11 08:56:05.710087+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.016701
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 6.203869
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/K0jnBrl_1.out: 0.003934
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/K0jnBrl_1_score.txt or input file cybench/logs/cyagent/dynastic/K0jnBrl_2.in to appear starting at 2025-06-11 08:56:11.938117+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.861586, end_time 2025-06-11 08:56:13.799703+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.013746
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 7.651273
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/K0jnBrl_2.out: 0.00343
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/K0jnBrl_2_score.txt or input file cybench/logs/cyagent/dynastic/K0jnBrl_3.in to appear starting at 2025-06-11 08:56:21.471518+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.057112, end_time 2025-06-11 08:56:22.528630+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.013728
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 8.386429
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/K0jnBrl_3.out: 0.003594
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/K0jnBrl_3_score.txt or input file cybench/logs/cyagent/dynastic/K0jnBrl_4.in to appear starting at 2025-06-11 08:56:30.936075+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 0.956604, end_time 2025-06-11 08:56:31.892679+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.016424
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 8.749651
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/K0jnBrl_4.out: 0.003804
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/K0jnBrl_4_score.txt or input file cybench/logs/cyagent/dynastic/K0jnBrl_5.in to appear starting at 2025-06-11 08:56:40.666809+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1125)), (tensor(1248), tensor(1294)), (tensor(1368), tensor(1435)), (tensor(1471), tensor(1553)), (tensor(1743), tensor(1824))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1329
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.002585 seconds
+[36m(main_task pid=3289941)[0m ['K0jnBrl' 'bIaK4Y8' 'JCQpxVC' '3r99lDm']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 9.353652
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/bIaK4Y8_0.out: 0.004159
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/bIaK4Y8_0_score.txt or input file cybench/logs/cyagent/dynastic/bIaK4Y8_1.in to appear starting at 2025-06-11 08:56:50.683733+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 3.368313, end_time 2025-06-11 08:56:54.052046+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.013107
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 8.612876
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/bIaK4Y8_1.out: 0.003685
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/bIaK4Y8_1_score.txt or input file cybench/logs/cyagent/dynastic/bIaK4Y8_2.in to appear starting at 2025-06-11 08:57:02.685515+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.258218, end_time 2025-06-11 08:57:03.943733+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.013334
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 8.918756
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/bIaK4Y8_2.out: 0.003447
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/bIaK4Y8_2_score.txt or input file cybench/logs/cyagent/dynastic/bIaK4Y8_3.in to appear starting at 2025-06-11 08:57:12.882538+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.056766, end_time 2025-06-11 08:57:13.939304+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.015722
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 10.639857
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/bIaK4Y8_3.out: 0.003648
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/bIaK4Y8_3_score.txt or input file cybench/logs/cyagent/dynastic/bIaK4Y8_4.in to appear starting at 2025-06-11 08:57:24.601643+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.057579, end_time 2025-06-11 08:57:25.659222+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.018125
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 9.203504
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/bIaK4Y8_4.out: 0.003562
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/bIaK4Y8_4_score.txt or input file cybench/logs/cyagent/dynastic/bIaK4Y8_5.in to appear starting at 2025-06-11 08:57:34.888182+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1154)), (tensor(1373), tensor(1452)), (tensor(1526), tensor(1608)), (tensor(1798), tensor(1879)), (tensor(2069), tensor(2151))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1003
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.004251 seconds
+[36m(main_task pid=3289941)[0m ['K0jnBrl' 'bIaK4Y8' 'JCQpxVC' '3r99lDm']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 7.951808
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/JCQpxVC_0.out: 0.003753
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/JCQpxVC_0_score.txt or input file cybench/logs/cyagent/dynastic/JCQpxVC_1.in to appear starting at 2025-06-11 08:57:43.506094+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 5.578457, end_time 2025-06-11 08:57:49.084551+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.011794
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 8.554
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/JCQpxVC_1.out: 0.004419
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/JCQpxVC_1_score.txt or input file cybench/logs/cyagent/dynastic/JCQpxVC_2.in to appear starting at 2025-06-11 08:57:57.658500+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.05746, end_time 2025-06-11 08:57:58.715960+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.013807
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 10.691579
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/JCQpxVC_2.out: 0.00387
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/JCQpxVC_2_score.txt or input file cybench/logs/cyagent/dynastic/JCQpxVC_3.in to appear starting at 2025-06-11 08:58:09.428477+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 0.956771, end_time 2025-06-11 08:58:10.385248+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.011217
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 8.262497
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/JCQpxVC_3.out: 0.003539
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/JCQpxVC_3_score.txt or input file cybench/logs/cyagent/dynastic/JCQpxVC_4.in to appear starting at 2025-06-11 08:58:18.665449+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 0.955485, end_time 2025-06-11 08:58:19.620934+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.015739
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 7.191089
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/JCQpxVC_4.out: 0.003762
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/JCQpxVC_4_score.txt or input file cybench/logs/cyagent/dynastic/JCQpxVC_5.in to appear starting at 2025-06-11 08:58:26.834838+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1129)), (tensor(1252), tensor(1326)), (tensor(1517), tensor(1588)), (tensor(1778), tensor(1847)), (tensor(2037), tensor(2083))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1035
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.002318 seconds
+[36m(main_task pid=3289941)[0m ['K0jnBrl' 'bIaK4Y8' 'JCQpxVC' '3r99lDm']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 8.648757
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/3r99lDm_0.out: 0.003576
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/3r99lDm_0_score.txt or input file cybench/logs/cyagent/dynastic/3r99lDm_1.in to appear starting at 2025-06-11 08:58:36.347426+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 3.168076, end_time 2025-06-11 08:58:39.515502+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.007857
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 8.534072
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/3r99lDm_1.out: 0.004386
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/3r99lDm_1_score.txt or input file cybench/logs/cyagent/dynastic/3r99lDm_2.in to appear starting at 2025-06-11 08:58:48.065100+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.056679, end_time 2025-06-11 08:58:49.121779+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.012085
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 8.331431
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/3r99lDm_2.out: 0.003849
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/3r99lDm_2_score.txt or input file cybench/logs/cyagent/dynastic/3r99lDm_3.in to appear starting at 2025-06-11 08:58:57.473174+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.158143, end_time 2025-06-11 08:58:58.631317+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.011726
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 9.420612
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/3r99lDm_3.out: 0.003539
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/3r99lDm_3_score.txt or input file cybench/logs/cyagent/dynastic/3r99lDm_4.in to appear starting at 2025-06-11 08:59:08.071685+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.056032, end_time 2025-06-11 08:59:09.127717+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.009997
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 13.500307
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/3r99lDm_4.out: 0.003586
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/3r99lDm_4_score.txt or input file cybench/logs/cyagent/dynastic/3r99lDm_5.in to appear starting at 2025-06-11 08:59:22.644809+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1143)), (tensor(1266), tensor(1319)), (tensor(1393), tensor(1460)), (tensor(1496), tensor(1569)), (tensor(1759), tensor(1903))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1313
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.00398 seconds
+[36m(main_task pid=3289941)[0m Processing chunk DataProto(batch=TensorDict(
+[36m(main_task pid=3289941)[0m     fields={
+[36m(main_task pid=3289941)[0m         attention_mask: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         input_ids: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         position_ids: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False)},
+[36m(main_task pid=3289941)[0m     batch_size=torch.Size([4]),
+[36m(main_task pid=3289941)[0m     device=None,
+[36m(main_task pid=3289941)[0m     is_shared=False), non_tensor_batch={'rollout_id': array(['ZtmgHyh', '2LD4Myt', 'zNsVdcn', 'Tw66mEk'], dtype=object)}, meta_info={})
+[36m(main_task pid=3289941)[0m ['ZtmgHyh' '2LD4Myt' 'zNsVdcn' 'Tw66mEk']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 10.081301
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/ZtmgHyh_0.out: 0.003912
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/ZtmgHyh_0_score.txt or input file cybench/logs/cyagent/dynastic/ZtmgHyh_1.in to appear starting at 2025-06-11 08:59:33.492923+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 2.864961, end_time 2025-06-11 08:59:36.357884+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.01192
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 11.036835
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/ZtmgHyh_1.out: 0.00386
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/ZtmgHyh_1_score.txt or input file cybench/logs/cyagent/dynastic/ZtmgHyh_2.in to appear starting at 2025-06-11 08:59:47.414252+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 0.956773, end_time 2025-06-11 08:59:48.371025+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.013049
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 8.286115
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/ZtmgHyh_2.out: 0.003533
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/ZtmgHyh_2_score.txt or input file cybench/logs/cyagent/dynastic/ZtmgHyh_3.in to appear starting at 2025-06-11 08:59:56.677476+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.158699, end_time 2025-06-11 08:59:57.836175+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.014768
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 9.860183
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/ZtmgHyh_3.out: 0.003713
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/ZtmgHyh_3_score.txt or input file cybench/logs/cyagent/dynastic/ZtmgHyh_4.in to appear starting at 2025-06-11 09:00:07.718767+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.056878, end_time 2025-06-11 09:00:08.775645+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.017394
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 9.274894
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/ZtmgHyh_4.out: 0.003954
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/ZtmgHyh_4_score.txt or input file cybench/logs/cyagent/dynastic/ZtmgHyh_5.in to appear starting at 2025-06-11 09:00:18.075357+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1126)), (tensor(1249), tensor(1309)), (tensor(1500), tensor(1610)), (tensor(1704), tensor(1777)), (tensor(1967), tensor(2090))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1105
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.002445 seconds
+[36m(main_task pid=3289941)[0m ['ZtmgHyh' '2LD4Myt' 'zNsVdcn' 'Tw66mEk']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 10.015003
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/2LD4Myt_0.out: 0.003925
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/2LD4Myt_0_score.txt or input file cybench/logs/cyagent/dynastic/2LD4Myt_1.in to appear starting at 2025-06-11 09:00:28.753289+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 2.664936, end_time 2025-06-11 09:00:31.418225+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.006603
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 10.22874
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/2LD4Myt_1.out: 0.00421
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/2LD4Myt_1_score.txt or input file cybench/logs/cyagent/dynastic/2LD4Myt_2.in to appear starting at 2025-06-11 09:00:41.661119+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.056484, end_time 2025-06-11 09:00:42.717603+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.012674
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 8.390199
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/2LD4Myt_2.out: 0.003657
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/2LD4Myt_2_score.txt or input file cybench/logs/cyagent/dynastic/2LD4Myt_3.in to appear starting at 2025-06-11 09:00:51.127447+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.057045, end_time 2025-06-11 09:00:52.184492+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.01709
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 8.091646
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/2LD4Myt_3.out: 0.004716
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/2LD4Myt_3_score.txt or input file cybench/logs/cyagent/dynastic/2LD4Myt_4.in to appear starting at 2025-06-11 09:01:00.301103+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.056353, end_time 2025-06-11 09:01:01.357456+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.015841
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 10.512219
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/2LD4Myt_4.out: 0.003491
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/2LD4Myt_4_score.txt or input file cybench/logs/cyagent/dynastic/2LD4Myt_5.in to appear starting at 2025-06-11 09:01:11.892296+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1122)), (tensor(1245), tensor(1304)), (tensor(1378), tensor(1445)), (tensor(1635), tensor(1715)), (tensor(1809), tensor(1862))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1263
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.001836 seconds
+[36m(main_task pid=3289941)[0m ['ZtmgHyh' '2LD4Myt' 'zNsVdcn' 'Tw66mEk']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 8.582591
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/zNsVdcn_0.out: 0.003884
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/zNsVdcn_0_score.txt or input file cybench/logs/cyagent/dynastic/zNsVdcn_1.in to appear starting at 2025-06-11 09:01:20.513805+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 5.276078, end_time 2025-06-11 09:01:25.789883+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.012375
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 8.282956
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/zNsVdcn_1.out: 0.003912
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/zNsVdcn_1_score.txt or input file cybench/logs/cyagent/dynastic/zNsVdcn_2.in to appear starting at 2025-06-11 09:01:34.092489+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 0.956348, end_time 2025-06-11 09:01:35.048837+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.01346
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 9.825871
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/zNsVdcn_2.out: 0.003589
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/zNsVdcn_2_score.txt or input file cybench/logs/cyagent/dynastic/zNsVdcn_3.in to appear starting at 2025-06-11 09:01:44.895714+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.057876, end_time 2025-06-11 09:01:45.953590+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.014615
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 11.455993
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/zNsVdcn_3.out: 0.003877
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/zNsVdcn_3_score.txt or input file cybench/logs/cyagent/dynastic/zNsVdcn_4.in to appear starting at 2025-06-11 09:01:57.432602+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.056329, end_time 2025-06-11 09:01:58.488931+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.015181
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 12.728164
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/zNsVdcn_4.out: 0.004256
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/zNsVdcn_4_score.txt or input file cybench/logs/cyagent/dynastic/zNsVdcn_5.in to appear starting at 2025-06-11 09:02:11.240625+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1123)), (tensor(1246), tensor(1319)), (tensor(1510), tensor(1617)), (tensor(1711), tensor(1787)), (tensor(1860), tensor(1979))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1212
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.004523 seconds
+[36m(main_task pid=3289941)[0m ['ZtmgHyh' '2LD4Myt' 'zNsVdcn' 'Tw66mEk']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 7.413302
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Tw66mEk_0.out: 0.003877
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Tw66mEk_0_score.txt or input file cybench/logs/cyagent/dynastic/Tw66mEk_1.in to appear starting at 2025-06-11 09:02:19.325815+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 5.378359, end_time 2025-06-11 09:02:24.704174+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.012068
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 13.212421
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Tw66mEk_1.out: 0.003744
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Tw66mEk_1_score.txt or input file cybench/logs/cyagent/dynastic/Tw66mEk_2.in to appear starting at 2025-06-11 09:02:37.935874+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.056071, end_time 2025-06-11 09:02:38.991945+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.010934
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 10.545008
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Tw66mEk_2.out: 0.003484
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Tw66mEk_2_score.txt or input file cybench/logs/cyagent/dynastic/Tw66mEk_3.in to appear starting at 2025-06-11 09:02:49.554596+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 0.959252, end_time 2025-06-11 09:02:50.513848+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.013393
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 8.57192
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Tw66mEk_3.out: 0.003739
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Tw66mEk_3_score.txt or input file cybench/logs/cyagent/dynastic/Tw66mEk_4.in to appear starting at 2025-06-11 09:02:59.107033+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.058151, end_time 2025-06-11 09:03:00.165184+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.013596
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 8.545542
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Tw66mEk_4.out: 0.003959
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Tw66mEk_4_score.txt or input file cybench/logs/cyagent/dynastic/Tw66mEk_5.in to appear starting at 2025-06-11 09:03:08.731856+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1220)), (tensor(1255), tensor(1430)), (tensor(1436), tensor(1450)), (tensor(1456), tensor(1496)), (tensor(1502), tensor(1542))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1570
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.004169 seconds
+[36m(main_task pid=3289941)[0m Time taken to concat: 0.000987 seconds
+[36m(main_task pid=3289941)[0m token_level_rewards shape torch.Size([8, 3456])
+[36m(main_task pid=3289941)[0m values shape torch.Size([8, 3456])
+[36m(main_task pid=3289941)[0m eos mask shape torch.Size([8, 3456])
+[36m(WorkerDict pid=3312251)[0m Values inside critic torch.Size([2, 3456])
+[36m(WorkerDict pid=3312251)[0m Response mask inside critic torch.Size([2, 3456])
+[36m(WorkerDict pid=3312251)[0m values shape torch.Size([1, 3456]), vpreds shape torch.Size([1, 3456]), eos_mask shape torch.Size([1, 3456]), returns shape torch.Size([1, 3456])
+[36m(main_task pid=3289941)[0m epoch 0, step 3
+[36m(main_task pid=3289941)[0m batch: DataProto(batch=TensorDict(
+[36m(main_task pid=3289941)[0m     fields={
+[36m(main_task pid=3289941)[0m         attention_mask: Tensor(shape=torch.Size([8, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         input_ids: Tensor(shape=torch.Size([8, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         position_ids: Tensor(shape=torch.Size([8, 3072]), device=cpu, dtype=torch.int64, is_shared=False)},
+[36m(main_task pid=3289941)[0m     batch_size=torch.Size([8]),
+[36m(main_task pid=3289941)[0m     device=None,
+[36m(main_task pid=3289941)[0m     is_shared=False), non_tensor_batch={'target': array([98, 78, 41, 93, 29, 82, 36, 63], dtype=object), 'nums': array([array([88, 24, 34]), array([ 2, 89, 83, 99]),
+[36m(main_task pid=3289941)[0m        array([12,  2, 55, 82]), array([10, 49, 54]),
+[36m(main_task pid=3289941)[0m        array([28, 71, 38, 11]), array([21, 30,  6, 98]),
+[36m(main_task pid=3289941)[0m        array([61, 40, 15]), array([23, 58,  5, 23])], dtype=object), 'data_source': array(['cybench', 'cybench', 'cybench', 'cybench', 'cybench', 'cybench',
+[36m(main_task pid=3289941)[0m        'cybench', 'cybench'], dtype=object), 'task_name': array(['hackthebox_dynastic', 'hackthebox_dynastic',
+[36m(main_task pid=3289941)[0m        'hackthebox_dynastic', 'hackthebox_dynastic',
+[36m(main_task pid=3289941)[0m        'hackthebox_dynastic', 'hackthebox_dynastic',
+[36m(main_task pid=3289941)[0m        'hackthebox_dynastic', 'hackthebox_dynastic'], dtype=object), 'ability': array(['math', 'math', 'math', 'math', 'math', 'math', 'math', 'math'],
+[36m(main_task pid=3289941)[0m       dtype=object), 'reward_model': array([{'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'}],
+[36m(main_task pid=3289941)[0m       dtype=object), 'extra_info': array([{'index': 87, 'split': 'train'}, {'index': 467, 'split': 'train'},
+[36m(main_task pid=3289941)[0m        {'index': 384, 'split': 'train'}, {'index': 222, 'split': 'train'},
+[36m(main_task pid=3289941)[0m        {'index': 392, 'split': 'train'}, {'index': 90, 'split': 'train'},
+[36m(main_task pid=3289941)[0m        {'index': 292, 'split': 'train'}, {'index': 34, 'split': 'train'}],
+[36m(main_task pid=3289941)[0m       dtype=object), 'rollout_id': array(['kG5ooik', 'Iz4ctDh', 'ysf7Rel', 'EoW2mcf', '8tNNhRM', 'whtfNQA',
+[36m(main_task pid=3289941)[0m        '7GFe8DF', 'xP322bm'], dtype=object), 'index': array([87, 467, 384, 222, 392, 90, 292, 34], dtype=object)}, meta_info={})
+[36m(main_task pid=3289941)[0m Batch size: 2
+[36m(main_task pid=3289941)[0m Processing chunk DataProto(batch=TensorDict(
+[36m(main_task pid=3289941)[0m     fields={
+[36m(main_task pid=3289941)[0m         attention_mask: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         input_ids: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         position_ids: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False)},
+[36m(main_task pid=3289941)[0m     batch_size=torch.Size([4]),
+[36m(main_task pid=3289941)[0m     device=None,
+[36m(main_task pid=3289941)[0m     is_shared=False), non_tensor_batch={'rollout_id': array(['kG5ooik', 'Iz4ctDh', 'ysf7Rel', 'EoW2mcf'], dtype=object)}, meta_info={})
+[36m(main_task pid=3289941)[0m ['kG5ooik' 'Iz4ctDh' 'ysf7Rel' 'EoW2mcf']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 7.01268
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/kG5ooik_0.out: 0.003642
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/kG5ooik_0_score.txt or input file cybench/logs/cyagent/dynastic/kG5ooik_1.in to appear starting at 2025-06-11 09:03:19.868971+00:00
+[36m(WorkerDict pid=3334137)[0m Values inside critic torch.Size([2, 3456])[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334137)[0m Response mask inside critic torch.Size([2, 3456])[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334137)[0m values shape torch.Size([1, 3456]), vpreds shape torch.Size([1, 3456]), eos_mask shape torch.Size([1, 3456]), returns shape torch.Size([1, 3456])[32m [repeated 7x across cluster][0m
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 2.363453, end_time 2025-06-11 09:03:22.232424+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.011492
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 10.690136
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/kG5ooik_1.out: 0.004281
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/kG5ooik_1_score.txt or input file cybench/logs/cyagent/dynastic/kG5ooik_2.in to appear starting at 2025-06-11 09:03:32.942095+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.057227, end_time 2025-06-11 09:03:33.999322+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.009711
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 9.730119
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/kG5ooik_2.out: 0.003125
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/kG5ooik_2_score.txt or input file cybench/logs/cyagent/dynastic/kG5ooik_3.in to appear starting at 2025-06-11 09:03:43.744910+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.055542, end_time 2025-06-11 09:03:44.800452+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.015028
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 8.96758
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/kG5ooik_3.out: 0.003101
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/kG5ooik_3_score.txt or input file cybench/logs/cyagent/dynastic/kG5ooik_4.in to appear starting at 2025-06-11 09:03:53.789547+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.257839, end_time 2025-06-11 09:03:55.047386+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.015487
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 7.917831
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/kG5ooik_4.out: 0.003033
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/kG5ooik_4_score.txt or input file cybench/logs/cyagent/dynastic/kG5ooik_5.in to appear starting at 2025-06-11 09:04:02.986759+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1142)), (tensor(1265), tensor(1342)), (tensor(1437), tensor(1521)), (tensor(1711), tensor(1800)), (tensor(1873), tensor(1957))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1199
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.004276 seconds
+[36m(main_task pid=3289941)[0m ['kG5ooik' 'Iz4ctDh' 'ysf7Rel' 'EoW2mcf']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 7.837324
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Iz4ctDh_0.out: 0.003889
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Iz4ctDh_0_score.txt or input file cybench/logs/cyagent/dynastic/Iz4ctDh_1.in to appear starting at 2025-06-11 09:04:11.489723+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 4.880629, end_time 2025-06-11 09:04:16.370352+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.012082
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 8.830085
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Iz4ctDh_1.out: 0.003207
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Iz4ctDh_1_score.txt or input file cybench/logs/cyagent/dynastic/Iz4ctDh_2.in to appear starting at 2025-06-11 09:04:25.219343+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.056614, end_time 2025-06-11 09:04:26.275957+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.013113
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 11.421005
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Iz4ctDh_2.out: 0.003051
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Iz4ctDh_2_score.txt or input file cybench/logs/cyagent/dynastic/Iz4ctDh_3.in to appear starting at 2025-06-11 09:04:37.716980+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.057227, end_time 2025-06-11 09:04:38.774207+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.014769
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 11.119351
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Iz4ctDh_3.out: 0.002994
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Iz4ctDh_3_score.txt or input file cybench/logs/cyagent/dynastic/Iz4ctDh_4.in to appear starting at 2025-06-11 09:04:49.914528+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.357717, end_time 2025-06-11 09:04:51.272245+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.010337
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 17.651835
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/Iz4ctDh_4.out: 0.003727
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/Iz4ctDh_4_score.txt or input file cybench/logs/cyagent/dynastic/Iz4ctDh_5.in to appear starting at 2025-06-11 09:05:08.940902+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1130)), (tensor(1253), tensor(1323)), (tensor(1514), tensor(1597)), (tensor(1691), tensor(1948)), (tensor(1978), tensor(2305))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1094
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.004107 seconds
+[36m(main_task pid=3289941)[0m ['kG5ooik' 'Iz4ctDh' 'ysf7Rel' 'EoW2mcf']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 11.517497
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/ysf7Rel_0.out: 0.003987
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/ysf7Rel_0_score.txt or input file cybench/logs/cyagent/dynastic/ysf7Rel_1.in to appear starting at 2025-06-11 09:05:21.424510+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 3.367532, end_time 2025-06-11 09:05:24.792042+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.012127
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 11.392407
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/ysf7Rel_1.out: 0.003969
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/ysf7Rel_1_score.txt or input file cybench/logs/cyagent/dynastic/ysf7Rel_2.in to appear starting at 2025-06-11 09:05:36.204791+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.056833, end_time 2025-06-11 09:05:37.261624+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.012142
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 8.883565
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/ysf7Rel_2.out: 0.004111
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/ysf7Rel_2_score.txt or input file cybench/logs/cyagent/dynastic/ysf7Rel_3.in to appear starting at 2025-06-11 09:05:46.165061+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.057157, end_time 2025-06-11 09:05:47.222218+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.014679
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 11.804952
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/ysf7Rel_3.out: 0.003739
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/ysf7Rel_3_score.txt or input file cybench/logs/cyagent/dynastic/ysf7Rel_4.in to appear starting at 2025-06-11 09:05:59.048952+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.057296, end_time 2025-06-11 09:06:00.106248+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.016184
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 10.748794
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/ysf7Rel_4.out: 0.004061
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/ysf7Rel_4_score.txt or input file cybench/logs/cyagent/dynastic/ysf7Rel_5.in to appear starting at 2025-06-11 09:06:10.878636+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1139)), (tensor(1358), tensor(1408)), (tensor(1482), tensor(1575)), (tensor(1637), tensor(1838)), (tensor(1843), tensor(1991))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1229
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.004085 seconds
+[36m(main_task pid=3289941)[0m ['kG5ooik' 'Iz4ctDh' 'ysf7Rel' 'EoW2mcf']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 9.61171
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/EoW2mcf_0.out: 0.004062
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/EoW2mcf_0_score.txt or input file cybench/logs/cyagent/dynastic/EoW2mcf_1.in to appear starting at 2025-06-11 09:06:21.155852+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 3.268281, end_time 2025-06-11 09:06:24.424133+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.013477
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 10.2116
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/EoW2mcf_1.out: 0.004064
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/EoW2mcf_1_score.txt or input file cybench/logs/cyagent/dynastic/EoW2mcf_2.in to appear starting at 2025-06-11 09:06:34.656602+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.15752, end_time 2025-06-11 09:06:35.814122+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.011996
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 9.789516
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/EoW2mcf_2.out: 0.003707
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/EoW2mcf_2_score.txt or input file cybench/logs/cyagent/dynastic/EoW2mcf_3.in to appear starting at 2025-06-11 09:06:45.622849+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.15763, end_time 2025-06-11 09:06:46.780479+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.013568
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 10.721588
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/EoW2mcf_3.out: 0.003815
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/EoW2mcf_3_score.txt or input file cybench/logs/cyagent/dynastic/EoW2mcf_4.in to appear starting at 2025-06-11 09:06:57.522954+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.057268, end_time 2025-06-11 09:06:58.580222+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.01644
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 9.909867
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/EoW2mcf_4.out: 0.003833
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/EoW2mcf_4_score.txt or input file cybench/logs/cyagent/dynastic/EoW2mcf_5.in to appear starting at 2025-06-11 09:07:08.513355+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1226)), (tensor(1297), tensor(1354)), (tensor(1428), tensor(1614)), (tensor(1661), tensor(1789)), (tensor(1823), tensor(1937))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1249
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.004522 seconds
+[36m(main_task pid=3289941)[0m Processing chunk DataProto(batch=TensorDict(
+[36m(main_task pid=3289941)[0m     fields={
+[36m(main_task pid=3289941)[0m         attention_mask: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         input_ids: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         position_ids: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False)},
+[36m(main_task pid=3289941)[0m     batch_size=torch.Size([4]),
+[36m(main_task pid=3289941)[0m     device=None,
+[36m(main_task pid=3289941)[0m     is_shared=False), non_tensor_batch={'rollout_id': array(['8tNNhRM', 'whtfNQA', '7GFe8DF', 'xP322bm'], dtype=object)}, meta_info={})
+[36m(main_task pid=3289941)[0m ['8tNNhRM' 'whtfNQA' '7GFe8DF' 'xP322bm']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 8.425179
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/8tNNhRM_0.out: 0.004071
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/8tNNhRM_0_score.txt or input file cybench/logs/cyagent/dynastic/8tNNhRM_1.in to appear starting at 2025-06-11 09:07:17.505392+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 3.769931, end_time 2025-06-11 09:07:21.275323+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.012101
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 11.29302
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/8tNNhRM_1.out: 0.004125
+[36m(main_task pid=3289941)[0m 
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/8tNNhRM_1_score.txt or input file cybench/logs/cyagent/dynastic/8tNNhRM_2.in to appear starting at 2025-06-11 09:07:32.588325+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 0.956617, end_time 2025-06-11 09:07:33.544942+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.009887
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 9.651799
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/8tNNhRM_2.out: 0.003844
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/8tNNhRM_2_score.txt or input file cybench/logs/cyagent/dynastic/8tNNhRM_3.in to appear starting at 2025-06-11 09:07:43.213669+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 0.855907, end_time 2025-06-11 09:07:44.069576+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.012092
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 7.726087
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/8tNNhRM_3.out: 0.003742
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/8tNNhRM_3_score.txt or input file cybench/logs/cyagent/dynastic/8tNNhRM_4.in to appear starting at 2025-06-11 09:07:51.814365+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 0.95668, end_time 2025-06-11 09:07:52.771045+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.009361
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 6.854592
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/8tNNhRM_4.out: 0.003566
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/8tNNhRM_4_score.txt or input file cybench/logs/cyagent/dynastic/8tNNhRM_5.in to appear starting at 2025-06-11 09:07:59.641865+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1142)), (tensor(1177), tensor(1190)), (tensor(1196), tensor(1269)), (tensor(1275), tensor(1348)), (tensor(1354), tensor(1414))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1718
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.003999 seconds
+[36m(main_task pid=3289941)[0m ['8tNNhRM' 'whtfNQA' '7GFe8DF' 'xP322bm']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 9.833376
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/whtfNQA_0.out: 0.004079
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/whtfNQA_0_score.txt or input file cybench/logs/cyagent/dynastic/whtfNQA_1.in to appear starting at 2025-06-11 09:08:10.040389+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 3.06568, end_time 2025-06-11 09:08:13.106069+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.010984
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 13.14356
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/whtfNQA_1.out: 0.004562
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/whtfNQA_1_score.txt or input file cybench/logs/cyagent/dynastic/whtfNQA_2.in to appear starting at 2025-06-11 09:08:26.268211+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.157659, end_time 2025-06-11 09:08:27.425870+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.013125
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 9.017798
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/whtfNQA_2.out: 0.003184
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/whtfNQA_2_score.txt or input file cybench/logs/cyagent/dynastic/whtfNQA_3.in to appear starting at 2025-06-11 09:08:36.463421+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.057029, end_time 2025-06-11 09:08:37.520450+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.014212
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 7.980393
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/whtfNQA_3.out: 0.003189
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/whtfNQA_3_score.txt or input file cybench/logs/cyagent/dynastic/whtfNQA_4.in to appear starting at 2025-06-11 09:08:45.521405+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.057509, end_time 2025-06-11 09:08:46.578914+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.015475
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 13.11709
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/whtfNQA_4.out: 0.003858
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/whtfNQA_4_score.txt or input file cybench/logs/cyagent/dynastic/whtfNQA_5.in to appear starting at 2025-06-11 09:08:59.718994+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1138)), (tensor(1357), tensor(1442)), (tensor(1516), tensor(1605)), (tensor(1678), tensor(1750)), (tensor(1844), tensor(1899))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1228
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.004114 seconds
+[36m(main_task pid=3289941)[0m ['8tNNhRM' 'whtfNQA' '7GFe8DF' 'xP322bm']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 7.344416
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/7GFe8DF_0.out: 0.003776
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/7GFe8DF_0_score.txt or input file cybench/logs/cyagent/dynastic/7GFe8DF_1.in to appear starting at 2025-06-11 09:09:07.729569+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 5.680947, end_time 2025-06-11 09:09:13.410516+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.012292
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 8.401198
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/7GFe8DF_1.out: 0.003371
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/7GFe8DF_1_score.txt or input file cybench/logs/cyagent/dynastic/7GFe8DF_2.in to appear starting at 2025-06-11 09:09:21.830667+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.057476, end_time 2025-06-11 09:09:22.888143+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.009931
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 11.31151
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/7GFe8DF_2.out: 0.004288
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/7GFe8DF_2_score.txt or input file cybench/logs/cyagent/dynastic/7GFe8DF_3.in to appear starting at 2025-06-11 09:09:34.217064+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.057235, end_time 2025-06-11 09:09:35.274299+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.012748
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 10.061774
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/7GFe8DF_3.out: 0.004059
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/7GFe8DF_3_score.txt or input file cybench/logs/cyagent/dynastic/7GFe8DF_4.in to appear starting at 2025-06-11 09:09:45.356334+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 0.955616, end_time 2025-06-11 09:09:46.311950+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.01306
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 9.388703
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/7GFe8DF_4.out: 0.003301
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/7GFe8DF_4_score.txt or input file cybench/logs/cyagent/dynastic/7GFe8DF_5.in to appear starting at 2025-06-11 09:09:55.720997+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1113)), (tensor(1178), tensor(1246)), (tensor(1320), tensor(1414)), (tensor(1450), tensor(1510)), (tensor(1548), tensor(1641))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1524
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.003935 seconds
+[36m(main_task pid=3289941)[0m ['8tNNhRM' 'whtfNQA' '7GFe8DF' 'xP322bm']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 11.751885
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/xP322bm_0.out: 0.003678
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/xP322bm_0_score.txt or input file cybench/logs/cyagent/dynastic/xP322bm_1.in to appear starting at 2025-06-11 09:10:08.239971+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 1.163029, end_time 2025-06-11 09:10:09.403000+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.010952
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 10.684509
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/xP322bm_1.out: 0.003985
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/xP322bm_1_score.txt or input file cybench/logs/cyagent/dynastic/xP322bm_2.in to appear starting at 2025-06-11 09:10:20.105584+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.257611, end_time 2025-06-11 09:10:21.363195+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.012843
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 7.828655
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/xP322bm_2.out: 0.003523
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/xP322bm_2_score.txt or input file cybench/logs/cyagent/dynastic/xP322bm_3.in to appear starting at 2025-06-11 09:10:29.211759+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.25719, end_time 2025-06-11 09:10:30.468949+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.014855
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 7.185038
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/xP322bm_3.out: 0.004873
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/xP322bm_3_score.txt or input file cybench/logs/cyagent/dynastic/xP322bm_4.in to appear starting at 2025-06-11 09:10:37.676979+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.056643, end_time 2025-06-11 09:10:38.733622+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.014825
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 8.731613
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/xP322bm_4.out: 0.00323
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/xP322bm_4_score.txt or input file cybench/logs/cyagent/dynastic/xP322bm_5.in to appear starting at 2025-06-11 09:10:47.486310+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1131)), (tensor(1254), tensor(1313)), (tensor(1387), tensor(1467)), (tensor(1540), tensor(1604)), (tensor(1698), tensor(1771))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1374
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.003934 seconds
+[36m(main_task pid=3289941)[0m Time taken to concat: 0.001131 seconds
+[36m(main_task pid=3289941)[0m token_level_rewards shape torch.Size([8, 3456])
+[36m(main_task pid=3289941)[0m values shape torch.Size([8, 3456])
+[36m(main_task pid=3289941)[0m eos mask shape torch.Size([8, 3456])
+[36m(WorkerDict pid=3312251)[0m Values inside critic torch.Size([2, 3456])
+[36m(WorkerDict pid=3312251)[0m Response mask inside critic torch.Size([2, 3456])
+[36m(WorkerDict pid=3312251)[0m values shape torch.Size([1, 3456]), vpreds shape torch.Size([1, 3456]), eos_mask shape torch.Size([1, 3456]), returns shape torch.Size([1, 3456])
+[36m(main_task pid=3289941)[0m epoch 0, step 4
+[36m(main_task pid=3289941)[0m batch: DataProto(batch=TensorDict(
+[36m(main_task pid=3289941)[0m     fields={
+[36m(main_task pid=3289941)[0m         attention_mask: Tensor(shape=torch.Size([8, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         input_ids: Tensor(shape=torch.Size([8, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         position_ids: Tensor(shape=torch.Size([8, 3072]), device=cpu, dtype=torch.int64, is_shared=False)},
+[36m(main_task pid=3289941)[0m     batch_size=torch.Size([8]),
+[36m(main_task pid=3289941)[0m     device=None,
+[36m(main_task pid=3289941)[0m     is_shared=False), non_tensor_batch={'target': array([31, 14, 90, 47, 71, 95, 98, 89], dtype=object), 'nums': array([array([31, 88, 34, 88]), array([90, 10, 80, 68]),
+[36m(main_task pid=3289941)[0m        array([70, 70, 91]), array([66,  2, 85]), array([18, 26, 10,  9]),
+[36m(main_task pid=3289941)[0m        array([88, 29, 75, 53]), array([17, 35, 18, 62]),
+[36m(main_task pid=3289941)[0m        array([94, 89, 94])], dtype=object), 'data_source': array(['cybench', 'cybench', 'cybench', 'cybench', 'cybench', 'cybench',
+[36m(main_task pid=3289941)[0m        'cybench', 'cybench'], dtype=object), 'task_name': array(['hackthebox_dynastic', 'hackthebox_dynastic',
+[36m(main_task pid=3289941)[0m        'hackthebox_dynastic', 'hackthebox_dynastic',
+[36m(main_task pid=3289941)[0m        'hackthebox_dynastic', 'hackthebox_dynastic',
+[36m(main_task pid=3289941)[0m        'hackthebox_dynastic', 'hackthebox_dynastic'], dtype=object), 'ability': array(['math', 'math', 'math', 'math', 'math', 'math', 'math', 'math'],
+[36m(main_task pid=3289941)[0m       dtype=object), 'reward_model': array([{'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'},
+[36m(main_task pid=3289941)[0m        {'ground_truth': {'answer': 'secret.py', 'format': '******.py'}, 'style': 'rule'}],
+[36m(main_task pid=3289941)[0m       dtype=object), 'extra_info': array([{'index': 342, 'split': 'train'}, {'index': 263, 'split': 'train'},
+[36m(main_task pid=3289941)[0m        {'index': 58, 'split': 'train'}, {'index': 92, 'split': 'train'},
+[36m(main_task pid=3289941)[0m        {'index': 291, 'split': 'train'}, {'index': 103, 'split': 'train'},
+[36m(main_task pid=3289941)[0m        {'index': 117, 'split': 'train'}, {'index': 48, 'split': 'train'}],
+[36m(main_task pid=3289941)[0m       dtype=object), 'rollout_id': array(['ngkWE65', 'D1okfPK', 'h8NavhF', 'aNUieQA', 'DU2BRpl', 'a3X63La',
+[36m(main_task pid=3289941)[0m        'qWPR6qb', 'grCuG8k'], dtype=object), 'index': array([342, 263, 58, 92, 291, 103, 117, 48], dtype=object)}, meta_info={})
+[36m(main_task pid=3289941)[0m Batch size: 2
+[36m(main_task pid=3289941)[0m Processing chunk DataProto(batch=TensorDict(
+[36m(main_task pid=3289941)[0m     fields={
+[36m(main_task pid=3289941)[0m         attention_mask: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         input_ids: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         position_ids: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False)},
+[36m(main_task pid=3289941)[0m     batch_size=torch.Size([4]),
+[36m(main_task pid=3289941)[0m     device=None,
+[36m(main_task pid=3289941)[0m     is_shared=False), non_tensor_batch={'rollout_id': array(['ngkWE65', 'D1okfPK', 'h8NavhF', 'aNUieQA'], dtype=object)}, meta_info={})
+[36m(main_task pid=3289941)[0m ['ngkWE65' 'D1okfPK' 'h8NavhF' 'aNUieQA']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 6.073298
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/ngkWE65_0.out: 0.003141
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/ngkWE65_0_score.txt or input file cybench/logs/cyagent/dynastic/ngkWE65_1.in to appear starting at 2025-06-11 09:10:57.534482+00:00
+[36m(WorkerDict pid=3334137)[0m Values inside critic torch.Size([2, 3456])[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334137)[0m Response mask inside critic torch.Size([2, 3456])[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334137)[0m values shape torch.Size([1, 3456]), vpreds shape torch.Size([1, 3456]), eos_mask shape torch.Size([1, 3456]), returns shape torch.Size([1, 3456])[32m [repeated 7x across cluster][0m
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 3.568361, end_time 2025-06-11 09:11:01.102843+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.011043
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 8.861032
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/ngkWE65_1.out: 0.00423
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/ngkWE65_1_score.txt or input file cybench/logs/cyagent/dynastic/ngkWE65_2.in to appear starting at 2025-06-11 09:11:09.983073+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 0.956169, end_time 2025-06-11 09:11:10.939242+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.00993
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 10.608783
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/ngkWE65_2.out: 0.003265
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/ngkWE65_2_score.txt or input file cybench/logs/cyagent/dynastic/ngkWE65_3.in to appear starting at 2025-06-11 09:11:21.563875+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.258688, end_time 2025-06-11 09:11:22.822563+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.012862
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 6.946107
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/ngkWE65_3.out: 0.004107
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/ngkWE65_3_score.txt or input file cybench/logs/cyagent/dynastic/ngkWE65_4.in to appear starting at 2025-06-11 09:11:29.789873+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 3.669865, end_time 2025-06-11 09:11:33.459738+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.013732
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 11.557662
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/ngkWE65_4.out: 0.004962
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/ngkWE65_4_score.txt or input file cybench/logs/cyagent/dynastic/ngkWE65_5.in to appear starting at 2025-06-11 09:11:45.039429+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1174)), (tensor(1209), tensor(1335)), (tensor(1341), tensor(1467)), (tensor(1473), tensor(1525)), (tensor(1531), tensor(1685))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1541
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.004257 seconds
+[36m(main_task pid=3289941)[0m ['ngkWE65' 'D1okfPK' 'h8NavhF' 'aNUieQA']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 8.921888
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/D1okfPK_0.out: 0.003755
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/D1okfPK_0_score.txt or input file cybench/logs/cyagent/dynastic/D1okfPK_1.in to appear starting at 2025-06-11 09:11:54.628220+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 3.670444, end_time 2025-06-11 09:11:58.298664+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.012399
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 6.953343
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/D1okfPK_1.out: 0.003425
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/D1okfPK_1_score.txt or input file cybench/logs/cyagent/dynastic/D1okfPK_2.in to appear starting at 2025-06-11 09:12:05.271560+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.358315, end_time 2025-06-11 09:12:06.629875+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.008812
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 9.688503
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/D1okfPK_2.out: 0.004136
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/D1okfPK_2_score.txt or input file cybench/logs/cyagent/dynastic/D1okfPK_3.in to appear starting at 2025-06-11 09:12:16.334351+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.559798, end_time 2025-06-11 09:12:17.894149+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.013758
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 10.672363
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/D1okfPK_3.out: 0.003819
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/D1okfPK_3_score.txt or input file cybench/logs/cyagent/dynastic/D1okfPK_4.in to appear starting at 2025-06-11 09:12:28.589969+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.056054, end_time 2025-06-11 09:12:29.646023+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.014692
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 7.735883
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/D1okfPK_4.out: 0.003753
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/D1okfPK_4_score.txt or input file cybench/logs/cyagent/dynastic/D1okfPK_5.in to appear starting at 2025-06-11 09:12:37.403784+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1193)), (tensor(1316), tensor(1364)), (tensor(1438), tensor(1509)), (tensor(1603), tensor(1660)), (tensor(1754), tensor(1850))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1318
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.004809 seconds
+[36m(main_task pid=3289941)[0m ['ngkWE65' 'D1okfPK' 'h8NavhF' 'aNUieQA']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 12.203247
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/h8NavhF_0.out: 0.004458
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/h8NavhF_0_score.txt or input file cybench/logs/cyagent/dynastic/h8NavhF_1.in to appear starting at 2025-06-11 09:12:50.172888+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 10.803481, end_time 2025-06-11 09:13:00.976369+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.010345
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 11.916686
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/h8NavhF_1.out: 0.003156
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/h8NavhF_1_score.txt or input file cybench/logs/cyagent/dynastic/h8NavhF_2.in to appear starting at 2025-06-11 09:13:12.909144+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.358426, end_time 2025-06-11 09:13:14.267570+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.015374
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 11.114386
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/h8NavhF_2.out: 0.003926
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/h8NavhF_2_score.txt or input file cybench/logs/cyagent/dynastic/h8NavhF_3.in to appear starting at 2025-06-11 09:13:25.404152+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.157096, end_time 2025-06-11 09:13:26.561248+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.014431
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 13.372433
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/h8NavhF_3.out: 0.003804
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/h8NavhF_3_score.txt or input file cybench/logs/cyagent/dynastic/h8NavhF_4.in to appear starting at 2025-06-11 09:13:39.955668+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.359248, end_time 2025-06-11 09:13:41.314916+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.017656
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 14.001386
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/h8NavhF_4.out: 0.004458
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/h8NavhF_4_score.txt or input file cybench/logs/cyagent/dynastic/h8NavhF_5.in to appear starting at 2025-06-11 09:13:55.341435+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1309)), (tensor(1411), tensor(1532)), (tensor(1627), tensor(1728)), (tensor(1801), tensor(1890)), (tensor(1984), tensor(2085))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1088
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.003892 seconds
+[36m(main_task pid=3289941)[0m ['ngkWE65' 'D1okfPK' 'h8NavhF' 'aNUieQA']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 8.347385
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/aNUieQA_0.out: 0.004099
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/aNUieQA_0_score.txt or input file cybench/logs/cyagent/dynastic/aNUieQA_1.in to appear starting at 2025-06-11 09:14:04.353819+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 5.377707, end_time 2025-06-11 09:14:09.731526+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.010743
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 7.13122
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/aNUieQA_1.out: 0.003868
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/aNUieQA_1_score.txt or input file cybench/logs/cyagent/dynastic/aNUieQA_2.in to appear starting at 2025-06-11 09:14:16.881102+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to check for score or input file: 1.157832, end_time 2025-06-11 09:14:18.038934+00:00
+[36m(main_task pid=3289941)[0m Iteration 2 Time taken to tokenize and prepare new gen_batch: 0.011979
+[36m(main_task pid=3289941)[0m Iteration 3 time taken to generate: 5.36531
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/aNUieQA_2.out: 0.003852
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/aNUieQA_2_score.txt or input file cybench/logs/cyagent/dynastic/aNUieQA_3.in to appear starting at 2025-06-11 09:14:23.423698+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to check for score or input file: 1.15838, end_time 2025-06-11 09:14:24.582078+00:00
+[36m(main_task pid=3289941)[0m Iteration 3 Time taken to tokenize and prepare new gen_batch: 0.012048
+[36m(main_task pid=3289941)[0m Iteration 4 time taken to generate: 6.893617
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/aNUieQA_3.out: 0.003905
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/aNUieQA_3_score.txt or input file cybench/logs/cyagent/dynastic/aNUieQA_4.in to appear starting at 2025-06-11 09:14:31.495183+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to check for score or input file: 1.056955, end_time 2025-06-11 09:14:32.552138+00:00
+[36m(main_task pid=3289941)[0m Iteration 4 Time taken to tokenize and prepare new gen_batch: 0.012948
+[36m(main_task pid=3289941)[0m Iteration 5 time taken to generate: 6.321471
+[36m(main_task pid=3289941)[0m Iteration 5 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/aNUieQA_4.out: 0.003644
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/aNUieQA_4_score.txt or input file cybench/logs/cyagent/dynastic/aNUieQA_5.in to appear starting at 2025-06-11 09:14:38.893998+00:00
+[36m(main_task pid=3289941)[0m Response idxs: [(tensor(1083), tensor(1121)), (tensor(1180), tensor(1194)), (tensor(1225), tensor(1239)), (tensor(1269), tensor(1333)), (tensor(1363), tensor(1399))]
+[36m(main_task pid=3289941)[0m Prompt start idx: 1709
+[36m(main_task pid=3289941)[0m Time taken to add response mask: 0.005058 seconds
+[36m(main_task pid=3289941)[0m Processing chunk DataProto(batch=TensorDict(
+[36m(main_task pid=3289941)[0m     fields={
+[36m(main_task pid=3289941)[0m         attention_mask: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         input_ids: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False),
+[36m(main_task pid=3289941)[0m         position_ids: Tensor(shape=torch.Size([4, 3072]), device=cpu, dtype=torch.int64, is_shared=False)},
+[36m(main_task pid=3289941)[0m     batch_size=torch.Size([4]),
+[36m(main_task pid=3289941)[0m     device=None,
+[36m(main_task pid=3289941)[0m     is_shared=False), non_tensor_batch={'rollout_id': array(['DU2BRpl', 'a3X63La', 'qWPR6qb', 'grCuG8k'], dtype=object)}, meta_info={})
+[36m(main_task pid=3289941)[0m ['DU2BRpl' 'a3X63La' 'qWPR6qb' 'grCuG8k']
+[36m(main_task pid=3289941)[0m Iteration 1 time taken to generate: 8.523146
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to decode response and write response to file cybench/logs/cyagent/dynastic/DU2BRpl_0.out: 0.003814
+[36m(main_task pid=3289941)[0m Waiting for score file cybench/logs/cyagent/dynastic/DU2BRpl_0_score.txt or input file cybench/logs/cyagent/dynastic/DU2BRpl_1.in to appear starting at 2025-06-11 09:14:48.084823+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to check for score or input file: 4.574404, end_time 2025-06-11 09:14:52.659227+00:00
+[36m(main_task pid=3289941)[0m Iteration 1 Time taken to tokenize and prepare new gen_batch: 0.0132
+Error executing job with overrides: ['data.train_files=data/cybench_512/train.parquet', 'data.val_files=["data/cybench_512/test.parquet","data/cybench_512/trte.parquet"]', 'reward_model.log_dir=cybench/logs/cyagent/dynastic', 'data.train_batch_size=8', 'data.val_batch_size=8', 'data.max_prompt_length=3072', 'data.max_response_length=384', 'actor_rollout_ref.model.path=model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1', 'actor_rollout_ref.actor.optim.lr=1e-6', 'actor_rollout_ref.actor.ppo_mini_batch_size=8', 'actor_rollout_ref.actor.ppo_micro_batch_size=4', 'actor_rollout_ref.rollout.log_prob_micro_batch_size=4', 'actor_rollout_ref.rollout.tensor_model_parallel_size=1', 'actor_rollout_ref.rollout.gpu_memory_utilization=0.2', 'actor_rollout_ref.ref.log_prob_micro_batch_size=4', 'critic.optim.lr=1e-5', 'critic.model.path=model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1', 'critic.model.enable_gradient_checkpointing=True', 'critic.ppo_micro_batch_size=4', 'algorithm.kl_ctrl.kl_coef=0.001', 'trainer.logger=[wandb]', '+trainer.val_before_train=False', 'trainer.default_hdfs_dir=null', 'trainer.n_gpus_per_node=4', 'trainer.nnodes=1', 'trainer.save_freq=50', 'trainer.test_freq=10', 'trainer.project_name=TinyZero', 'trainer.experiment_name=data/cybench_512-qwen2.5-3B-instruct-dynastic', 'trainer.total_epochs=15']
+Traceback (most recent call last):
+  File "/juice4/scr4/kathli/repos/TinyZero/verl/trainer/main_ppo.py", line 110, in main
+    ray.get(main_task.remote(config))
+  File "/nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/ray/_private/auto_init_hook.py", line 21, in auto_init_wrapper
+    return fn(*args, **kwargs)
+  File "/nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/ray/_private/client_mode_hook.py", line 103, in wrapper
+    return func(*args, **kwargs)
+  File "/nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/ray/_private/worker.py", line 2822, in get
+    values, debugger_breakpoint = worker.get_objects(object_refs, timeout=timeout)
+  File "/nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/ray/_private/worker.py", line 930, in get_objects
+    raise value.as_instanceof_cause()
+ray.exceptions.RayTaskError(FileNotFoundError): [36mray::main_task()[39m (pid=3289941, ip=172.24.67.114)
+  File "/juice4/scr4/kathli/repos/TinyZero/verl/trainer/main_ppo.py", line 196, in main_task
+    trainer.fit()
+  File "/juice4/scr4/kathli/repos/TinyZero/verl/trainer/ppo/ray_trainer.py", line 618, in fit
+    gen_batch_output = self.rollout_manager.get_rollout(gen_batch)
+  File "/juice4/scr4/kathli/repos/TinyZero/verl/utils/cyagent/rollout_manager.py", line 196, in get_rollout
+    repeated_output = self.get_single_rollout(chunk, output_idx)
+  File "/juice4/scr4/kathli/repos/TinyZero/verl/utils/cyagent/rollout_manager.py", line 97, in get_single_rollout
+    with open(os.path.join(self.log_dir, f'{rollout_id}_{i}.out'), 'w') as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'cybench/logs/cyagent/dynastic/DU2BRpl_1.out'
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+[36m(WorkerDict pid=3334146)[0m /nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/torch/utils/checkpoint.py:1399: FutureWarning: `torch.cpu.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cpu', args...)` instead.[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=3334146)[0m   with device_autocast_ctx, torch.cpu.amp.autocast(**cpu_autocast_kwargs), recompute_context:  # type: ignore[attr-defined][32m [repeated 3x across cluster][0m
+[36m(main_task pid=3289941)[0m Iteration 2 time taken to generate: 9.677978

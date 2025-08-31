@@ -1,0 +1,166 @@
+[Wed 11 Jun 2025 12:22:21 PM PDT] Launching verl training job...
+Successfully logged into wandb.
+[Wed 11 Jun 2025 12:22:24 PM PDT] Starting 1 CPU workers...
+2025-06-11 12:22:32,386	INFO worker.py:1888 -- Started a local Ray instance.
+[36m(main_task pid=321292)[0m {'actor_rollout_ref': {'actor': {'clip_ratio': 0.2,
+[36m(main_task pid=321292)[0m                                  'entropy_coeff': 0.001,
+[36m(main_task pid=321292)[0m                                  'fsdp_config': {'fsdp_size': -1,
+[36m(main_task pid=321292)[0m                                                  'grad_offload': False,
+[36m(main_task pid=321292)[0m                                                  'optimizer_offload': False,
+[36m(main_task pid=321292)[0m                                                  'param_offload': False,
+[36m(main_task pid=321292)[0m                                                  'wrap_policy': {'min_num_params': 0}},
+[36m(main_task pid=321292)[0m                                  'grad_clip': 1.0,
+[36m(main_task pid=321292)[0m                                  'kl_loss_coef': 0.001,
+[36m(main_task pid=321292)[0m                                  'kl_loss_type': 'low_var_kl',
+[36m(main_task pid=321292)[0m                                  'optim': {'lr': 1e-06,
+[36m(main_task pid=321292)[0m                                            'lr_warmup_steps_ratio': 0.0,
+[36m(main_task pid=321292)[0m                                            'min_lr_ratio': None,
+[36m(main_task pid=321292)[0m                                            'total_training_steps': -1,
+[36m(main_task pid=321292)[0m                                            'warmup_style': 'constant'},
+[36m(main_task pid=321292)[0m                                  'ppo_epochs': 1,
+[36m(main_task pid=321292)[0m                                  'ppo_max_token_len_per_gpu': 16384,
+[36m(main_task pid=321292)[0m                                  'ppo_micro_batch_size': 4,
+[36m(main_task pid=321292)[0m                                  'ppo_mini_batch_size': '',
+[36m(main_task pid=321292)[0m                                  'shuffle': False,
+[36m(main_task pid=321292)[0m                                  'strategy': 'fsdp',
+[36m(main_task pid=321292)[0m                                  'ulysses_sequence_parallel_size': 1,
+[36m(main_task pid=321292)[0m                                  'use_dynamic_bsz': False,
+[36m(main_task pid=321292)[0m                                  'use_kl_loss': False},
+[36m(main_task pid=321292)[0m                        'hybrid_engine': True,
+[36m(main_task pid=321292)[0m                        'model': {'enable_gradient_checkpointing': False,
+[36m(main_task pid=321292)[0m                                  'external_lib': None,
+[36m(main_task pid=321292)[0m                                  'override_config': {},
+[36m(main_task pid=321292)[0m                                  'path': 'model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1',
+[36m(main_task pid=321292)[0m                                  'use_remove_padding': False},
+[36m(main_task pid=321292)[0m                        'ref': {'fsdp_config': {'fsdp_size': -1,
+[36m(main_task pid=321292)[0m                                                'param_offload': False,
+[36m(main_task pid=321292)[0m                                                'wrap_policy': {'min_num_params': 0}},
+[36m(main_task pid=321292)[0m                                'log_prob_max_token_len_per_gpu': 16384,
+[36m(main_task pid=321292)[0m                                'log_prob_micro_batch_size': 4,
+[36m(main_task pid=321292)[0m                                'log_prob_use_dynamic_bsz': False,
+[36m(main_task pid=321292)[0m                                'ulysses_sequence_parallel_size': 1},
+[36m(main_task pid=321292)[0m                        'rollout': {'do_sample': True,
+[36m(main_task pid=321292)[0m                                    'dtype': 'bfloat16',
+[36m(main_task pid=321292)[0m                                    'enforce_eager': True,
+[36m(main_task pid=321292)[0m                                    'free_cache_engine': True,
+[36m(main_task pid=321292)[0m                                    'gpu_memory_utilization': 0.2,
+[36m(main_task pid=321292)[0m                                    'ignore_eos': False,
+[36m(main_task pid=321292)[0m                                    'load_format': 'dummy_dtensor',
+[36m(main_task pid=321292)[0m                                    'log_prob_max_token_len_per_gpu': 16384,
+[36m(main_task pid=321292)[0m                                    'log_prob_micro_batch_size': 4,
+[36m(main_task pid=321292)[0m                                    'log_prob_use_dynamic_bsz': False,
+[36m(main_task pid=321292)[0m                                    'max_num_batched_tokens': 8192,
+[36m(main_task pid=321292)[0m                                    'max_num_seqs': 1024,
+[36m(main_task pid=321292)[0m                                    'n': 1,
+[36m(main_task pid=321292)[0m                                    'name': 'vllm',
+[36m(main_task pid=321292)[0m                                    'prompt_length': 3072,
+[36m(main_task pid=321292)[0m                                    'response_length': 384,
+[36m(main_task pid=321292)[0m                                    'temperature': 1.0,
+[36m(main_task pid=321292)[0m                                    'tensor_model_parallel_size': 1,
+[36m(main_task pid=321292)[0m                                    'top_k': -1,
+[36m(main_task pid=321292)[0m                                    'top_p': 1}},
+[36m(main_task pid=321292)[0m  'algorithm': {'adv_estimator': 'gae',
+[36m(main_task pid=321292)[0m                'gamma': 1.0,
+[36m(main_task pid=321292)[0m                'kl_ctrl': {'kl_coef': 0.001, 'type': 'fixed'},
+[36m(main_task pid=321292)[0m                'kl_penalty': 'kl',
+[36m(main_task pid=321292)[0m                'lam': 1.0},
+[36m(main_task pid=321292)[0m  'critic': {'cliprange_value': 0.5,
+[36m(main_task pid=321292)[0m             'forward_max_token_len_per_gpu': '(16384) * 2',
+[36m(main_task pid=321292)[0m             'forward_micro_batch_size': 4,
+[36m(main_task pid=321292)[0m             'grad_clip': 1.0,
+[36m(main_task pid=321292)[0m             'model': {'enable_gradient_checkpointing': True,
+[36m(main_task pid=321292)[0m                       'external_lib': None,
+[36m(main_task pid=321292)[0m                       'fsdp_config': {'fsdp_size': -1,
+[36m(main_task pid=321292)[0m                                       'grad_offload': False,
+[36m(main_task pid=321292)[0m                                       'optimizer_offload': False,
+[36m(main_task pid=321292)[0m                                       'param_offload': False,
+[36m(main_task pid=321292)[0m                                       'wrap_policy': {'min_num_params': 0}},
+[36m(main_task pid=321292)[0m                       'override_config': {},
+[36m(main_task pid=321292)[0m                       'path': 'model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1',
+[36m(main_task pid=321292)[0m                       'tokenizer_path': 'model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1',
+[36m(main_task pid=321292)[0m                       'use_remove_padding': False},
+[36m(main_task pid=321292)[0m             'optim': {'lr': 1e-05,
+[36m(main_task pid=321292)[0m                       'lr_warmup_steps_ratio': 0.0,
+[36m(main_task pid=321292)[0m                       'min_lr_ratio': None,
+[36m(main_task pid=321292)[0m                       'total_training_steps': -1,
+[36m(main_task pid=321292)[0m                       'warmup_style': 'constant'},
+[36m(main_task pid=321292)[0m             'ppo_epochs': 1,
+[36m(main_task pid=321292)[0m             'ppo_max_token_len_per_gpu': '(16384) * 2',
+[36m(main_task pid=321292)[0m             'ppo_micro_batch_size': 4,
+[36m(main_task pid=321292)[0m             'ppo_mini_batch_size': '',
+[36m(main_task pid=321292)[0m             'shuffle': False,
+[36m(main_task pid=321292)[0m             'strategy': 'fsdp',
+[36m(main_task pid=321292)[0m             'ulysses_sequence_parallel_size': 1,
+[36m(main_task pid=321292)[0m             'use_dynamic_bsz': False},
+[36m(main_task pid=321292)[0m /nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/vllm/connections.py:8: RuntimeWarning: Failed to read commit hash:
+[36m(main_task pid=321292)[0m No module named 'vllm._version'
+[36m(main_task pid=321292)[0m   from vllm.version import __version__ as VLLM_VERSION
+[36m(main_task pid=321292)[0m  'data': {'max_iterations': 5,
+[36m(main_task pid=321292)[0m           'max_prompt_length': 3072,
+[36m(main_task pid=321292)[0m           'max_response_length': 384,
+[36m(main_task pid=321292)[0m           'prompt_key': 'prompt',
+[36m(main_task pid=321292)[0m           'return_raw_chat': False,
+[36m(main_task pid=321292)[0m           'return_raw_input_ids': False,
+[36m(main_task pid=321292)[0m           'tokenizer': None,
+[36m(main_task pid=321292)[0m           'train_batch_size': 8,
+[36m(main_task pid=321292)[0m           'train_files': 'data/cybench_512/train.parquet',
+[36m(main_task pid=321292)[0m           'val_batch_size': '',
+[36m(main_task pid=321292)[0m           'val_files': ['data/cybench_512/test.parquet',
+[36m(main_task pid=321292)[0m                         'data/cybench_512/trte.parquet']},
+[36m(main_task pid=321292)[0m  'reward_model': {'enable': False,
+[36m(main_task pid=321292)[0m                   'forward_max_token_len_per_gpu': '(16384) * 2',
+[36m(main_task pid=321292)[0m                   'log_dir': 'cybench/logs/cyagent/urgent8',
+[36m(main_task pid=321292)[0m                   'max_length': None,
+[36m(main_task pid=321292)[0m                   'micro_batch_size': 64,
+[36m(main_task pid=321292)[0m                   'model': {'external_lib': None,
+[36m(main_task pid=321292)[0m                             'fsdp_config': {'min_num_params': 0,
+[36m(main_task pid=321292)[0m                                             'param_offload': False},
+[36m(main_task pid=321292)[0m                             'input_tokenizer': 'model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1',
+[36m(main_task pid=321292)[0m                             'path': '~/models/FsfairX-LLaMA3-RM-v0.1',
+[36m(main_task pid=321292)[0m                             'use_remove_padding': False},
+[36m(main_task pid=321292)[0m                   'strategy': 'fsdp',
+[36m(main_task pid=321292)[0m                   'ulysses_sequence_parallel_size': 1,
+[36m(main_task pid=321292)[0m                   'use_dynamic_bsz': False},
+[36m(main_task pid=321292)[0m  'trainer': {'critic_warmup': 0,
+[36m(main_task pid=321292)[0m              'default_hdfs_dir': None,
+[36m(main_task pid=321292)[0m              'default_local_dir': 'checkpoints/TinyZero/data/cybench_512-qwen2.5-3B-instruct-urgent8',
+[36m(main_task pid=321292)[0m              'experiment_name': 'data/cybench_512-qwen2.5-3B-instruct-urgent8',
+[36m(main_task pid=321292)[0m              'logger': ['wandb'],
+[36m(main_task pid=321292)[0m              'n_gpus_per_node': 4,
+[36m(main_task pid=321292)[0m              'nnodes': 1,
+[36m(main_task pid=321292)[0m              'project_name': 'TinyZero',
+[36m(main_task pid=321292)[0m              'save_freq': 50,
+[36m(main_task pid=321292)[0m              'test_freq': 10,
+[36m(main_task pid=321292)[0m              'total_epochs': 15,
+[36m(main_task pid=321292)[0m              'total_training_steps': None,
+[36m(main_task pid=321292)[0m              'val_before_train': False}}
+[36m(main_task pid=321292)[0m original dataset len: 512
+[36m(main_task pid=321292)[0m filter dataset len: 512
+[36m(main_task pid=321292)[0m original dataset len: 256
+[36m(main_task pid=321292)[0m filter dataset len: 256
+Error executing job with overrides: ['data.train_files=data/cybench_512/train.parquet', 'data.val_files=["data/cybench_512/test.parquet","data/cybench_512/trte.parquet"]', 'reward_model.log_dir=cybench/logs/cyagent/urgent8', 'data.train_batch_size=8', 'data.val_batch_size=', 'data.max_prompt_length=3072', 'data.max_response_length=384', 'actor_rollout_ref.model.path=model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1', 'actor_rollout_ref.actor.optim.lr=1e-6', 'actor_rollout_ref.actor.ppo_mini_batch_size=', 'actor_rollout_ref.actor.ppo_micro_batch_size=4', 'actor_rollout_ref.rollout.log_prob_micro_batch_size=4', 'actor_rollout_ref.rollout.tensor_model_parallel_size=1', 'actor_rollout_ref.rollout.gpu_memory_utilization=0.2', 'actor_rollout_ref.ref.log_prob_micro_batch_size=4', 'critic.optim.lr=1e-5', 'critic.model.path=model/Qwen2.5-3B-instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1', 'critic.model.enable_gradient_checkpointing=True', 'critic.ppo_micro_batch_size=4', 'algorithm.kl_ctrl.kl_coef=0.001', 'trainer.logger=[wandb]', '+trainer.val_before_train=False', 'trainer.default_hdfs_dir=null', 'trainer.n_gpus_per_node=4', 'trainer.nnodes=1', 'trainer.save_freq=50', 'trainer.test_freq=10', 'trainer.project_name=TinyZero', 'trainer.experiment_name=data/cybench_512-qwen2.5-3B-instruct-urgent8', 'trainer.total_epochs=15']
+Traceback (most recent call last):
+  File "/juice4/scr4/kathli/repos/TinyZero/verl/trainer/main_ppo.py", line 110, in main
+    ray.get(main_task.remote(config))
+  File "/nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/ray/_private/auto_init_hook.py", line 21, in auto_init_wrapper
+    return fn(*args, **kwargs)
+  File "/nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/ray/_private/client_mode_hook.py", line 103, in wrapper
+    return func(*args, **kwargs)
+  File "/nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/ray/_private/worker.py", line 2822, in get
+    values, debugger_breakpoint = worker.get_objects(object_refs, timeout=timeout)
+  File "/nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/ray/_private/worker.py", line 930, in get_objects
+    raise value.as_instanceof_cause()
+ray.exceptions.RayTaskError(ValueError): [36mray::main_task()[39m (pid=321292, ip=172.24.67.142)
+  File "/juice4/scr4/kathli/repos/TinyZero/verl/trainer/main_ppo.py", line 188, in main_task
+    trainer = RayPPOTrainer(config=config,
+  File "/juice4/scr4/kathli/repos/TinyZero/verl/trainer/ppo/ray_trainer.py", line 348, in __init__
+    self._create_dataloader()
+  File "/juice4/scr4/kathli/repos/TinyZero/verl/trainer/ppo/ray_trainer.py", line 377, in _create_dataloader
+    self.val_dataloader = DataLoader(dataset=self.val_dataset,
+  File "/nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/torch/utils/data/dataloader.py", line 357, in __init__
+    batch_sampler = BatchSampler(sampler, batch_size, drop_last)
+  File "/nlp/scr/kathli/miniconda3/envs/cyagent/lib/python3.9/site-packages/torch/utils/data/sampler.py", line 268, in __init__
+    raise ValueError(f"batch_size should be a positive integer value, but got batch_size={batch_size}")
+ValueError: batch_size should be a positive integer value, but got batch_size=
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.

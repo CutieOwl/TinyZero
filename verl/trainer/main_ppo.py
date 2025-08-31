@@ -62,7 +62,7 @@ class RewardManager():
 
         already_print_data_sources = {}
 
-        print(f"Main ppo data {data}")
+        # print(f"Main ppo data {data}")
 
         for i in range(len(data)):
             data_item = data[i]  # DataProtoItem

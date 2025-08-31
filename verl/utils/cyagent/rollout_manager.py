@@ -94,11 +94,6 @@ class RolloutManager:
             # print(f"Cur response start: {cur_response_start}, cur response end: {cur_response_end}")
             response_str = self.tokenizer.decode(response_ids)
 
-            end_time = datetime.now(timezone.utc)
-            duration = (end_time - start_time).total_seconds()
-            print(f"Iteration {i + 1} Time taken to decode response: {duration}")
-            start_time = datetime.now(timezone.utc)
-
             with open(os.path.join(self.log_dir, f'{rollout_id}_{i}.out'), 'w') as f:
                 fcntl.flock(f, fcntl.LOCK_EX) 
                 f.write(response_str)
@@ -108,7 +103,7 @@ class RolloutManager:
 
             end_time = datetime.now(timezone.utc)
             duration = (end_time - start_time).total_seconds()
-            print(f"Iteration {i + 1} Time taken to write response to file {os.path.join(self.log_dir, f'{rollout_id}_{i}.out')}: {duration}")
+            print(f"Iteration {i + 1} Time taken to decode response and write response to file {os.path.join(self.log_dir, f'{rollout_id}_{i}.out')}: {duration}")
 
             # Wait until we either receive a score or an in file
             start_time = datetime.now(timezone.utc)
@@ -154,12 +149,7 @@ class RolloutManager:
                 left_pad=True,
                 truncation=self.truncation
             )
-            end_time = datetime.now(timezone.utc)
-            duration = (end_time - start_time).total_seconds()
-            print(f"Iteration {i + 1} Time taken to tokenize new prompt: {duration}")
-
-
-            start_time = datetime.now(timezone.utc)
+            
             input_ids = input_ids.to(self.device)
             attention_mask = attention_mask.to(self.device)
             position_ids = compute_position_id_with_mask(attention_mask)
@@ -179,7 +169,7 @@ class RolloutManager:
             gen_batch = DataProto(batch=new_gen_batch)
             end_time = datetime.now(timezone.utc)
             duration = (end_time - start_time).total_seconds()
-            print(f"Iteration {i + 1} Time taken to prepare new gen_batch: {duration}")
+            print(f"Iteration {i + 1} Time taken to tokenize and prepare new gen_batch: {duration}")
 
         # We should never get here, but if we do, return output
         print(f"SOMETHING WENT WRONG, reached max iterations {self.max_iterations} without receiving a score or an input file.")
